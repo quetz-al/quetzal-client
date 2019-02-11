@@ -1,5 +1,8 @@
 from setuptools import setup, find_packages
 
+import versioneer
+
+
 long_description = '...'
 dependencies = [
     'urllib3>=1.15',
@@ -19,16 +22,12 @@ setup_args = dict(
     author='David Ojeda',
     author_email='david.ojeda@gmail.com',
     url='https://github.com/dojeda/quetzal-client',
-    #version=versioneer.get_version(),
-    #cmdclass=versioneer.get_cmdclass(),
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     license='Proprietary',
     platforms=['Linux', 'OSX', 'Windows'],
     # keywords='',
-    packages=find_packages(exclude=['docs', 'tests']),
-    # packages=(
-    #     find_packages('.', exclude=['docs', 'tests']) +
-    #     find_packages('generated', exclude=['docs', 'test'])
-    # ),
+    packages=find_packages(exclude=['docs', 'tests', 'test']),
     install_requires=dependencies,
     setup_requires=setup_requires,
     #build_requires=setup_requires,
@@ -38,7 +37,7 @@ setup_args = dict(
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'quetzal-client = quetzal.client:main',
+            'quetzal-client = quetzal.client.main:cli',
         ],
     },
     #dependency_links=dependency_links,

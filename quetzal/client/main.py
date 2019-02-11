@@ -102,9 +102,5 @@ def upload():
     pass
 
 
-def main():
-    return cli()
-
-
 if __name__ == '__main__':
-    main()
+    cli()
