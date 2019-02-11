@@ -1,9 +1,9 @@
 import click
 
-from quetzal_client import (
+from quetzal.client.autogen import (
     ApiClient, AuthenticationApi, Configuration, DataApi
 )
-from quetzal_client.rest import ApiException
+from quetzal.client.autogen.rest import ApiException
 
 
 @click.group()
@@ -36,14 +36,14 @@ def login(ctx, *args, **kwargs):
     if 'client' not in ctx.obj:
         client = ApiClient(ctx.obj['configuration'])
         ctx.obj['client'] = client
+    client = ctx.obj['client']
     api = AuthenticationApi(client)
     try:
         response = api.app_api_auth_get_token()
     except ApiException as ex:
         raise click.ClickException(f'Invalid credentials. Error {ex.status}')
 
-    ctx.obj['configuration'].api_key = response.token
-    ctx.obj['configuration'].api_key_prefix = 'Bearer'
+    ctx.obj['configuration'].access_token = response.token
 
 
 @auth.command()
@@ -57,7 +57,6 @@ def logout():
 def workspace(ctx, name):
     """Workspace operations"""
     print(f'Getting information of workspace {name}')
-    import ipdb; ipdb.set_trace(context=21)
     ctx.forward(login)
 
     client = ctx.obj['client']
@@ -67,8 +66,18 @@ def workspace(ctx, name):
 
 
 @workspace.command(name='list')
-def list_():
-    pass
+@click.pass_context
+def list_(ctx):
+    ctx.forward(login)
+
+    client = ctx.obj['client']
+    api = DataApi(client)
+
+    print(f'{"id":>6} {"status":>10} {"name":>20} {"families":>20} {"data_url":>32} {"owner":>12}'.upper())
+    response = api.app_api_data_workspace_fetch()
+    for w in response.data:
+        families = ', '.join(f'{k}:{v}' for k, v in sorted(w.families.items()))
+        print(f'{w.id:>6} {w.status:>10} {w.name:>20} {families:>20} {w.data_url:>32} {w.owner:>12}')
 
 
 @workspace.command()
