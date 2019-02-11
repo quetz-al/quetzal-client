@@ -4,3 +4,4 @@ certifi
 python-dateutil
 click
 PyYAML
+jsonref
