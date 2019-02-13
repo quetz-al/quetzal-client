@@ -37,7 +37,7 @@ setup_args = dict(
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'quetzal-client = quetzal.client.main:cli',
+            'quetzal-client = quetzal.client.cli.main:cli',
         ],
     },
     #dependency_links=dependency_links,

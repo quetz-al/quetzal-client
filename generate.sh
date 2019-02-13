@@ -43,6 +43,8 @@ do
         mv ${file_or_dir} ${fixed_name}
     fi
 done
+
+# Add a __init__.py to make quetzal.client.autogen a module
 touch quetzal/client/autogen/__init__.py
 
 echo "Cleaning files..."
