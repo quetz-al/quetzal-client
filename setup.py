@@ -11,6 +11,7 @@ dependencies = [
     'python-dateutil',
     'click',
     'backoff',
+    'requests',
 ]
 setup_requires = dependencies[:]
 #extra_dependencies = []

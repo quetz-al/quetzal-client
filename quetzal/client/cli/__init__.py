@@ -1,3 +1,4 @@
+from collections import namedtuple
 from contextlib import contextmanager
 
 import click
@@ -15,6 +16,51 @@ class State(object):
 
 # Decorator to obtain the state directly. Use with @pass_state
 pass_state = click.make_pass_decorator(State, ensure=True)
+
+
+class FamilyVersionType(click.ParamType):
+    name = 'family version'
+
+    def convert(self, value, param, ctx):
+        parts = value.split(':')
+        if len(parts) != 2:
+            self.fail(f'"{value}" is an invalid family-version definition. '
+                      f'It must be family_name:version_number.',
+                      param, ctx)
+        family = parts[0]
+        if parts[1] == 'latest':
+            version = None
+        else:
+            version = click.types.IntRange(0).convert(parts[1], param, ctx)
+
+        return family, version
+
+    def __repr__(self):
+        return f'FamilyVersion()'
+
+
+class FamilyVersionListType(FamilyVersionType):
+    name = 'family version list'
+
+    def convert(self, value, param, ctx):
+        parts = value.split(',')
+        definitions = []
+        for p in parts:
+            tup = FamilyVersionType.convert(self, p, param, ctx)
+            definitions.append(tup)
+        return definitions
+
+
+class BaseGroup(click.Group):
+    """A group whose `no_args_is_help` option is our custom help function"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def parse_args(self, ctx, args):
+        if not args and self.no_args_is_help and not ctx.resilient_parsing:
+            _format_help(ctx)
+        return super().parse_args(ctx, args)
 
 
 def _collect_options(cmd, ctx, list_help=True):

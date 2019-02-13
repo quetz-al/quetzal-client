@@ -2,11 +2,11 @@ import getpass
 
 import click
 
-from quetzal.client.cli import help_options, pass_state
-from quetzal.client.api_client import UnauthorizedException
+from quetzal.client.cli import BaseGroup, help_options, pass_state
+from quetzal.client.exceptions import UnauthorizedException
 
 
-@click.group(options_metavar='[AUTH OPTIONS]')
+@click.group(options_metavar='[AUTH OPTIONS]', cls=BaseGroup)
 @help_options
 def auth(**kwargs):
     """Authentication operations"""
@@ -24,7 +24,7 @@ def login(state):
     try:
         response = client.auth_api.app_api_auth_get_token()
     except UnauthorizedException:
-        raise click.ClickException('Incorrect user or password')
+        raise click.ClickException('Incorrect username or password')
 
     # Manage success: save the access token
     client.configuration.access_token = response.token

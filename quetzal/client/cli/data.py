@@ -1,7 +1,11 @@
 import click
 
-from quetzal.client.cli import help_options, State
-from quetzal.client.cli.auth import login, logout
+from quetzal.client.cli import (
+    BaseGroup, FamilyVersionListType,
+    help_options, pass_state, State
+)
+from quetzal.client.exceptions import QuetzalAPIException
+
 
 
 @click.group(options_metavar='[DATA OPTIONS]')
@@ -11,28 +15,41 @@ def data(*args, **kwargs):
     pass
 
 
-@data.group(options_metavar='[WORKSPACE OPTIONS]')
+@data.group(options_metavar='[WORKSPACE OPTIONS]', cls=BaseGroup)
 @help_options
 def workspace(*args, **kwargs):
     """Workspace operations"""
     pass
 
-#workspace = click.Group(name='workspace', help='Workspace operations.')
 
-# @click.argument('name')
-# @click.pass_context
-# def workspace(ctx, name):
-#     """Workspace operations"""
-#     print(forkspace {name}')
-    # ctx.forward(login)
-    #
-    # client = ctx.obj['client']
-    # user = ctx.obj['user']
-    # api = DataApi(client)
-    # response = api.app_api_data_workspace_fetch(name=name, owner=user)
-    # if not response.data:
-    #     raise click.ClickException(f'Workspace "{name}" not found')
-    # ctx.obj['workspace'] = response.data[0]
+@workspace.command()
+@click.argument('name')
+@click.option('--description', help='Workspace description.', default='', show_default=True)
+@click.option('--families', '-f', type=FamilyVersionListType(),
+              metavar='name:version,... ',
+              default='base:latest',
+              show_default=True,
+              help='List of family names and version numbers to use in this '
+                   'workspace, separated by commas. Version number can be '
+                   '"latest", which means the most recent version available.')
+@click.option('--wait', is_flag=True, help='Wait until the workspace is initialized.')
+@help_options
+@pass_state
+def create(state, name, description, families, wait):
+    """Create a workspace"""
+    client = state.api_client
+    workspace_create_object = {
+        "name": name,
+        "description": description,
+        "families": {tup[0]:tup[1] for tup in families}
+    }
+    try:
+        response = client.data_api.app_api_data_workspace_create(workspace_create_object)
+    except QuetzalAPIException as ex:
+        raise click.ClickException(f'Failed to create workspace\n{ex}')
+    # if not wait:
+    #     return response
+    print(response)
 
 
 @workspace.command(name='list')

@@ -1,7 +1,9 @@
 import click
 
 import quetzal.client
-from quetzal.client.cli import help_options, pass_state, State
+from quetzal.client.api_client import Client
+from quetzal.client.configuration import Configuration
+from quetzal.client.cli import BaseGroup, help_options, State
 from quetzal.client.cli.auth import auth
 from quetzal.client.cli.data import data
 
@@ -45,10 +47,13 @@ def url_option(f):
             # Set or leave the default configuration value
             state.api_config.host = value or state.api_config.host
 
+    default_value = Configuration().host
     return click.option('--url',
                         envvar='QUETZAL_URL',
+                        default=default_value,
+                        show_default=True,
                         help='Quetzal URL. If not set, uses environment '
-                             'variable QUETZAL_URL.',
+                             'variable QUETZAL_URL if this variable is defined.',
                         callback=callback)(f)
 
 
@@ -100,6 +105,24 @@ def token_option(f):
                         callback=callback)(f)
 
 
+def insecure_option(f):
+
+    def callback(ctx, param, value):
+        if value and not ctx.resilient_parsing:
+            state = ctx.ensure_object(State)
+            state.api_config.verify_ssl = False
+            # Changing the verify_ssl option needs propagation in the client
+            state.api_client = Client(state.api_config)
+            # Mute urllib3 warnings
+            import urllib3
+            urllib3.disable_warnings()
+
+    return click.option('--insecure',
+                        is_flag=True,
+                        help='Do not verify HTTPS certificates.',
+                        callback=callback)(f)
+
+
 def verbose_option(f):
     def callback(ctx, param, value):
         if value and not ctx.resilient_parsing:
@@ -119,19 +142,19 @@ def global_options(f):
     f = token_option(f)
     f = password_option(f)
     f = user_option(f)
+    f = insecure_option(f)
     f = url_option(f)
     return f
 
 
-@click.group(options_metavar='[GLOBAL OPTIONS]')
+@click.group(options_metavar='[GLOBAL OPTIONS]', cls=BaseGroup)
 @global_options
-def cli(**kwargs):
+def cli(*args, **kwargs):
     pass
 
 
 cli.add_command(auth)
 cli.add_command(data)
-
 
 
 if __name__ == '__main__':
