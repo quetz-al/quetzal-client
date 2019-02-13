@@ -3,5 +3,5 @@ six>=1.10
 certifi
 python-dateutil
 click
-PyYAML
 jsonref
+backoff

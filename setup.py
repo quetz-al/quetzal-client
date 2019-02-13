@@ -10,7 +10,7 @@ dependencies = [
     'certifi',
     'python-dateutil',
     'click',
-    'PyYAML',
+    'backoff',
 ]
 setup_requires = dependencies[:]
 #extra_dependencies = []
