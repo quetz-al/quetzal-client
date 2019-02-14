@@ -37,14 +37,12 @@ def login(state):
 @auth.command()
 @help_options
 @pass_state
-@click.pass_context
-def logout(ctx, state):
+def logout(state):
     config = state.api_config
     client = state.api_client
     if not config.access_token:
         if not config.username or not config.password:
             raise click.ClickException('Cannot logout without access_token or credentials')
-        ctx.invoke(login)
 
     client.auth_logout()
     click.secho('Access token revoked: logout successful', fg='green')

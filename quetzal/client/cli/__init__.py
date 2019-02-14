@@ -153,3 +153,28 @@ def help_options(f):
     f = click.help_option(help='Show help message for this command and exit.')(f)
     f = all_help_option(f)
     return f
+
+
+class MutexOption(click.Option):
+    def __init__(self, *args, **kwargs):
+        self.not_required_if = kwargs.pop('not_required_if')
+
+        assert self.not_required_if, '"not_required_if" parameter required'
+        kwargs['help'] = (
+            kwargs.get('help', '') +
+            ' Option is mutually exclusive with ' +
+            ', '.join(self.not_required_if) + '.'
+        ).strip()
+        super().__init__(*args, **kwargs)
+
+    def handle_parse_result(self, ctx, opts, args):
+        current_opt = self.name in opts
+        for mutex_opt in self.not_required_if:
+            if mutex_opt in opts:
+                if current_opt:
+                    raise click.UsageError(f'Illegal usage: {self.name} is '
+                                           f'mutually exclusive with {mutex_opt}.')
+                else:
+                    self.prompt = None
+        return super().handle_parse_result(ctx, opts, args)
+

@@ -3,33 +3,9 @@ import click
 import quetzal.client
 from quetzal.client.api_client import Client
 from quetzal.client.configuration import Configuration
-from quetzal.client.cli import BaseGroup, help_options, State
+from quetzal.client.cli import BaseGroup, help_options, State, MutexOption
 from quetzal.client.cli.auth import auth
 from quetzal.client.cli.data import data
-
-
-class MutexOption(click.Option):
-    def __init__(self, *args, **kwargs):
-        self.not_required_if = kwargs.pop('not_required_if')
-
-        assert self.not_required_if, '"not_required_if" parameter required'
-        kwargs['help'] = (
-            kwargs.get('help', '') +
-            ' Option is mutually exclusive with ' +
-            ', '.join(self.not_required_if) + '.'
-        ).strip()
-        super().__init__(*args, **kwargs)
-
-    def handle_parse_result(self, ctx, opts, args):
-        current_opt = self.name in opts
-        for mutex_opt in self.not_required_if:
-            if mutex_opt in opts:
-                if current_opt:
-                    raise click.UsageError(f'Illegal usage: {self.name} is '
-                                           f'mutually exclusive with {mutex_opt}.')
-                else:
-                    self.prompt = None
-        return super().handle_parse_result(ctx, opts, args)
 
 
 def print_version(ctx, param, value):

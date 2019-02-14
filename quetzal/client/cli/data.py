@@ -1,3 +1,4 @@
+import datetime
 import itertools
 
 import backoff
@@ -5,7 +6,7 @@ import click
 
 from quetzal.client.cli import (
     BaseGroup, FamilyVersionListType,
-    help_options, pass_state
+    help_options, MutexOption, pass_state
 )
 from quetzal.client.exceptions import QuetzalAPIException
 
@@ -76,24 +77,69 @@ def create(state, name, description, families, wait):
 
 
 @workspace.command(name='list')
+@click.option('--name', help='Filter workspaces with this name only.')
+@click.option('--owner', default=None, help='Filter only workspace owned by this user.')
+@click.option('--include-deleted', 'deleted', is_flag=True, show_default=True,
+              help='Include deleted workspaces.')
+@click.option('--limit', type=click.INT, default=10, show_default=True,
+              help='Limit the number of workspaces.')
 @help_options
-@click.pass_context
-def fetch(ctx):
-    # ctx.forward(logout)
-    # client = ctx.obj['client']
-    # api = DataApi(client)
-    # import ipdb; ipdb.set_trace(context=21)
-    #
-    # print(f'{"id":>6} {"status":>10} {"name":>20} {"families":>20} {"data_url":>32} {"owner":>12}'.upper())
-    # try:
-    #     response = api.app_api_data_workspace_fetch()
-    #     for w in response.data:
-    #         families = ', '.join(f'{k}:{v}' for k, v in sorted(w.families.items()))
-    #         print(f'{w.id:>6} {w.status:>10} {w.name:>20} {families:>20} {w.data_url:>32} {w.owner:>12}')
-    #
-    # except ApiException as ex:
-    #     print(ex)
-    pass
+@pass_state
+def fetch(state, name, owner, deleted, limit):
+    """List workspaces"""
+    client = state.api_client
+
+    kwargs = dict(per_page=10)
+    if name:
+        kwargs['name'] = name
+    if owner:
+        kwargs['owner'] = owner
+    if deleted:
+        kwargs['deleted'] = True
+
+    fetch_result = client.data_workspace_fetch(**kwargs)
+    results = [w.to_dict() for w in fetch_result.data]
+    while len(results) < limit and len(results) < fetch_result.total:
+        kwargs['page'] = kwargs.get('page', 1) + 1
+        fetch_result = client.data_workspace_fetch(**kwargs)
+        results.extend([w.to_dict() for w in fetch_result.data])
+
+    columns = {
+        'id': {'head': 'ID', 'width': 19, 'align': '^'},
+        'name': {'head': 'NAME', 'width': 64, 'align': '^'},
+        'status': {'head': 'STATUS', 'width': 11, 'align': '^'},
+        'owner': {'head': 'OWNER', 'width': 64, 'align': '^'},
+        'description': {'head': 'DESCRIPTION', 'width': 32, 'align': '>'},
+        'creation_date': {'head': 'CREATED AT', 'width': 19, 'align': '^'},
+        'data_url': {'head': 'DATA_URL', 'width': 64, 'align': '>'}
+    }
+
+    max_width = dict()
+
+    for row in results:
+        for k in row:
+            if isinstance(row[k], datetime.datetime):
+                str_k = row[k].strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                str_k = str(row[k])
+            max_k = columns.get(k, {}).get('width', 100)
+            row[k] = _trim_string(str_k, max_k)
+            max_width[k] = max(max_width.get(k, 0), len(str_k))
+
+    row_format = '    '.join(
+        '{' + ('{name}:{align}{max_width}'.format(name=c, max_width=min(max_width[c], columns[c]['width']), **columns[c])) + '}'
+        for c in columns)
+
+    term_width, _ = click.get_terminal_size()
+    header = {k:columns[k]['head'] for k in columns}
+    head_line = _trim_string(row_format.format(**header), term_width)
+    click.secho(head_line, fg='blue')
+
+    for row in results:
+        row_line = _trim_string(row_format.format(**row), term_width)
+        click.echo(row_line)
+
+    click.secho(f'\nShowed {len(results)} out of {fetch_result.total} workspaces', fg='green')
 
 
 @workspace.command()
@@ -124,12 +170,14 @@ def upload():
 
 
 @workspace.command()
-@click.argument('name')
+@click.option('--name', cls=MutexOption, not_required_if=['wid'])
+@click.option('--id', 'wid',type=click.INT, cls=MutexOption, not_required_if=['name'],
+              help='Identifier of the workspace to delete')
 @click.confirmation_option(prompt='This will delete the workspace. Are you sure?')
 @click.option('--wait', is_flag=True, help='Wait until the workspace is initialized.')
 @help_options
 @pass_state
-def delete(state, name, wait):
+def delete(state, name, wid, wait):
     """Delete a workspace"""
     client = state.api_client
     username = state.api_config.username
@@ -138,11 +186,13 @@ def delete(state, name, wait):
 
     # Get the workspace details
     try:
-        response = client.data_workspace_fetch(owner=username, name=name)
-        w_details = response.data[0]
+        if name:
+            response = client.data_workspace_fetch(owner=username, name=name)
+            w_details = response.data[0]
+        else:
+            w_details = client.data_workspace_details(wid)
     except QuetzalAPIException as ex:
         raise click.ClickException(f'Failed to retrieve workspace:\n{ex}')
-
 
     # Delete it
     try:
@@ -153,9 +203,11 @@ def delete(state, name, wait):
     if wait:
         w_details = wait_for_workspace(w_details, client,
                                        lambda w: w.status == 'DELETING')
+        click.secho(f'\nWorkspace [{w_details.name}] deleted successfully!', fg='green')
+        _print_details(w_details)
 
-    click.secho('\nWorkspace deleted successfully!', fg='green')
-    _print_details(w_details)
+    else:
+        click.secho(f'\nWorkspace [{w_details.name}] was marked for deletion.', fg='green')
 
     return w_details
 
@@ -167,3 +219,9 @@ def _print_details(w):
         click.secho(str(w.to_dict()[field]))
     click.secho('  families:', fg='blue')
     click.secho('\n'.join(f'    {k}: {v}' for k, v in w.families.items()))
+
+
+def _trim_string(string, width):
+    if len(string) > width:
+        return string[:width-3] + '...'
+    return string
