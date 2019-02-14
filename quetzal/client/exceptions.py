@@ -1,5 +1,6 @@
 import json
 import textwrap
+import warnings
 
 from requests import codes
 
@@ -15,7 +16,13 @@ class QuetzalAPIException(Exception):
     @staticmethod
     def from_api_exception(api_exception, authorize_ok=False):
         if not hasattr(api_exception, 'body') or not api_exception.body:
-            return QuetzalAPIException(-1, 'unknown', '')
+            if api_exception.status == codes.precondition_failed:
+                warnings.warn('Due to werkzeug issue #1231, we will not receive'
+                              ' the problem details when a code 412 occurs',
+                              RuntimeWarning, stacklevel=2)
+            return QuetzalAPIException(api_exception.status,
+                                       api_exception.reason,
+                                       'No details available')
         try:
             body = json.loads(api_exception.body)
             status = body.get('status', -1)
