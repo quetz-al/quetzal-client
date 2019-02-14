@@ -6,3 +6,4 @@ click
 jsonref
 backoff
 requests
+pyreadline>=2.1; sys_platform=='win32'

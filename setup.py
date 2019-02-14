@@ -1,3 +1,4 @@
+import sys
 from setuptools import setup, find_packages
 
 import versioneer
@@ -13,8 +14,12 @@ dependencies = [
     'backoff',
     'requests',
 ]
+
+if sys.platform == 'win32':
+    dependencies.append('pyreadline')
+
 setup_requires = dependencies[:]
-#extra_dependencies = []
+# extra_dependencies = []
 
 setup_args = dict(
     name='quetzal-client',
@@ -31,9 +36,9 @@ setup_args = dict(
     packages=find_packages(exclude=['docs', 'tests', 'test']),
     install_requires=dependencies,
     setup_requires=setup_requires,
-    #build_requires=setup_requires,
+    # build_requires=setup_requires,
     tests_require=['pytest', ],
-    #extras_require=extra_dependencies,
+    # extras_require=extra_dependencies,
     zip_safe=False,
     include_package_data=True,
     entry_points={
@@ -41,7 +46,7 @@ setup_args = dict(
             'quetzal-client = quetzal.client.cli.main:cli',
         ],
     },
-    #dependency_links=dependency_links,
+    # dependency_links=dependency_links,
 )
 
 setup(**setup_args)
