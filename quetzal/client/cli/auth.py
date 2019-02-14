@@ -22,7 +22,7 @@ def login(state):
     if not config.username:
         raise click.ClickException('Cannot login without username credentials')
     try:
-        response = client.auth_api.app_api_auth_get_token()
+        response = client.auth_get_token()
     except UnauthorizedException:
         raise click.ClickException('Incorrect username or password')
 
@@ -46,5 +46,5 @@ def logout(ctx, state):
             raise click.ClickException('Cannot logout without access_token or credentials')
         ctx.invoke(login)
 
-    client.auth_api.app_api_auth_logout()
+    client.auth_logout()
     click.secho('Access token revoked: logout successful', fg='green')
