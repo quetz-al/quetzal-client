@@ -178,3 +178,36 @@ class MutexOption(click.Option):
                     self.prompt = None
         return super().handle_parse_result(ctx, opts, args)
 
+
+class OneRequiredOption(click.Option):
+    """Like MutexOption, but needs exactly one of the required options"""
+
+    def __init__(self, *args, **kwargs):
+        self.one_of_with = kwargs.pop('one_of_with')
+
+        assert self.one_of_with, '"one_of_with" parameter required'
+        kwargs['help'] = (
+                kwargs.get('help', '') +
+                ' Option is mutually exclusive with ' +
+                ', '.join(self.one_of_with) + ', but at most ' +
+                'one of these options is required.'
+        ).strip()
+        super().__init__(*args, **kwargs)
+
+    def handle_parse_result(self, ctx, opts, args):
+        current_opt = self.name in opts
+        num_present = current_opt + sum(other in opts for other in self.one_of_with)
+        if num_present == 0:
+            raise click.UsageError('Illegal usage: one of the options ' +
+                                   ", ".join([self.name] + self.one_of_with) +
+                                   ' is required.')
+
+        # Keep this loop like MutexOption to identify which other parameter is in conflict with this one
+        for mutex_opt in self.one_of_with:
+            if mutex_opt in opts:
+                if current_opt:
+                    raise click.UsageError(f'Illegal usage: {self.name} is '
+                                           f'mutually exclusive with {mutex_opt}.')
+                else:
+                    self.prompt = None
+        return super().handle_parse_result(ctx, opts, args)
