@@ -1,8 +1,6 @@
-import getpass
-
 import click
 
-from quetzal.client.cli import BaseGroup, help_options, pass_state
+from quetzal.client.cli import BaseGroup, help_options, pass_state, error_wrapper
 from quetzal.client.exceptions import UnauthorizedException
 
 
@@ -14,6 +12,7 @@ def auth(**kwargs):
 
 
 @auth.command()
+@error_wrapper
 @help_options
 @pass_state
 def login(state):
@@ -35,6 +34,7 @@ def login(state):
 
 
 @auth.command()
+@error_wrapper
 @help_options
 @pass_state
 def logout(state):

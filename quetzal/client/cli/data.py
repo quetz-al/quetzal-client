@@ -56,6 +56,7 @@ def workspace(*args, **kwargs):
 
 
 @workspace.command()
+@error_wrapper
 @click.argument('name')
 @click.option('--description', help='Workspace description.', default='', show_default=True)
 @click.option('--families', '-f', type=FamilyVersionListType(),
@@ -76,10 +77,7 @@ def create(state, name, description, families, wait):
         "description": description,
         "families": {tup[0]:tup[1] for tup in families}
     }
-    try:
-        w_details = client.data_workspace_create(workspace_create_object)
-    except QuetzalAPIException as ex:
-        raise click.ClickException(f'Failed to create workspace\n{ex}')
+    w_details = client.data_workspace_create(workspace_create_object)
 
     if wait:
         w_details = _wait_for_workspace(w_details, client,
@@ -92,6 +90,7 @@ def create(state, name, description, families, wait):
 
 
 @workspace.command(name='list')
+@error_wrapper
 @click.option('--name', help='Filter workspaces with this name only.')
 @click.option('--owner', default=None, help='Filter only workspace owned by this user.')
 @click.option('--include-deleted', 'deleted', is_flag=True, show_default=True,
@@ -100,7 +99,7 @@ def create(state, name, description, families, wait):
               help='Limit the number of workspaces.')
 @help_options
 @pass_state
-def fetch(state, name, owner, deleted, limit):
+def list_(state, name, owner, deleted, limit):
     """List workspaces"""
     client = state.api_client
 
@@ -129,39 +128,7 @@ def fetch(state, name, owner, deleted, limit):
         'data_url': {'head': 'DATA_URL', 'width': 64, 'align': '>'},
         'families': {'head': 'FAMILIES', 'width': 64, 'align': '>'}
     }
-
-    max_width = {k: len(k) for k in columns}
-
-    for row in results:
-        for k in row:
-            if k not in columns:
-                continue
-            if isinstance(row[k], datetime.datetime):
-                str_k = row[k].strftime('%Y-%m-%d %H:%M:%S')
-            elif isinstance(row[k], dict):
-                str_k = ', '.join(f'{k}:{v}' for k, v in row[k].items())
-            else:
-                str_k = str(row[k])
-            str_k = str_k or 'empty'
-            max_k = columns.get(k, {}).get('width', 100)
-            row[k] = _trim_string(str_k, max_k)
-
-            max_width[k] = max(max_width[k], len(str_k))
-
-    row_format = '    '.join(
-        '{' + ('{name}:{align}{max_width}'.format(name=c, max_width=min(max_width[c], columns[c]['width']), **columns[c])) + '}'
-        for c in columns)
-
-    term_width, _ = click.get_terminal_size()
-    header = {k: columns[k]['head'] for k in columns}
-    head_line = _trim_string(row_format.format(**header), term_width)
-    click.secho(head_line, fg='blue')
-
-    for row in results:
-        row_line = _trim_string(row_format.format(**row), term_width)
-        click.echo(row_line)
-
-    click.secho(f'\nShowing {len(results)} out of {fetch_result.total} workspaces', fg='green')
+    _print_table(results, columns, fetch_result.total)
 
 
 @workspace.command()
@@ -172,24 +139,19 @@ def details(state, name, id):
     """Show workspace details"""
 
     client = state.api_client
-    username = state.api_config.username
-    if not username:
-        raise click.ClickException('Cannot delete workspace without an username')
-
     # Get the workspace details
-    try:
-        if name:
-            response = client.data_workspace_fetch(owner=username, name=name)
-            w_details = response.data[0]
-        else:
-            w_details = client.data_workspace_details(id)
-    except QuetzalAPIException as ex:
-        raise click.ClickException(f'Failed to retrieve workspace:\n{ex}')
+    if name:
+        username = state.api_config.username
+        response = client.data_workspace_fetch(owner=username, name=name)
+        w_details = response.data[0]
+    else:
+        w_details = client.data_workspace_details(id)
 
     _print_details(w_details)
 
 
 @workspace.command()
+@error_wrapper
 @workspace_identifier_options
 @click.confirmation_option(prompt='This will commit the workspace. Are you sure?')
 @click.option('--wait', is_flag=True, help='Wait until the workspace is ready.')
@@ -200,8 +162,6 @@ def commit(state, name, id, wait):
 
     client = state.api_client
     username = state.api_config.username
-    if not username:
-        raise click.ClickException('Cannot delete workspace without an username')
 
     # Get the workspace details
     try:
@@ -232,6 +192,7 @@ def commit(state, name, id, wait):
 
 
 @workspace.command()
+@error_wrapper
 @workspace_identifier_options
 @click.confirmation_option(prompt='This will update the workspace views. Are you sure?')
 @click.option('--wait', is_flag=True, help='Wait until the workspace is ready.')
@@ -241,25 +202,16 @@ def scan(state, name, id, wait):
     """Scan a workspace"""
 
     client = state.api_client
-    username = state.api_config.username
-    if not username:
-        raise click.ClickException('Cannot delete workspace without an username')
-
     # Get the workspace details
-    try:
-        if name:
-            response = client.data_workspace_fetch(owner=username, name=name)
-            w_details = response.data[0]
-        else:
-            w_details = client.data_workspace_details(id)
-    except QuetzalAPIException as ex:
-        raise click.ClickException(f'Failed to retrieve workspace:\n{ex}')
+    if name:
+        username = state.api_config.username
+        response = client.data_workspace_fetch(owner=username, name=name)
+        w_details = response.data[0]
+    else:
+        w_details = client.data_workspace_details(id)
 
     # Do the scan
-    try:
-        client.data_workspace_scan(w_details.id)
-    except QuetzalAPIException as ex:
-        raise click.ClickException(f'Failed to scan workspace:\n{ex}')
+    client.data_workspace_scan(w_details.id)
 
     if wait:
         w_details = _wait_for_workspace(w_details, client,
@@ -274,6 +226,7 @@ def scan(state, name, id, wait):
 
 
 @workspace.command()
+@error_wrapper
 @workspace_identifier_options
 @click.option('--query', type=click.File('r'), help='Input query file',
               default=sys.stdin)
@@ -305,6 +258,42 @@ def query(state, name, id, query, dialect, limit, output):
 
 
 @workspace.command()
+@error_wrapper
+@workspace_identifier_options
+@click.option('--limit', type=click.INT, default=10, show_default=True)
+@help_options
+@pass_state
+def files(state, name, id, limit):
+    """List files on a workspace"""
+    client = state.api_client
+    # Get the workspace details
+    if name:
+        username = state.api_config.username
+        response = client.data_workspace_fetch(owner=username, name=name)
+        w_details = response.data[0]
+    else:
+        w_details = client.data_workspace_details(id)
+
+    kwargs = dict(per_page=min(limit, 100))
+
+    fetch_result = client.data_file_fetch(w_details.id, **kwargs)
+    results = fetch_result.data
+    while len(results) < limit and len(results) < fetch_result.total:
+        kwargs['page'] = kwargs.get('page', 1) + 1
+        fetch_result = client.data_file_fetch(w_details.id, **kwargs)
+        results.extend(fetch_result.data)
+
+    columns = {
+        'id': {'head': 'ID', 'width': 36, 'align': '^'},
+        'path': {'head': 'PATH', 'width': 32, 'align': '>'},
+        'filename': {'head': 'FILENAME', 'width': 32, 'align': '>'},
+        'size': {'head': 'SIZE', 'width': 50, 'align': '>'},
+    }
+    _print_table(results, columns, fetch_result.total)
+
+
+@workspace.command()
+@error_wrapper
 @workspace_identifier_options
 @click.confirmation_option(prompt='This will delete the workspace. Are you sure?')
 @click.option('--wait', is_flag=True, help='Wait until the workspace is deleted.')
@@ -314,25 +303,16 @@ def delete(state, name, id, wait):
     """Delete a workspace"""
 
     client = state.api_client
-    username = state.api_config.username
-    if not username:
-        raise click.ClickException('Cannot delete workspace without an username.')
-
     # Get the workspace details
-    try:
-        if name:
-            response = client.data_workspace_fetch(owner=username, name=name)
-            w_details = response.data[0]
-        else:
-            w_details = client.data_workspace_details(id)
-    except QuetzalAPIException as ex:
-        raise click.ClickException(f'Failed to retrieve workspace:\n{ex}')
+    if name:
+        username = state.api_config.username
+        response = client.data_workspace_fetch(owner=username, name=name)
+        w_details = response.data[0]
+    else:
+        w_details = client.data_workspace_details(id)
 
     # Delete it
-    try:
-        client.data_workspace_delete(w_details.id)
-    except QuetzalAPIException as ex:
-        raise click.ClickException(f'Failed to delete workspace:\n{ex}')
+    client.data_workspace_delete(w_details.id)
 
     if wait:
         w_details = _wait_for_workspace(w_details, client,
@@ -374,3 +354,38 @@ def _wait_for_workspace(w, client, func):
         return w_details
 
     return poll()
+
+
+def _print_table(results, schema, total):
+    max_width = {k: len(k) for k in schema}
+
+    for row in results:
+        for k in row:
+            if k not in schema:
+                continue
+            if isinstance(row[k], datetime.datetime):
+                str_k = row[k].strftime('%Y-%m-%d %H:%M:%S')
+            elif isinstance(row[k], dict):
+                str_k = ', '.join(f'{k}:{v}' for k, v in row[k].items())
+            else:
+                str_k = str(row[k])
+            #str_k = str_k or 'empty'
+            max_k = schema.get(k, {}).get('width', 100)
+            row[k] = _trim_string(str_k, max_k)
+
+            max_width[k] = max(max_width[k], len(str_k))
+
+    row_format = '    '.join(
+        '{' + ('{name}:{align}{max_width}'.format(name=c, max_width=min(max_width[c], schema[c]['width']), **schema[c])) + '}'
+        for c in schema)
+
+    term_width, _ = click.get_terminal_size()
+    header = {k: schema[k]['head'] for k in schema}
+    head_line = _trim_string(row_format.format(**header), term_width)
+    click.secho(head_line, fg='blue')
+
+    for row in results:
+        row_line = _trim_string(row_format.format(**row), term_width)
+        click.echo(row_line)
+
+    click.secho(f'\nShowing {len(results)} out of {total} results.', fg='green')

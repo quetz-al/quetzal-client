@@ -1,5 +1,4 @@
-from collections import namedtuple
-from contextlib import contextmanager
+import functools
 
 import click
 
@@ -11,6 +10,7 @@ class State(object):
     def __init__(self):
         self.api_config = Configuration()
         self.api_client = Client(self.api_config)
+        self.verbose_level = 0
 
 
 # Decorator to obtain the state directly. Use with @pass_state
@@ -152,6 +152,23 @@ def help_options(f):
     f = click.help_option(help='Show help message for this command and exit.')(f)
     f = all_help_option(f)
     return f
+
+
+def error_wrapper(f):
+    """Decorator to gracely catch errors, show a messsage and exit."""
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except click.ClickException:
+            # Don't show the message, let click handle it
+            raise
+        except Exception as ex:
+            ctx = click.get_current_context()
+            click.secho(f'Operation failed: {ex}.', fg='red')
+            ctx.exit(code=-1)
+
+    return wrapper
 
 
 class MutexOption(click.Option):

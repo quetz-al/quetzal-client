@@ -1,8 +1,10 @@
 import functools
 import logging
 import textwrap
+import warnings
 
 import backoff
+import urllib3
 from requests import codes
 
 from quetzal._auto_client.api_client import ApiClient
@@ -127,6 +129,12 @@ class Client(ApiClient, metaclass=MetaClient):
         except ApiException as api_ex:
             may_retry_to_authorize = (resource_path != '/auth/token')
             raise QuetzalAPIException.from_api_exception(api_ex, authorize_ok=may_retry_to_authorize) from api_ex
+        except urllib3.exceptions.MaxRetryError as ex:
+            if isinstance(ex.reason, urllib3.exceptions.SSLError):
+                warnings.warn('Got SSLError when calling the API. Set the '
+                              'insecure option if you are using a local '
+                              'https server', UserWarning)
+            raise
 
     @property
     def can_login(self):
