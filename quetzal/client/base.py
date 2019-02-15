@@ -1,6 +1,8 @@
 import functools
 import logging
+import re
 import textwrap
+import urllib.parse
 import warnings
 
 import backoff
@@ -8,6 +10,7 @@ import urllib3
 from requests import codes
 
 from quetzal._auto_client.api_client import ApiClient
+from quetzal._auto_client.rest import RESTClientObject
 from quetzal._auto_client.api import AuthenticationApi, DataApi
 from quetzal._auto_client.rest import ApiException
 from quetzal.client.exceptions import QuetzalAPIException, RetryableException
@@ -107,6 +110,8 @@ class Client(ApiClient, metaclass=MetaClient):
         super().__init__(*args, **kwargs)
         self._auth_api = AuthenticationApi(self)
         self._data_api = DataApi(self)
+        self.default_headers['Cache-Control'] = 'no-cache'
+        self.rest_client = CustomRestClient(self.configuration)
 
     @property
     def auth_api(self):
@@ -145,3 +150,46 @@ class Client(ApiClient, metaclass=MetaClient):
             return
         response = self.auth_get_token()
         self.configuration.access_token = response.token
+
+
+class CustomRestClient(RESTClientObject):
+
+    def __init__(self, configuration, pools_size=4, maxsize=None):
+        super().__init__(configuration, pools_size, maxsize)
+
+        # override https pool manager
+        if configuration.proxy:
+            self.pool_manager = CustomProxyManager(
+                num_pools=pools_size,
+                **self.pool_manager.connection_pool_kw
+            )
+        else:
+            self.pool_manager = CustomPoolManager(
+                num_pools=pools_size,
+                **self.pool_manager.connection_pool_kw
+            )
+
+
+class CustomPoolManager(urllib3.PoolManager):
+
+    def urlopen(self, method, url, redirect=True, **kw):
+        kw = _patch_urlopen_keywords(method, url, redirect, kw)
+        return super().urlopen(method, url, redirect, **kw)
+
+
+class CustomProxyManager(urllib3.ProxyManager):
+
+    def urlopen(self, method, url, redirect=True, **kw):
+        kw = _patch_urlopen_keywords(method, url, redirect, kw)
+        return super().urlopen(method, url, redirect, **kw)
+
+
+def _patch_urlopen_keywords(method, url, redirect, kw):
+    path = urllib.parse.urlparse(url).path
+    if method == 'POST' and re.match('^/api/v1/data/workspaces/[0-9]*/queries/?$', path):
+        retries = kw.get('retries')
+        if not isinstance(retries, urllib3.util.retry.Retry):
+            retries = urllib3.util.retry.Retry.from_int(retries, redirect=redirect)
+        retries.remove_headers_on_redirect = ()
+        kw['retries'] = retries
+    return kw

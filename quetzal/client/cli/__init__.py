@@ -1,4 +1,5 @@
 import functools
+import traceback
 
 import click
 
@@ -165,7 +166,11 @@ def error_wrapper(f):
             raise
         except Exception as ex:
             ctx = click.get_current_context()
-            click.secho(f'Operation failed: {ex}.', fg='red')
+            click.secho(f'Operation failed: {type(ex).__name__}: {ex}.', fg='red')
+            state = ctx.ensure_object(State)
+            if state.verbose_level > 0:
+                click.echo(ex)
+                traceback.print_exc()
             ctx.exit(code=-1)
 
     return wrapper

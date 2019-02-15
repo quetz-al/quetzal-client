@@ -240,6 +240,14 @@ def scan(state, name, id, wait):
 @pass_state
 def query(state, name, id, query, dialect, limit, output):
     """Query a workspace"""
+    client = state.api_client
+    # Get the workspace details
+    if name:
+        username = state.api_config.username
+        response = client.data_workspace_fetch(owner=username, name=name)
+        w_details = response.data[0]
+    else:
+        w_details = client.data_workspace_details(id)
 
     if query.isatty():
         console = HistoryConsole()
@@ -254,7 +262,13 @@ def query(state, name, id, query, dialect, limit, output):
     else:
         query_contents = query.read()
 
-    print('Query:', query_contents)
+    query_obj = {
+        'dialect': dialect,
+        'query': query_contents,
+    }
+
+    result = client.data_query_create(w_details.id, query_obj)
+    print(result)
 
 
 @workspace.command()
