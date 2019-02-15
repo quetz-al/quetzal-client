@@ -123,12 +123,24 @@ class Client(ApiClient, metaclass=MetaClient):
 
     @_auth_retry_decorator
     def call_api(self, *args, **kwargs):
+        # Patch for query create. The openapi-generator incorrectly assumes that
+        # its response type is an ProblemType
+        resource_path = args[0] if args else None
+        method = args[1] if args else None
+        if resource_path == '/data/workspaces/{wid}/queries/' and method == 'POST':
+            kwargs['response_type'] = 'Query'
+
+        # Patch in to login with basic authentication before trying a
+        # bearer-protected endpoint
         auth_settings = kwargs.get('auth_settings', None)
         if auth_settings == ['bearer'] and not self.configuration.access_token:
             logger.debug('Trying to access an endpoint with bearer authentication, '
                          'but there is no saved access_token. Logging in...')
             self.login()
-        resource_path = args[0] if args else None
+
+        # Call the api, but check for 401 errors that may be retried with the
+        # correct authentication; that is, by doing a login again because the
+        # token may be outdated
         try:
             return super().call_api(*args, **kwargs)
         except ApiException as api_ex:
