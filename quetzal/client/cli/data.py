@@ -300,7 +300,7 @@ def query(state, name, id, query_file, dialect, limit, all, output, output_forma
     if len(results) > limit:
         results = results[:limit]
 
-    kwargs = dict(per_page=min(limit, 100))
+    kwargs = dict(per_page=len(results))  # See reason above
     while len(results) < limit and len(results) < query_details.results.total:
         kwargs['page'] = kwargs.get('page', 1) + 1
         query_details = client.data_query_details(w_details.id, query_details.id, **kwargs)
@@ -355,6 +355,28 @@ def files(state, name, id, limit):
         'size': {'head': 'SIZE', 'width': 50, 'align': '>'},
     }
     _print_table(results, columns, fetch_result.total)
+
+
+@workspace.command()
+@error_wrapper
+@workspace_identifier_options
+@click.option('--file', '-f', type=click.File(mode='rb'), required=True,
+              help='File to upload.')
+@help_options
+@pass_state
+def upload(state, name, id, file):
+    """Upload a file to a workspace."""
+    client = state.api_client
+    # Get the workspace details
+    if name:
+        username = state.api_config.username
+        response = client.data_workspace_fetch(owner=username, name=name)
+        w_details = response.data[0]
+    else:
+        w_details = client.data_workspace_details(id)
+
+    file_details = client.data_file_create(w_details.id, file_content=file.name)
+    click.secho(f'File {file.name} uploaded successfully. Its id is {file_details["id"]}.')
 
 
 @workspace.command()
