@@ -1,2 +1,4 @@
 include versioneer.py
 include quetzal/client/_version.py
+include scripts/completion.zsh.inc
+include scripts/completion.bash.inc

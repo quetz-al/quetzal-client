@@ -167,14 +167,15 @@ class MutexOption(click.Option):
         super().__init__(*args, **kwargs)
 
     def handle_parse_result(self, ctx, opts, args):
-        current_opt = self.name in opts
-        for mutex_opt in self.not_required_if:
-            if mutex_opt in opts:
-                if current_opt:
-                    raise click.UsageError(f'Illegal usage: {self.name} is '
-                                           f'mutually exclusive with {mutex_opt}.')
-                else:
-                    self.prompt = None
+        if not ctx.resilient_parsing:
+            current_opt = self.name in opts
+            for mutex_opt in self.not_required_if:
+                if mutex_opt in opts:
+                    if current_opt:
+                        raise click.UsageError(f'Illegal usage: {self.name} is '
+                                               f'mutually exclusive with {mutex_opt}.')
+                    else:
+                        self.prompt = None
         return super().handle_parse_result(ctx, opts, args)
 
 
@@ -194,19 +195,20 @@ class OneRequiredOption(click.Option):
         super().__init__(*args, **kwargs)
 
     def handle_parse_result(self, ctx, opts, args):
-        current_opt = self.name in opts
-        num_present = current_opt + sum(other in opts for other in self.one_of_with)
-        if num_present == 0:
-            raise click.UsageError('Illegal usage: one of the options ' +
-                                   ", ".join([self.name] + self.one_of_with) +
-                                   ' is required.')
+        if not ctx.resilient_parsing:
+            current_opt = self.name in opts
+            num_present = current_opt + sum(other in opts for other in self.one_of_with)
+            if num_present == 0:
+                raise click.UsageError('Illegal usage: one of the options ' +
+                                       ", ".join([self.name] + self.one_of_with) +
+                                       ' is required.')
 
-        # Keep this loop like MutexOption to identify which other parameter is in conflict with this one
-        for mutex_opt in self.one_of_with:
-            if mutex_opt in opts:
-                if current_opt:
-                    raise click.UsageError(f'Illegal usage: {self.name} is '
-                                           f'mutually exclusive with {mutex_opt}.')
-                else:
-                    self.prompt = None
+            # Keep this loop like MutexOption to identify which other parameter is in conflict with this one
+            for mutex_opt in self.one_of_with:
+                if mutex_opt in opts:
+                    if current_opt:
+                        raise click.UsageError(f'Illegal usage: {self.name} is '
+                                               f'mutually exclusive with {mutex_opt}.')
+                    else:
+                        self.prompt = None
         return super().handle_parse_result(ctx, opts, args)

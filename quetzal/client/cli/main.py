@@ -103,8 +103,11 @@ def verbose_option(f):
         if value and not ctx.resilient_parsing:
             state = ctx.ensure_object(State)
             state.api_config.debug = (value > 1)
+            state.verbose_level = value
 
-    return click.option('-v', '--verbose', count=True, help='Verbosity level.',
+    return click.option('-v', '--verbose', count=True,
+                        help='Verbosity level. Use -v for verbose, '
+                             '-vv for even more verbosity',
                         expose_value=False,
                         callback=callback)(f)
 

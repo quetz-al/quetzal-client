@@ -6,16 +6,28 @@ import backoff
 import click
 
 from quetzal.client.cli import (
-    BaseGroup, FamilyVersionListType,
-    help_options, OneRequiredOption, pass_state
+    BaseGroup, error_wrapper, FamilyVersionListType,
+    help_options, OneRequiredOption, pass_state, State
 )
 from quetzal.client.exceptions import QuetzalAPIException
 from quetzal.client.utils import HistoryConsole
 
 
 def name_option(f):
+    def callback(ctx, param, value):
+        if value and not ctx.resilient_parsing:
+            state = ctx.ensure_object(State)
+            if not state.api_config.username:
+                raise click.BadOptionUsage(
+                    param,
+                    'Using --name to refer to a workspace requires a '
+                    'the --username options to be set because the workspace '
+                    'is uniquely identified by the name and username.',
+                    ctx=ctx)
+            return value
+
     return click.option('--name', cls=OneRequiredOption, one_of_with=['id'],
-                        help='Workspace name.')(f)
+                        callback=callback, help='Workspace name.')(f)
 
 
 def id_option(f):
