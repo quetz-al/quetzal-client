@@ -239,7 +239,7 @@ def scan(state, name, id, wait):
             response = client.data_workspace_fetch(owner=username, name=name)
             w_details = response.data[0]
         else:
-            w_details = client.data_workspace_details(wid)
+            w_details = client.data_workspace_details(id)
     except QuetzalAPIException as ex:
         raise click.ClickException(f'Failed to retrieve workspace:\n{ex}')
 
