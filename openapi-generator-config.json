@@ -1,6 +1,5 @@
 {
-    "packageName": "quetzal.client.autogen",
-    "___projectName": "quetzal-client",
+    "packageName": "quetzal._auto_client",
     "packageVersion": "0.0.0",
     "generateSourceCodeOnly": true,
     "library": "urllib3"

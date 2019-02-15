@@ -13,6 +13,7 @@ dependencies = [
     'click',
     'backoff',
     'requests',
+    'appdirs',
 ]
 
 if sys.platform == 'win32':

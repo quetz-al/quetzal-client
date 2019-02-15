@@ -3,8 +3,7 @@ from contextlib import contextmanager
 
 import click
 
-from quetzal.client.api_client import Client
-from quetzal.client.configuration import Configuration
+from quetzal.client import Client,Configuration
 
 
 class State(object):

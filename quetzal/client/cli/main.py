@@ -1,8 +1,7 @@
 import click
 
-import quetzal.client
-from quetzal.client.api_client import Client
-from quetzal.client.configuration import Configuration
+
+from quetzal.client import Client, Configuration
 from quetzal.client.cli import BaseGroup, help_options, State, MutexOption
 from quetzal.client.cli.auth import auth
 from quetzal.client.cli.data import data
@@ -111,6 +110,7 @@ def verbose_option(f):
 
 
 def global_options(f):
+    import quetzal.client
     # Note that options need to be chained in reversed order
     f = click.version_option(version=quetzal.client.__version__)(f)
     f = help_options(f)

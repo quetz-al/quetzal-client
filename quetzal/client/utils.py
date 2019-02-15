@@ -4,7 +4,7 @@ import logging
 import pathlib
 import warnings
 
-from .configuration import get_config_dir
+from .config import get_config_dir
 
 
 logger = logging.getLogger(__name__)
