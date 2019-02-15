@@ -1,13 +1,16 @@
 import datetime
 import itertools
+import json
+import pathlib
 import sys
 
 import backoff
 import click
+import yaml
 
 from quetzal.client.cli import (
     BaseGroup, error_wrapper, FamilyVersionListType,
-    help_options, OneRequiredOption, pass_state, State
+    help_options, MutexOption, OneRequiredOption, pass_state, State
 )
 from quetzal.client.exceptions import QuetzalAPIException
 from quetzal.client.utils import HistoryConsole
@@ -228,18 +231,34 @@ def scan(state, name, id, wait):
 @workspace.command()
 @error_wrapper
 @workspace_identifier_options
-@click.option('--query', type=click.File('r'), help='Input query file',
-              default=sys.stdin)
+@click.option('--query', 'query_file', type=click.File('r'),
+              help='Input query file', default=sys.stdin)
 @click.option('--dialect', default='postgresql', show_default=True,
               help='Dialect of query')
 @click.option('--limit', type=click.INT, default=10, show_default=True,
-              help='Limit the number of workspaces.')
+              cls=MutexOption, not_required_if=['all'],
+              help='Limit the number of results.')
+@click.option('--all', is_flag=True, cls=MutexOption, not_required_if=['limit'],
+              help='Get all results.')
 @click.option('--output', '-o', type=click.File('w'),
               help='File where query results will be saved.')
+@click.option('--format', 'output_format',
+              type=click.Choice(['csv', 'json', 'yaml']),
+              help='Output file format, if not set, it is guessed from the extension.')
 @help_options
 @pass_state
-def query(state, name, id, query, dialect, limit, output):
+def query(state, name, id, query_file, dialect, limit, all, output, output_format):
     """Query a workspace"""
+
+    if output_format is None:
+        if hasattr(output, 'name'):
+            output_filename = pathlib.Path(output.name)
+            ext = output_filename.suffix[1:]
+            if ext not in ('csv', 'json', 'yaml'):
+                raise click.BadParameter(f'No format provided: "{ext}" is not supported. '
+                                         f'Set the format with --format')
+            output_format = ext
+
     client = state.api_client
     # Get the workspace details
     if name:
@@ -249,7 +268,7 @@ def query(state, name, id, query, dialect, limit, output):
     else:
         w_details = client.data_workspace_details(id)
 
-    if query.isatty():
+    if query_file.isatty():
         console = HistoryConsole()
         lines_read = []
         line = True
@@ -260,21 +279,53 @@ def query(state, name, id, query, dialect, limit, output):
             lines_read.append(line)
         query_contents = '\n'.join(lines_read)
     else:
-        query_contents = query.read()
+        query_contents = query_file.read()
 
     query_obj = {
         'dialect': dialect,
         'query': query_contents,
     }
 
-    result = client.data_query_create(w_details.id, query_obj)
-    print(result)
+    query_details = client.data_query_create(w_details.id, query_obj)
+    results = query_details.results.data
+    if not results:
+        _save_results([], output, output_format)
+        click.secho('No results.', fg='green')
+        return
+
+    limit = sys.maxsize if all else limit
+
+    # The query POST action redirects to the GET details but does not have
+    # a per_page, so we might get more that we needed
+    if len(results) > limit:
+        results = results[:limit]
+
+    kwargs = dict(per_page=min(limit, 100))
+    while len(results) < limit and len(results) < query_details.results.total:
+        kwargs['page'] = kwargs.get('page', 1) + 1
+        query_details = client.data_query_details(w_details.id, query_details.id, **kwargs)
+        results.extend(query_details.results.data)
+
+    total_width, _ = click.get_terminal_size()
+    num_cols = len(results[0])
+    columns = {
+        col: {'head': col, 'width': total_width // num_cols - 1, 'align': '>'}
+        for col in results[0].keys()
+    }
+
+    if output is None:
+        _print_table(results, columns, query_details.results.total)
+    else:
+        _save_results(results, output, output_format)
+        click.secho(f'Saved {len(results)} out of {query_details.results.total} results '
+                    f'in {output.name}.')
 
 
 @workspace.command()
 @error_wrapper
 @workspace_identifier_options
-@click.option('--limit', type=click.INT, default=10, show_default=True)
+@click.option('--limit', type=click.INT, default=10, show_default=True,
+              help='Limit the number of results.')
 @help_options
 @pass_state
 def files(state, name, id, limit):
@@ -403,3 +454,17 @@ def _print_table(results, schema, total):
         click.echo(row_line)
 
     click.secho(f'\nShowing {len(results)} out of {total} results.', fg='green')
+
+
+def _save_results(table, file, fmt):
+    if file is None:
+        return
+
+    if fmt == 'json':
+        json.dump(table, file, indent=2)
+    elif fmt == 'yaml':
+        yaml.safe_dump(table, file, default_flow_style=False)
+    elif fmt == 'csv':
+        raise NotImplementedError
+    else:
+        raise ValueError('Invalid output format')

@@ -14,6 +14,7 @@ dependencies = [
     'backoff',
     'requests',
     'appdirs',
+    'PyYAML',
 ]
 
 if sys.platform == 'win32':

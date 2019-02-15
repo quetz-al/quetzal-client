@@ -7,4 +7,5 @@ jsonref
 backoff
 requests
 appdirs
+PyYAML
 pyreadline>=2.1; sys_platform=='win32'
