@@ -1,17 +1,16 @@
 import click
 
 from quetzal.client.cli import BaseGroup, help_options, pass_state, error_wrapper
-from quetzal.client.exceptions import UnauthorizedException
 
 
-@click.group(options_metavar='[AUTH OPTIONS]', cls=BaseGroup)
+@click.group('auth', options_metavar='[AUTH OPTIONS]', cls=BaseGroup)
 @help_options
-def auth(**kwargs):
+def auth_group():
     """Authentication operations"""
     pass
 
 
-@auth.command()
+@auth_group.command()
 @error_wrapper
 @help_options
 @pass_state
@@ -20,10 +19,8 @@ def login(state):
     client = state.api_client
     if not config.username:
         raise click.ClickException('Cannot login without username credentials')
-    try:
-        response = client.auth_get_token()
-    except UnauthorizedException:
-        raise click.ClickException('Incorrect username or password')
+
+    response = client.auth_get_token()
 
     # Manage success: save the access token
     client.configuration.access_token = response.token
@@ -33,7 +30,7 @@ def login(state):
         click.secho(f'Logged in access token successful!', fg='green')
 
 
-@auth.command()
+@auth_group.command()
 @error_wrapper
 @help_options
 @pass_state

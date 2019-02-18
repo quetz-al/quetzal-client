@@ -1,10 +1,15 @@
+import logging
+
 import click
 
 
 from quetzal.client import Client, Configuration
 from quetzal.client.cli import BaseGroup, help_options, State, MutexOption
-from quetzal.client.cli.auth import auth
-from quetzal.client.cli.data import data
+from quetzal.client.cli.auth import auth_group
+from quetzal.client.cli.data import data_group
+
+
+logger = logging.getLogger(__name__)
 
 
 def print_version(ctx, param, value):
@@ -129,11 +134,12 @@ def global_options(f):
 @click.group(options_metavar='[GLOBAL OPTIONS]', cls=BaseGroup)
 @global_options
 def cli(*args, **kwargs):
-    pass
+    """Command-line utility for the Quetzal API client."""
+    logger.debug('Global options: %s %s', args, kwargs)
 
 
-cli.add_command(auth)
-cli.add_command(data)
+cli.add_command(auth_group)
+cli.add_command(data_group)
 
 
 if __name__ == '__main__':

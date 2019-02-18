@@ -176,6 +176,18 @@ def error_wrapper(f):
     return wrapper
 
 
+def rename_kwargs(**replacements):
+    def actual_decorator(func):
+        @functools.wraps(func)
+        def decorated_func(*args, **kwargs):
+            for internal_arg, external_arg in replacements.items():
+                if external_arg in kwargs:
+                    kwargs[internal_arg] = kwargs.pop(external_arg)
+            return func(*args, **kwargs)
+        return decorated_func
+    return actual_decorator
+
+
 class MutexOption(click.Option):
     def __init__(self, *args, **kwargs):
         self.not_required_if = kwargs.pop('not_required_if')
