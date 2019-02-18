@@ -6,6 +6,7 @@ import urllib.parse
 import warnings
 
 import backoff
+import six
 import urllib3
 from requests import codes
 
@@ -53,6 +54,78 @@ _auth_retry_decorator = backoff.on_exception(
 )
 
 
+class CustomDataApi(DataApi):
+
+    def app_api_data_file_details_w_with_http_info(self, wid, uuid, **kwargs):
+
+        local_var_params = locals()
+
+        all_params = ['wid', 'uuid']  # noqa: E501
+        all_params.append('async_req')
+        all_params.append('_return_http_data_only')
+        all_params.append('_preload_content')
+        all_params.append('_request_timeout')
+        all_params.append('_accept')
+
+        for key, val in six.iteritems(local_var_params['kwargs']):
+            if key not in all_params:
+                raise TypeError(
+                    "Got an unexpected keyword argument '%s'"
+                    " to method app_api_data_file_details_w" % key
+                )
+            local_var_params[key] = val
+        del local_var_params['kwargs']
+        # verify the required parameter 'wid' is set
+        if ('wid' not in local_var_params or
+                local_var_params['wid'] is None):
+            raise ValueError("Missing the required parameter `wid` when calling `app_api_data_file_details_w`")  # noqa: E501
+        # verify the required parameter 'uuid' is set
+        if ('uuid' not in local_var_params or
+                local_var_params['uuid'] is None):
+            raise ValueError("Missing the required parameter `uuid` when calling `app_api_data_file_details_w`")  # noqa: E501
+
+        collection_formats = {}
+
+        path_params = {}
+        if 'wid' in local_var_params:
+            path_params['wid'] = local_var_params['wid']  # noqa: E501
+        if 'uuid' in local_var_params:
+            path_params['uuid'] = local_var_params['uuid']  # noqa: E501
+
+        query_params = []
+
+        header_params = {}
+
+        form_params = []
+        local_var_files = {}
+
+        body_params = None
+        # HTTP header `Accept`
+        header_params['Accept'] = local_var_params.get('_accept', self.api_client.select_header_accept(
+            ['application/json', 'application/octet-stream', 'application/problem+json'])  # noqa: E501
+        )
+
+        # Authentication setting
+        auth_settings = ['bearer']  # noqa: E501
+
+        return self.api_client.call_api(
+            '/data/workspaces/{wid}/files/{uuid}', 'GET',
+            path_params,
+            query_params,
+            header_params,
+            body=body_params,
+            post_params=form_params,
+            files=local_var_files,
+            response_type='object',  # noqa: E501
+            auth_settings=auth_settings,
+            async_req=local_var_params.get('async_req'),
+            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
+            _preload_content=local_var_params.get('_preload_content', True),
+            _request_timeout=local_var_params.get('_request_timeout'),
+            collection_formats=collection_formats)
+
+
+
 class MetaClient(type):
     """Metaclass that converts the API operation methods to a shorter name
 
@@ -72,7 +145,7 @@ class MetaClient(type):
         # Make shortcut methods
         MetaClient.make_shortcuts(obj, AuthenticationApi,
                                   'auth_api', 'app_api_auth', 'auth')
-        MetaClient.make_shortcuts(obj, DataApi,
+        MetaClient.make_shortcuts(obj, CustomDataApi,
                                   'data_api', 'app_api_data', 'data')
         return obj
 
@@ -109,7 +182,7 @@ class Client(ApiClient, metaclass=MetaClient):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._auth_api = AuthenticationApi(self)
-        self._data_api = DataApi(self)
+        self._data_api = CustomDataApi(self)
         self.default_headers['Cache-Control'] = 'no-cache'
         self.rest_client = CustomRestClient(self.configuration)
 
