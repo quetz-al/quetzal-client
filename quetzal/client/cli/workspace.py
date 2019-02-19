@@ -18,33 +18,53 @@ from quetzal.client.exceptions import QuetzalAPIException
 from quetzal.client.utils import HistoryConsole
 
 
-def name_option(f):
-    def callback(ctx, param, value):
-        if value and not ctx.resilient_parsing:
-            state = ctx.ensure_object(State)
-            if not state.api_config.username:
-                raise click.BadOptionUsage(
-                    param,
-                    'Using --name to refer to a workspace requires a '
-                    'the --username options to be set because the workspace '
-                    'is uniquely identified by the name and username.',
-                    ctx=ctx)
-            return value
+def name_option(required=True):
+    extra_kwargs = {}
+    if required:
+        extra_kwargs['cls'] = OneRequiredOption
+        extra_kwargs['one_of_with'] = ['id']
 
-    return click.option('--name', cls=OneRequiredOption, one_of_with=['id'],
-                        callback=callback, help='Workspace name.')(f)
+    def decorator(f):
+        def callback(ctx, param, value):
+            if value and not ctx.resilient_parsing:
+                state = ctx.ensure_object(State)
+                if not state.api_config.username:
+                    raise click.BadOptionUsage(
+                        param,
+                        'Using --name to refer to a workspace requires a '
+                        'the --username options to be set because the workspace '
+                        'is uniquely identified by the name and username.',
+                        ctx=ctx)
+                return value
+
+        return click.option('--name', callback=callback, help='Workspace name.',
+                            **extra_kwargs)(f)
+
+    return decorator
 
 
-def id_option(f):
-    return click.option('--id', cls=OneRequiredOption, one_of_with=['name'],
-                        help='Workspace identifier.')(f)
+def id_option(required=True):
+    extra_kwargs = {}
+    if required:
+        extra_kwargs['cls'] = OneRequiredOption
+        extra_kwargs['one_of_with'] = ['name']
+
+    def decorator(f):
+        return click.option('--id', help='Workspace identifier.',
+                            **extra_kwargs)(f)
+
+    return decorator
 
 
-def workspace_identifier_options(f):
-    f = id_option(f)
-    f = name_option(f)
-    f = rename_kwargs(wid='id')(f)
-    return f
+def workspace_identifier_options(required=True):
+
+    def decorator(f):
+        f = id_option(required)(f)
+        f = name_option(required)(f)
+        f = rename_kwargs(wid='id')(f)
+        return f
+
+    return decorator
 
 
 @click.group('workspace', options_metavar='[WORKSPACE OPTIONS]', cls=BaseGroup)
@@ -131,7 +151,7 @@ def list_(state, name, owner, deleted, limit):
 
 
 @workspace.command()
-@workspace_identifier_options
+@workspace_identifier_options()
 @help_options
 @pass_state
 def details(state, name, wid):
@@ -143,7 +163,7 @@ def details(state, name, wid):
 
 @workspace.command()
 @error_wrapper
-@workspace_identifier_options
+@workspace_identifier_options()
 @click.confirmation_option(prompt='This will commit the workspace. Are you sure?')
 @click.option('--wait', is_flag=True, help='Wait until the workspace is ready.')
 @help_options
@@ -176,7 +196,7 @@ def commit(state, name, wid, wait):
 
 @workspace.command()
 @error_wrapper
-@workspace_identifier_options
+@workspace_identifier_options()
 @click.confirmation_option(prompt='This will update the workspace views. Are you sure?')
 @click.option('--wait', is_flag=True, help='Wait until the workspace is ready.')
 @help_options
@@ -205,7 +225,7 @@ def scan(state, name, wid, wait):
 
 @workspace.command()
 @error_wrapper
-@workspace_identifier_options
+@workspace_identifier_options()
 @click.option('--query', 'query_file', type=click.File('r'),
               help='Input query file', default=sys.stdin)
 @click.option('--dialect', default='postgresql', show_default=True,
@@ -294,7 +314,7 @@ def query(state, name, wid, query_file, dialect, limit, retrieve_all, output, ou
 
 @workspace.command()
 @error_wrapper
-@workspace_identifier_options
+@workspace_identifier_options()
 @click.option('--limit', type=click.INT, default=10, show_default=True,
               help='Limit the number of results.')
 @help_options
@@ -325,7 +345,7 @@ def files(state, name, wid, limit):
 
 @workspace.command()
 @error_wrapper
-@workspace_identifier_options
+@workspace_identifier_options()
 @click.option('--file', '-f', type=click.File(mode='rb'), required=True,
               help='File to upload.')
 @help_options
@@ -342,7 +362,7 @@ def upload(state, name, wid, file):
 
 @workspace.command()
 @error_wrapper
-@workspace_identifier_options
+@workspace_identifier_options()
 @click.confirmation_option(prompt='This will delete the workspace. Are you sure?')
 @click.option('--wait', is_flag=True, help='Wait until the workspace is deleted.')
 @help_options

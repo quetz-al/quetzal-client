@@ -25,30 +25,34 @@ def file():
               default='data', show_default=True,
               help='Output directory. When set, it uses this directory + '
                    'path + filename of the base metadata family')
-@workspace_identifier_options
+@workspace_identifier_options(required=False)
+@help_options
 @pass_state
 def download(state, file_id, output, output_dir, name, wid):
     """Download a file in a workspace"""
     client = state.api_client
+
     # Get the workspace details
-    w_details = _get_details(state, name, wid)
+    if name is not None or wid is not None:
+        w_details = _get_details(state, name, wid)
+        func = client.data_file_details_w
+        func_kws = dict(wid=w_details.id, uuid=file_id)
+    else:
+        func = client.data_file_details
+        func_kws = dict(uuid=file_id)
 
     if output is None:
-        response = client.data_file_details_w(wid=w_details.id, uuid=file_id,
-                                              _accept='application/json',
-                                              _preload_content=True)
-        base = response['metadata']['base']
+        metadata_response = func(**func_kws, _accept='application/json')
+        base = metadata_response['metadata']['base']
         output = pathlib.Path(output_dir or '.') / base['path'] / base['filename']
     else:
         output = pathlib.Path(output)
 
-    response = client.data_file_details_w(wid=w_details.id, uuid=file_id,
-                                          _accept='application/octet-stream',
-                                          _preload_content=False)
+    contents = func(**func_kws, _accept='application/octet-stream', _preload_content=False)
 
     output.parent.mkdir(parents=True, exist_ok=True)
     with open(output, 'wb') as f:
-        f.write(response.data)
+        f.write(contents.data)
 
     click.secho(f'File {output} downloaded!', fg='green')
 
@@ -60,7 +64,8 @@ def download(state, file_id, output, output_dir, name, wid):
               type=click.File('w'), default=sys.stdout)
 @click.option('--format', 'output_format', help='Output file format.',
               type=click.Choice(['json', 'yaml']), default='json')
-@workspace_identifier_options
+@workspace_identifier_options(required=False)
+@help_options
 @pass_state
 def metadata(state, file_id, output, output_format, name, wid):
     """Download the metadata of a file"""
@@ -75,11 +80,15 @@ def metadata(state, file_id, output, output_format, name, wid):
 
     client = state.api_client
     # Get the workspace details
-    w_details = _get_details(state, name, wid)
+    if name is not None or wid is not None:
+        w_details = _get_details(state, name, wid)
+        func = client.data_file_details_w
+        func_kws = dict(wid=w_details.id, uuid=file_id)
+    else:
+        func = client.data_file_details
+        func_kws = dict(uuid=file_id)
 
-    response = client.data_file_details_w(wid=w_details.id, uuid=file_id,
-                                          _accept='application/json',
-                                          _preload_content=True)
+    response = func(**func_kws, _accept='application/json')
     meta = response['metadata']
 
     if output_format == 'json':
