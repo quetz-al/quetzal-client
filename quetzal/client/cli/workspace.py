@@ -389,6 +389,30 @@ def delete(state, name, wid, wait):
     return w_details
 
 
+@workspace.command()
+@error_wrapper
+@workspace_identifier_options()
+@click.option('--file-id', required=True,
+              help='File identifier whose metadata will be updated.')
+@click.option('--metadata-file', type=click.File('r'),
+              help='JSON file with metadata.')
+@help_options
+@pass_state
+def update_metadata(state, name, wid, file_id, metadata_file):
+    """Update the metadata of a file in a workspace"""
+
+    client = state.api_client
+    # Get the workspace details
+    w_details = _get_details(state, name, wid)
+
+    metadata_contents = json.load(metadata_file)
+    response = client.data_file_update_metadata(wid=w_details.id, uuid=file_id,
+                                                body=metadata_contents)
+    click.secho(f'Metadata for file {file_id} successfully changed.', fg='green')
+    click.secho('Updated metadata:')
+    click.secho(json.dumps(response, indent=2), fg='blue')
+
+
 def _wait_for_workspace(w, client, func):
 
     roll_map = itertools.cycle(r'\|/-')
