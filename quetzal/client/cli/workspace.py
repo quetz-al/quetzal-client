@@ -96,7 +96,7 @@ def create(state, name, description, families, wait):
         "description": description,
         "families": {tup[0]:tup[1] for tup in families}
     }
-    w_details = client.data_workspace_create(workspace_create_object)
+    w_details = client.workspace_create(workspace_create_object)
 
     if wait:
         w_details = _wait_for_workspace(w_details, client,
@@ -130,12 +130,16 @@ def list_(state, name, owner, deleted, limit):
     if deleted:
         kwargs['deleted'] = True
 
-    fetch_result = client.data_workspace_fetch(**kwargs)
-    results = [w.to_dict() for w in fetch_result.data]
+    fetch_result = client.workspace_fetch(**kwargs)
+    results = [w.to_dict() for w in fetch_result.results]
     while len(results) < limit and len(results) < fetch_result.total:
         kwargs['page'] = kwargs.get('page', 1) + 1
-        fetch_result = client.data_workspace_fetch(**kwargs)
-        results.extend([w.to_dict() for w in fetch_result.data])
+        fetch_result = client.workspace_fetch(**kwargs)
+        results.extend([w.to_dict() for w in fetch_result.results])
+
+    if not results:
+        click.secho('No workspaces found.', fg='green')
+        return
 
     columns = {
         'id': {'head': 'ID', 'width': 19, 'align': '^'},
@@ -178,7 +182,7 @@ def commit(state, name, wid, wait):
 
     # Do the commit
     try:
-        client.data_workspace_commit(w_details.id)
+        client.workspace_commit(w_details.id)
     except QuetzalAPIException as ex:
         raise click.ClickException(f'Failed to commit workspace:\n{ex}')
 
@@ -209,7 +213,7 @@ def scan(state, name, wid, wait):
     w_details = _get_details(state, name, wid)
 
     # Do the scan
-    client.data_workspace_scan(w_details.id)
+    client.workspace_scan(w_details.id)
 
     if wait:
         w_details = _wait_for_workspace(w_details, client,
@@ -272,30 +276,30 @@ def query(state, name, wid, query_file, dialect, limit, retrieve_all, output, ou
     else:
         query_contents = query_file.read()
 
+    limit = sys.maxsize if retrieve_all else min(limit, 100)
+    kwargs = dict(per_page=limit)
+
     query_obj = {
         'dialect': dialect,
         'query': query_contents,
     }
 
-    query_details = client.data_query_create(w_details.id, query_obj)
-    results = query_details.results.data
+    query_details = client.workspace_query_create(w_details.id, query_obj, **kwargs)
+    results = query_details.results
     if not results:
         _save_results([], output, output_format)
         click.secho('No results.', fg='green')
         return
-
-    limit = sys.maxsize if retrieve_all else limit
 
     # The query POST action redirects to the GET details but does not have
     # a per_page, so we might get more that we needed
     if len(results) > limit:
         results = results[:limit]
 
-    kwargs = dict(per_page=len(results))  # See reason above
-    while len(results) < limit and len(results) < query_details.results.total:
+    while len(results) < limit and len(results) < query_details.total:
         kwargs['page'] = kwargs.get('page', 1) + 1
-        query_details = client.data_query_details(w_details.id, query_details.id, **kwargs)
-        results.extend(query_details.results.data)
+        query_details = client.workspace_query_details(w_details.id, query_details.id, **kwargs)
+        results.extend(query_details.results)
 
     total_width, _ = click.get_terminal_size()
     num_cols = len(results[0])
@@ -305,7 +309,7 @@ def query(state, name, wid, query_file, dialect, limit, retrieve_all, output, ou
     }
 
     if output is None:
-        _print_table(results, columns, query_details.results.total)
+        _print_table(results, columns, query_details.total)
     else:
         _save_results(results, output, output_format)
         click.secho(f'Saved {len(results)} out of {query_details.results.total} results '
@@ -327,12 +331,18 @@ def files(state, name, wid, limit):
 
     kwargs = dict(per_page=min(limit, 100))
 
-    fetch_result = client.data_file_fetch(w_details.id, **kwargs)
-    results = fetch_result.data
+    fetch_result = client.workspace_file_fetch(w_details.id, **kwargs)
+    results = [r.to_dict() for r in fetch_result.results]
     while len(results) < limit and len(results) < fetch_result.total:
         kwargs['page'] = kwargs.get('page', 1) + 1
-        fetch_result = client.data_file_fetch(w_details.id, **kwargs)
-        results.extend(fetch_result.data)
+        fetch_result = client.workspace_file_fetch(w_details.id, **kwargs)
+        results.extend([r.to_dict() for r in fetch_result.results])
+
+    if not results:
+        click.secho('No files have been added on this workspace '
+                    '(no metadata modifications either).',
+                    fg='green')
+        return
 
     columns = {
         'id': {'head': 'ID', 'width': 36, 'align': '^'},
@@ -356,8 +366,9 @@ def upload(state, name, wid, file):
     # Get the workspace details
     w_details = _get_details(state, name, wid)
 
-    file_details = client.data_file_create(w_details.id, file_content=file.name)
-    click.secho(f'File {file.name} uploaded successfully. Its id is {file_details["id"]}.')
+    file_details = client.workspace_file_create(w_details.id, file_content=file.name)
+    click.secho(f'File {file.name} uploaded successfully. Its id is {file_details.id}.',
+                fg='green')
 
 
 @workspace.command()
@@ -375,7 +386,7 @@ def delete(state, name, wid, wait):
     w_details = _get_details(state, name, wid)
 
     # Delete it
-    client.data_workspace_delete(w_details.id)
+    client.workspace_delete(w_details.id)
 
     if wait:
         w_details = _wait_for_workspace(w_details, client,
@@ -406,8 +417,8 @@ def update_metadata(state, name, wid, file_id, metadata_file):
     w_details = _get_details(state, name, wid)
 
     metadata_contents = json.load(metadata_file)
-    response = client.data_file_update_metadata(wid=w_details.id, uuid=file_id,
-                                                body=metadata_contents)
+    response = client.workspace_file_update_metadata(wid=w_details.id, uuid=file_id,
+                                                     body=metadata_contents)
     click.secho(f'Metadata for file {file_id} successfully changed.', fg='green')
     click.secho('Updated metadata:')
     click.secho(json.dumps(response, indent=2), fg='blue')
@@ -419,7 +430,7 @@ def _wait_for_workspace(w, client, func):
 
     @backoff.on_predicate(backoff.constant, func, interval=1)
     def poll():
-        w_details = client.data_workspace_details(w.id)
+        w_details = client.workspace_details(w.id)
         print(f'\rWaiting for workspace {w_details.id} {w_details.name} '
               f'[{w_details.status}] ... {next(roll_map)}',
               sep='', end='')
@@ -441,9 +452,6 @@ def _trim_string(string, width):
     if len(string) > width:
         return string[:width-3] + '...'
     return string
-
-
-    return poll()
 
 
 def _print_table(results, schema, total):
@@ -500,10 +508,12 @@ def _get_details(state, name, wid):
     try:
         if name:
             username = state.api_config.username
-            response = client.data_workspace_fetch(owner=username, name=name)
-            w_details = response.data[0]
+            response = client.workspace_fetch(owner=username, name=name)
+            if not response.results:
+                raise click.ClickException('Workspace not found.')
+            w_details = response.results[0]
         else:
-            w_details = client.data_workspace_details(wid)
+            w_details = client.workspace_details(wid)
     except QuetzalAPIException as ex:
         raise click.ClickException(f'Failed to retrieve workspace:\n{ex}')
     return w_details

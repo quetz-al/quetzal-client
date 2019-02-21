@@ -56,8 +56,7 @@ _auth_retry_decorator = backoff.on_exception(
 
 class CustomDataApi(DataApi):
 
-    def app_api_data_file_details_w_with_http_info(self, wid, uuid, **kwargs):
-
+    def workspace_file_details_with_http_info(self, wid, uuid, **kwargs):
         local_var_params = locals()
 
         all_params = ['wid', 'uuid']  # noqa: E501
@@ -78,11 +77,11 @@ class CustomDataApi(DataApi):
         # verify the required parameter 'wid' is set
         if ('wid' not in local_var_params or
                 local_var_params['wid'] is None):
-            raise ValueError("Missing the required parameter `wid` when calling `app_api_data_file_details_w`")  # noqa: E501
+            raise ValueError("Missing the required parameter `wid` when calling `workspace_file_details`")  # noqa: E501
         # verify the required parameter 'uuid' is set
         if ('uuid' not in local_var_params or
                 local_var_params['uuid'] is None):
-            raise ValueError("Missing the required parameter `uuid` when calling `app_api_data_file_details_w`")  # noqa: E501
+            raise ValueError("Missing the required parameter `uuid` when calling `workspace_file_details`")  # noqa: E501
 
         collection_formats = {}
 
@@ -124,7 +123,7 @@ class CustomDataApi(DataApi):
             _request_timeout=local_var_params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def app_api_data_file_details_with_http_info(self, uuid, **kwargs):  # noqa: E501
+    def public_file_details_with_http_info(self, uuid, **kwargs):  # noqa: E501
 
         local_var_params = locals()
 
@@ -205,13 +204,15 @@ class MetaClient(type):
         setattr(obj, 'api_data', None)
         # Make shortcut methods
         MetaClient.make_shortcuts(obj, AuthenticationApi,
-                                  'auth_api', 'app_api_auth', 'auth')
+                                  'auth_api', 'auth')
         MetaClient.make_shortcuts(obj, CustomDataApi,
-                                  'data_api', 'app_api_data', 'data')
+                                  'data_api', 'workspace')
+        MetaClient.make_shortcuts(obj, CustomDataApi,
+                                  'data_api', 'public')
         return obj
 
     @staticmethod
-    def make_shortcuts(obj, api_obj, api_property, prefix, new_prefix):
+    def make_shortcuts(obj, api_obj, api_property, prefix):
         for attr in dir(api_obj):
             if not attr.startswith(prefix) or attr.endswith('_with_http_info'):
                 continue
@@ -223,10 +224,8 @@ class MetaClient(type):
                     return f(instance, *args, **kwargs)
                 return shortcut
 
-            short_name = attr.replace(prefix, new_prefix, 1)
             original_doc = (
                 getattr(api_obj, attr).__doc__
-                .replace(f'api.{prefix}', f'client.{new_prefix}')
                 .replace('\n        ', '\n')
             )
             short_func = wrapper(getattr(api_obj, attr))
@@ -234,8 +233,8 @@ class MetaClient(type):
                 f'Shortcut method for {api_obj.__module__}.{api_obj.__name__}.{attr}\n\n'
                 f'Original docstring:\n{original_doc}'
             )
-            logger.debug('Setting shortcut method in %s: %s -> %s', obj.__name__, attr, short_name)
-            setattr(obj, short_name, short_func)
+            logger.debug('Setting shortcut method in %s: %s -> %s', obj.__name__, attr, attr)
+            setattr(obj, attr, short_func)
 
 
 class Client(ApiClient, metaclass=MetaClient):
@@ -331,6 +330,7 @@ class CustomProxyManager(urllib3.ProxyManager):
 
 
 def _patch_urlopen_keywords(method, url, redirect, kw):
+    """urlopen patch to follow 303 responses and keep the Authorization header"""
     path = urllib.parse.urlparse(url).path
     if method == 'POST' and re.match('^/api/v1/data/workspaces/[0-9]*/queries/?$', path):
         retries = kw.get('retries')

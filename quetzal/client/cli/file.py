@@ -35,10 +35,10 @@ def download(state, file_id, output, output_dir, name, wid):
     # Get the workspace details
     if name is not None or wid is not None:
         w_details = _get_details(state, name, wid)
-        func = client.data_file_details_w
+        func = client.workspace_file_details
         func_kws = dict(wid=w_details.id, uuid=file_id)
     else:
-        func = client.data_file_details
+        func = client.public_file_details
         func_kws = dict(uuid=file_id)
 
     if output is None:
@@ -82,10 +82,10 @@ def metadata(state, file_id, output, output_format, name, wid):
     # Get the workspace details
     if name is not None or wid is not None:
         w_details = _get_details(state, name, wid)
-        func = client.data_file_details_w
+        func = client.workspace_file_details
         func_kws = dict(wid=w_details.id, uuid=file_id)
     else:
-        func = client.data_file_details
+        func = client.public_file_details
         func_kws = dict(uuid=file_id)
 
     response = func(**func_kws, _accept='application/json')
