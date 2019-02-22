@@ -6,10 +6,12 @@ from quetzal._auto_client import __openapi_generator_cli_version__
 
 
 __version__ = get_versions()['version']
+del get_versions
 
 __all__ = (
     '__version__',
     '__openapi_generator_cli_version__',
     'Client',
     'Configuration',
+    'api',
 )

@@ -7,10 +7,11 @@ import click
 import yaml
 
 
+from quetzal.client import api
 from quetzal.client.cli import (
     BaseGroup, error_wrapper, FamilyVersionListType,
     help_options, OneRequiredOption, MutexOption, pass_state,
-    rename_kwargs, State
+    rename_kwargs, State, _progress
 )
 from quetzal.client.exceptions import QuetzalAPIException
 
@@ -94,21 +95,11 @@ def workspace_group():
 def create(state, name, description, families, wait):
     """Create a workspace."""
     client = state.api_client
-    workspace_create_object = {
-        "name": name,
-        "description": description,
-        "families": {tup[0]:tup[1] for tup in families}
-    }
-    w_details = client.workspace_create(workspace_create_object)
-
-    if wait:
-        w_details = _wait_for_workspace(w_details, client,
-                                        lambda w: w.status == 'INITIALIZING')
-
-    click.secho('\nWorkspace created successfully!', fg='green')
+    families = {tup[0]: tup[1] for tup in families}
+    progress = _progress.generic_progress('Workspace created and initialized.')
+    w_details = api.workspace.create(client, name, description, families, wait,
+                                     progress=progress)
     _print_details(w_details)
-
-    return w_details
 
 
 @workspace_group.command(name='list')
@@ -125,23 +116,9 @@ def list_(state, name, owner, deleted, limit):
     """List workspaces."""
     client = state.api_client
 
-    kwargs = dict(per_page=min(limit, 100))
-    if name:
-        kwargs['name'] = name
-    if owner:
-        kwargs['owner'] = owner
-    if deleted:
-        kwargs['deleted'] = True
-
-    fetch_result = client.workspace_fetch(**kwargs)
-    results = [w.to_dict() for w in fetch_result.results]
-    while len(results) < limit and len(results) < fetch_result.total:
-        kwargs['page'] = kwargs.get('page', 1) + 1
-        fetch_result = client.workspace_fetch(**kwargs)
-        results.extend([w.to_dict() for w in fetch_result.results])
-
+    results, total = api.workspace.list_(client, name, owner, deleted, limit)
     if not results:
-        click.secho('No workspaces found.', fg='green')
+        click.secho('No workspaces found.', fg='yellow')
         return
 
     columns = {
@@ -154,16 +131,23 @@ def list_(state, name, owner, deleted, limit):
         'data_url': {'head': 'DATA_URL', 'width': 64, 'align': '>'},
         'families': {'head': 'FAMILIES', 'width': 64, 'align': '>'}
     }
-    _print_table(results, columns, fetch_result.total)
+    _print_table(results, columns, total)
 
 
 @workspace_group.command()
+@error_wrapper
 @workspace_identifier_options()
 @help_options
 @pass_state
 def details(state, name, wid):
     """Show workspace details."""
-    w_details = _get_details(state, name, wid)
+    # TODO: add username option
+    client = state.api_client
+    w_details = api.workspace.details(client, wid, name)
+    if w_details is None:
+        # Can only happen when the name is used and there are no results. Not
+        # with the wid option because it would raise a 404 QuetzalAPIException
+        raise click.ClickException(f'Workspace named "{name}" does not exist.')
 
     _print_details(w_details)
 
@@ -181,24 +165,17 @@ def commit(state, name, wid, wait):
     client = state.api_client
 
     # Get the workspace details
-    w_details = _get_details(state, name, wid)
+    w_details = api.workspace.details(client, wid, name)
+    if w_details is None:
+        # Can only happen when the name is used and there are no results. Not
+        # with the wid option because it would raise a 404 QuetzalAPIException
+        raise click.ClickException(f'Workspace named "{name}" does not exist.')
 
     # Do the commit
-    try:
-        client.workspace_commit(w_details.id)
-    except QuetzalAPIException as ex:
-        raise click.ClickException(f'Failed to commit workspace:\n{ex}')
+    progress = _progress.commit_progress()
+    w_details = api.workspace.commit(client, w_details.id, wait, progress=progress)
 
-    if wait:
-        w_details = _wait_for_workspace(w_details, client,
-                                        lambda w: w.status == 'COMMITTING')
-        click.secho(f'\nWorkspace [{w_details.name}] committed successfully!', fg='green')
-        _print_details(w_details)
-
-    else:
-        click.secho(f'\nWorkspace [{w_details.name}] was marked for committing.', fg='green')
-
-    return w_details
+    _print_details(w_details)
 
 
 @workspace_group.command()
@@ -212,22 +189,19 @@ def scan(state, name, wid, wait):
     """Scan a workspace."""
 
     client = state.api_client
+
     # Get the workspace details
-    w_details = _get_details(state, name, wid)
+    w_details = api.workspace.details(client, wid, name)
+    if w_details is None:
+        # Can only happen when the name is used and there are no results. Not
+        # with the wid option because it would raise a 404 QuetzalAPIException
+        raise click.ClickException(f'Workspace named "{name}" does not exist.')
 
     # Do the scan
-    client.workspace_scan(w_details.id)
+    progress = _progress.scan_progress()
+    w_details = api.workspace.scan(client, w_details.id, wait, progress=progress)
 
-    if wait:
-        w_details = _wait_for_workspace(w_details, client,
-                                        lambda w: w.status == 'SCANNING')
-        click.secho(f'\nWorkspace [{w_details.name}] scanned successfully!', fg='green')
-        _print_details(w_details)
-
-    else:
-        click.secho(f'\nWorkspace [{w_details.name}] was marked for scanning.', fg='green')
-
-    return w_details
+    _print_details(w_details)
 
 
 @workspace_group.command()
@@ -240,19 +214,18 @@ def scan(state, name, wid, wait):
 def files(state, name, wid, limit):
     """List files on a workspace."""
     client = state.api_client
+
     # Get the workspace details
-    w_details = _get_details(state, name, wid)
+    w_details = api.workspace.details(client, wid, name)
+    if w_details is None:
+        # Can only happen when the name is used and there are no results. Not
+        # with the wid option because it would raise a 404 QuetzalAPIException
+        raise click.ClickException(f'Workspace named "{name}" does not exist.')
 
-    kwargs = dict(per_page=min(limit, 100))
+    limit = min(limit, 1000)
+    file_list, total = api.workspace.files(client, w_details.id, limit=limit)
 
-    fetch_result = client.workspace_file_fetch(w_details.id, **kwargs)
-    results = [r.to_dict() for r in fetch_result.results]
-    while len(results) < limit and len(results) < fetch_result.total:
-        kwargs['page'] = kwargs.get('page', 1) + 1
-        fetch_result = client.workspace_file_fetch(w_details.id, **kwargs)
-        results.extend([r.to_dict() for r in fetch_result.results])
-
-    if not results:
+    if not file_list:
         click.secho('No files have been added on this workspace '
                     '(no metadata modifications either).',
                     fg='green')
@@ -264,7 +237,7 @@ def files(state, name, wid, limit):
         'filename': {'head': 'FILENAME', 'width': 32, 'align': '>'},
         'size': {'head': 'SIZE', 'width': 50, 'align': '>'},
     }
-    _print_table(results, columns, fetch_result.total)
+    _print_table(file_list, columns, total)
 
 
 @workspace_group.command()
