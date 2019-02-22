@@ -6,7 +6,7 @@ from quetzal.client.cli import BaseGroup, help_options, pass_state, error_wrappe
 @click.group('auth', options_metavar='[AUTH OPTIONS]', cls=BaseGroup)
 @help_options
 def auth_group():
-    """Authentication operations"""
+    """Authentication operations."""
     pass
 
 

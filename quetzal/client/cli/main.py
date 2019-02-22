@@ -6,7 +6,9 @@ import click
 from quetzal.client import Client, Configuration
 from quetzal.client.cli import BaseGroup, help_options, State, MutexOption
 from quetzal.client.cli.auth import auth_group
-from quetzal.client.cli.data import data_group
+from quetzal.client.cli.file import file_group
+from quetzal.client.cli.query import query_command
+from quetzal.client.cli.workspace import workspace_group
 
 
 logger = logging.getLogger(__name__)
@@ -139,7 +141,9 @@ def cli(*args, **kwargs):
 
 
 cli.add_command(auth_group)
-cli.add_command(data_group)
+cli.add_command(file_group)
+cli.add_command(query_command)
+cli.add_command(workspace_group)
 
 
 if __name__ == '__main__':

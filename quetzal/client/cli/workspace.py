@@ -1,8 +1,6 @@
 import datetime
 import itertools
 import json
-import pathlib
-import sys
 
 import backoff
 import click
@@ -11,11 +9,10 @@ import yaml
 
 from quetzal.client.cli import (
     BaseGroup, error_wrapper, FamilyVersionListType,
-    help_options, MutexOption, OneRequiredOption, pass_state,
+    help_options, OneRequiredOption, MutexOption, pass_state,
     rename_kwargs, State
 )
 from quetzal.client.exceptions import QuetzalAPIException
-from quetzal.client.utils import HistoryConsole
 
 
 def name_option(required=True):
@@ -23,6 +20,9 @@ def name_option(required=True):
     if required:
         extra_kwargs['cls'] = OneRequiredOption
         extra_kwargs['one_of_with'] = ['id']
+    else:
+        extra_kwargs['cls'] = MutexOption
+        extra_kwargs['not_required_if'] = ['id']
 
     def decorator(f):
         def callback(ctx, param, value):
@@ -48,6 +48,9 @@ def id_option(required=True):
     if required:
         extra_kwargs['cls'] = OneRequiredOption
         extra_kwargs['one_of_with'] = ['name']
+    else:
+        extra_kwargs['cls'] = MutexOption
+        extra_kwargs['not_required_if'] = ['name']
 
     def decorator(f):
         return click.option('--id', help='Workspace identifier.',
@@ -69,12 +72,12 @@ def workspace_identifier_options(required=True):
 
 @click.group('workspace', options_metavar='[WORKSPACE OPTIONS]', cls=BaseGroup)
 @help_options
-def workspace():
-    """Workspace operations"""
+def workspace_group():
+    """Workspace operations."""
     pass
 
 
-@workspace.command()
+@workspace_group.command()
 @error_wrapper
 @click.argument('name')
 @click.option('--description', help='Workspace description.', default='', show_default=True)
@@ -89,7 +92,7 @@ def workspace():
 @help_options
 @pass_state
 def create(state, name, description, families, wait):
-    """Create a workspace"""
+    """Create a workspace."""
     client = state.api_client
     workspace_create_object = {
         "name": name,
@@ -108,7 +111,7 @@ def create(state, name, description, families, wait):
     return w_details
 
 
-@workspace.command(name='list')
+@workspace_group.command(name='list')
 @error_wrapper
 @click.option('--name', help='Filter workspaces with this name only.')
 @click.option('--owner', default=None, help='Filter only workspace owned by this user.')
@@ -119,7 +122,7 @@ def create(state, name, description, families, wait):
 @help_options
 @pass_state
 def list_(state, name, owner, deleted, limit):
-    """List workspaces"""
+    """List workspaces."""
     client = state.api_client
 
     kwargs = dict(per_page=min(limit, 100))
@@ -154,18 +157,18 @@ def list_(state, name, owner, deleted, limit):
     _print_table(results, columns, fetch_result.total)
 
 
-@workspace.command()
+@workspace_group.command()
 @workspace_identifier_options()
 @help_options
 @pass_state
 def details(state, name, wid):
-    """Show workspace details"""
+    """Show workspace details."""
     w_details = _get_details(state, name, wid)
 
     _print_details(w_details)
 
 
-@workspace.command()
+@workspace_group.command()
 @error_wrapper
 @workspace_identifier_options()
 @click.confirmation_option(prompt='This will commit the workspace. Are you sure?')
@@ -173,7 +176,7 @@ def details(state, name, wid):
 @help_options
 @pass_state
 def commit(state, name, wid, wait):
-    """Commit a workspace"""
+    """Commit a workspace."""
 
     client = state.api_client
 
@@ -198,7 +201,7 @@ def commit(state, name, wid, wait):
     return w_details
 
 
-@workspace.command()
+@workspace_group.command()
 @error_wrapper
 @workspace_identifier_options()
 @click.confirmation_option(prompt='This will update the workspace views. Are you sure?')
@@ -206,7 +209,7 @@ def commit(state, name, wid, wait):
 @help_options
 @pass_state
 def scan(state, name, wid, wait):
-    """Scan a workspace"""
+    """Scan a workspace."""
 
     client = state.api_client
     # Get the workspace details
@@ -227,96 +230,7 @@ def scan(state, name, wid, wait):
     return w_details
 
 
-@workspace.command()
-@error_wrapper
-@workspace_identifier_options()
-@click.option('--query', 'query_file', type=click.File('r'),
-              help='Input query file', default=sys.stdin)
-@click.option('--dialect', default='postgresql', show_default=True,
-              help='Dialect of query')
-@click.option('--limit', type=click.INT, default=10, show_default=True,
-              cls=MutexOption, not_required_if=['all'],
-              help='Limit the number of results.')
-@click.option('--all', is_flag=True, cls=MutexOption, not_required_if=['limit'],
-              help='Get all results.')
-@click.option('--output', '-o', type=click.File('w'),
-              help='File where query results will be saved.')
-@click.option('--format', 'output_format',
-              type=click.Choice(['csv', 'json', 'yaml']),
-              help='Output file format, if not set, it is guessed from the extension.')
-@rename_kwargs(retrieve_all='all')
-@help_options
-@pass_state
-def query(state, name, wid, query_file, dialect, limit, retrieve_all, output, output_format):
-    """Query a workspace"""
-
-    if output_format is None:
-        if hasattr(output, 'name'):
-            output_filename = pathlib.Path(output.name)
-            ext = output_filename.suffix[1:]
-            if ext not in ('csv', 'json', 'yaml'):
-                raise click.BadParameter(f'No format provided: "{ext}" is not supported. '
-                                         f'Set the format with --format')
-            output_format = ext
-
-    client = state.api_client
-    # Get the workspace details
-    w_details = _get_details(state, name, wid)
-
-    if query_file.isatty():
-        console = HistoryConsole()
-        lines_read = []
-        line = True
-        print('Write your query followed by an empty line: ',
-              file=sys.stderr)
-        while line:
-            line = console.raw_input()
-            lines_read.append(line)
-        query_contents = '\n'.join(lines_read)
-    else:
-        query_contents = query_file.read()
-
-    limit = sys.maxsize if retrieve_all else min(limit, 100)
-    kwargs = dict(per_page=limit)
-
-    query_obj = {
-        'dialect': dialect,
-        'query': query_contents,
-    }
-
-    query_details = client.workspace_query_create(w_details.id, query_obj, **kwargs)
-    results = query_details.results
-    if not results:
-        _save_results([], output, output_format)
-        click.secho('No results.', fg='green')
-        return
-
-    # The query POST action redirects to the GET details but does not have
-    # a per_page, so we might get more that we needed
-    if len(results) > limit:
-        results = results[:limit]
-
-    while len(results) < limit and len(results) < query_details.total:
-        kwargs['page'] = kwargs.get('page', 1) + 1
-        query_details = client.workspace_query_details(w_details.id, query_details.id, **kwargs)
-        results.extend(query_details.results)
-
-    total_width, _ = click.get_terminal_size()
-    num_cols = len(results[0])
-    columns = {
-        col: {'head': col, 'width': total_width // num_cols - 1, 'align': '>'}
-        for col in results[0].keys()
-    }
-
-    if output is None:
-        _print_table(results, columns, query_details.total)
-    else:
-        _save_results(results, output, output_format)
-        click.secho(f'Saved {len(results)} out of {query_details.results.total} results '
-                    f'in {output.name}.')
-
-
-@workspace.command()
+@workspace_group.command()
 @error_wrapper
 @workspace_identifier_options()
 @click.option('--limit', type=click.INT, default=10, show_default=True,
@@ -324,7 +238,7 @@ def query(state, name, wid, query_file, dialect, limit, retrieve_all, output, ou
 @help_options
 @pass_state
 def files(state, name, wid, limit):
-    """List files on a workspace"""
+    """List files on a workspace."""
     client = state.api_client
     # Get the workspace details
     w_details = _get_details(state, name, wid)
@@ -353,7 +267,7 @@ def files(state, name, wid, limit):
     _print_table(results, columns, fetch_result.total)
 
 
-@workspace.command()
+@workspace_group.command()
 @error_wrapper
 @workspace_identifier_options()
 @click.option('--file', '-f', type=click.File(mode='rb'), required=True,
@@ -371,7 +285,7 @@ def upload(state, name, wid, file):
                 fg='green')
 
 
-@workspace.command()
+@workspace_group.command()
 @error_wrapper
 @workspace_identifier_options()
 @click.confirmation_option(prompt='This will delete the workspace. Are you sure?')
@@ -379,7 +293,7 @@ def upload(state, name, wid, file):
 @help_options
 @pass_state
 def delete(state, name, wid, wait):
-    """Delete a workspace"""
+    """Delete a workspace."""
 
     client = state.api_client
     # Get the workspace details
@@ -400,7 +314,7 @@ def delete(state, name, wid, wait):
     return w_details
 
 
-@workspace.command()
+@workspace_group.command()
 @error_wrapper
 @workspace_identifier_options()
 @click.option('--file-id', required=True,
@@ -410,7 +324,7 @@ def delete(state, name, wid, wait):
 @help_options
 @pass_state
 def update_metadata(state, name, wid, file_id, metadata_file):
-    """Update the metadata of a file in a workspace"""
+    """Update the metadata of a file in a workspace."""
 
     client = state.api_client
     # Get the workspace details
