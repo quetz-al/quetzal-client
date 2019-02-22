@@ -4,14 +4,16 @@ All URIs are relative to *https://api.quetz.al/api/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**app_api_auth_get_token**](AuthenticationApi.md#app_api_auth_get_token) | **POST** /auth/token | Authenticate and obtain a token
-[**app_api_auth_logout**](AuthenticationApi.md#app_api_auth_logout) | **POST** /auth/logout | Logout and invalidate the existing token
+[**auth_get_token**](AuthenticationApi.md#auth_get_token) | **POST** /auth/token | Login.
+[**auth_logout**](AuthenticationApi.md#auth_logout) | **POST** /auth/logout | Logout.
 
 
-# **app_api_auth_get_token**
-> InlineResponse200 app_api_auth_get_token()
+# **auth_get_token**
+> InlineResponse200 auth_get_token()
 
-Authenticate and obtain a token
+Login.
+
+Authenticate with simple HTTP authentication and obtain a bearer token. This bearer token can be used on the other endpoints of the API.
 
 ### Example
 
@@ -31,11 +33,11 @@ configuration.password = 'YOUR_PASSWORD'
 api_instance = quetzal._auto_client.AuthenticationApi(quetzal._auto_client.ApiClient(configuration))
 
 try:
-    # Authenticate and obtain a token
-    api_response = api_instance.app_api_auth_get_token()
+    # Login.
+    api_response = api_instance.auth_get_token()
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling AuthenticationApi->app_api_auth_get_token: %s\n" % e)
+    print("Exception when calling AuthenticationApi->auth_get_token: %s\n" % e)
 ```
 
 ### Parameters
@@ -56,10 +58,12 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **app_api_auth_logout**
-> app_api_auth_logout()
+# **auth_logout**
+> auth_logout()
 
-Logout and invalidate the existing token
+Logout.
+
+Logout by invalidating the existing token.
 
 ### Example
 
@@ -78,10 +82,10 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 api_instance = quetzal._auto_client.AuthenticationApi(quetzal._auto_client.ApiClient(configuration))
 
 try:
-    # Logout and invalidate the existing token
-    api_instance.app_api_auth_logout()
+    # Logout.
+    api_instance.auth_logout()
 except ApiException as e:
-    print("Exception when calling AuthenticationApi->app_api_auth_logout: %s\n" % e)
+    print("Exception when calling AuthenticationApi->auth_logout: %s\n" % e)
 ```
 
 ### Parameters

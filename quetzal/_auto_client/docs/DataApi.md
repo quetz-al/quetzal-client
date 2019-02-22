@@ -4,84 +4,29 @@ All URIs are relative to *https://api.quetz.al/api/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**app_api_data_file_create**](DataApi.md#app_api_data_file_create) | **POST** /data/workspaces/{wid}/files/ | Add a new file
-[**app_api_data_file_details**](DataApi.md#app_api_data_file_details) | **GET** /data/files/{uuid} | Fetch file metadata or contents
-[**app_api_data_file_details_w**](DataApi.md#app_api_data_file_details_w) | **GET** /data/workspaces/{wid}/files/{uuid} | Fetch file metadata or contents
-[**app_api_data_file_fetch**](DataApi.md#app_api_data_file_fetch) | **GET** /data/workspaces/{wid}/files/ | List workspace files
-[**app_api_data_file_set_metadata**](DataApi.md#app_api_data_file_set_metadata) | **PUT** /data/workspaces/{wid}/files/{uuid} | Rewrite file metadata
-[**app_api_data_file_update_metadata**](DataApi.md#app_api_data_file_update_metadata) | **PATCH** /data/workspaces/{wid}/files/{uuid} | Modify file metadata
-[**app_api_data_query_create**](DataApi.md#app_api_data_query_create) | **POST** /data/workspaces/{wid}/queries/ | Prepare a query for a workspace
-[**app_api_data_query_details**](DataApi.md#app_api_data_query_details) | **GET** /data/workspaces/{wid}/queries/{qid} | Get details on query
-[**app_api_data_query_fetch**](DataApi.md#app_api_data_query_fetch) | **GET** /data/workspaces/{wid}/queries/ | List all queries of a workspace
-[**app_api_data_workspace_commit**](DataApi.md#app_api_data_workspace_commit) | **PUT** /data/workspaces/{wid}/commit | Commit a workspace
-[**app_api_data_workspace_create**](DataApi.md#app_api_data_workspace_create) | **POST** /data/workspaces/ | Create a new workspace
-[**app_api_data_workspace_delete**](DataApi.md#app_api_data_workspace_delete) | **DELETE** /data/workspaces/{wid} | Request deletion of a workspace
-[**app_api_data_workspace_details**](DataApi.md#app_api_data_workspace_details) | **GET** /data/workspaces/{wid} | Workspace details
-[**app_api_data_workspace_fetch**](DataApi.md#app_api_data_workspace_fetch) | **GET** /data/workspaces/ | Get all workspaces
-[**app_api_data_workspace_scan**](DataApi.md#app_api_data_workspace_scan) | **PUT** /data/workspaces/{wid}/scan | Update workspace views
+[**public_file_details**](DataApi.md#public_file_details) | **GET** /data/files/{uuid} | Fetch file.
+[**workspace_commit**](DataApi.md#workspace_commit) | **PUT** /data/workspaces/{wid}/commit | Commit workspace.
+[**workspace_create**](DataApi.md#workspace_create) | **POST** /data/workspaces/ | Create workspace.
+[**workspace_delete**](DataApi.md#workspace_delete) | **DELETE** /data/workspaces/{wid} | Delete workspace.
+[**workspace_details**](DataApi.md#workspace_details) | **GET** /data/workspaces/{wid} | Workspace details.
+[**workspace_fetch**](DataApi.md#workspace_fetch) | **GET** /data/workspaces/ | List workspaces.
+[**workspace_file_create**](DataApi.md#workspace_file_create) | **POST** /data/workspaces/{wid}/files/ | Upload file.
+[**workspace_file_details**](DataApi.md#workspace_file_details) | **GET** /data/workspaces/{wid}/files/{uuid} | Fetch file.
+[**workspace_file_fetch**](DataApi.md#workspace_file_fetch) | **GET** /data/workspaces/{wid}/files/ | List files.
+[**workspace_file_set_metadata**](DataApi.md#workspace_file_set_metadata) | **PUT** /data/workspaces/{wid}/files/{uuid} | Rewrite metadata.
+[**workspace_file_update_metadata**](DataApi.md#workspace_file_update_metadata) | **PATCH** /data/workspaces/{wid}/files/{uuid} | Modify metadata.
+[**workspace_query_create**](DataApi.md#workspace_query_create) | **POST** /data/workspaces/{wid}/queries/ | Prepare a query.
+[**workspace_query_details**](DataApi.md#workspace_query_details) | **GET** /data/workspaces/{wid}/queries/{qid} | Query details.
+[**workspace_query_fetch**](DataApi.md#workspace_query_fetch) | **GET** /data/workspaces/{wid}/queries/ | List queries.
+[**workspace_scan**](DataApi.md#workspace_scan) | **PUT** /data/workspaces/{wid}/scan | Update views.
 
 
-# **app_api_data_file_create**
-> object app_api_data_file_create(wid, file_content=file_content)
+# **public_file_details**
+> InlineResponse2003 public_file_details(uuid)
 
-Add a new file
+Fetch file.
 
-Upload a new file by sending its contents. The file will not have any additional metadata associated to it.
-
-### Example
-
-* Bearer Authentication (bearer):
-```python
-from __future__ import print_function
-import time
-import quetzal._auto_client
-from quetzal._auto_client.rest import ApiException
-from pprint import pprint
-configuration = quetzal._auto_client.Configuration()
-# Configure Bearer authorization: bearer
-configuration.access_token = 'YOUR_BEARER_TOKEN'
-
-# create an instance of the API class
-api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
-file_content = '/path/to/file' # file |  (optional)
-
-try:
-    # Add a new file
-    api_response = api_instance.app_api_data_file_create(wid, file_content=file_content)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_file_create: %s\n" % e)
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
- **file_content** | **file**|  | [optional] 
-
-### Return type
-
-**object**
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
- - **Content-Type**: multipart/form-data
- - **Accept**: application/json, application/problem+json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **app_api_data_file_details**
-> object app_api_data_file_details(uuid)
-
-Fetch file metadata or contents
-
-Serves the file contents or its metadata, according to the accepted content response header. In the case of metadata, this endpoint returns the most recent metadata that has been committed.
+This endpoint can be used to fetch the file contents or its metadata. The type of response, data or metadata, depends on the `Accept` request header. In the case of metadata, this endpoint returns the most recent metadata that has been committed.
 
 ### Example
 
@@ -101,11 +46,11 @@ api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(confi
 uuid = 'uuid_example' # str | File identifier
 
 try:
-    # Fetch file metadata or contents
-    api_response = api_instance.app_api_data_file_details(uuid)
+    # Fetch file.
+    api_response = api_instance.public_file_details(uuid)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_file_details: %s\n" % e)
+    print("Exception when calling DataApi->public_file_details: %s\n" % e)
 ```
 
 ### Parameters
@@ -113,403 +58,6 @@ except ApiException as e:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **uuid** | [**str**](.md)| File identifier | 
-
-### Return type
-
-**object**
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json, application/octet-stream, application/problem+json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **app_api_data_file_details_w**
-> object app_api_data_file_details_w(wid, uuid)
-
-Fetch file metadata or contents
-
-Serves the file contents or its metadata, according to the accepted content response header. When the metadata is requested, this returns the updated version with the modifications that may have been introduced in this workspace.
-
-### Example
-
-* Bearer Authentication (bearer):
-```python
-from __future__ import print_function
-import time
-import quetzal._auto_client
-from quetzal._auto_client.rest import ApiException
-from pprint import pprint
-configuration = quetzal._auto_client.Configuration()
-# Configure Bearer authorization: bearer
-configuration.access_token = 'YOUR_BEARER_TOKEN'
-
-# create an instance of the API class
-api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
-uuid = 'uuid_example' # str | File identifier
-
-try:
-    # Fetch file metadata or contents
-    api_response = api_instance.app_api_data_file_details_w(wid, uuid)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_file_details_w: %s\n" % e)
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
- **uuid** | [**str**](.md)| File identifier | 
-
-### Return type
-
-**object**
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json, application/octet-stream, application/problem+json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **app_api_data_file_fetch**
-> InlineResponse2002 app_api_data_file_fetch(wid, page=page, per_page=per_page)
-
-List workspace files
-
-Fetchs all the files that have been added in this workspace. Files whose metadata has been modified in this workspace will also be included.
-
-### Example
-
-* Bearer Authentication (bearer):
-```python
-from __future__ import print_function
-import time
-import quetzal._auto_client
-from quetzal._auto_client.rest import ApiException
-from pprint import pprint
-configuration = quetzal._auto_client.Configuration()
-# Configure Bearer authorization: bearer
-configuration.access_token = 'YOUR_BEARER_TOKEN'
-
-# create an instance of the API class
-api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
-page = 1 # int | The page of a collection to return. (optional) (default to 1)
-per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
-
-try:
-    # List workspace files
-    api_response = api_instance.app_api_data_file_fetch(wid, page=page, per_page=per_page)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_file_fetch: %s\n" % e)
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
- **page** | **int**| The page of a collection to return. | [optional] [default to 1]
- **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
-
-### Return type
-
-[**InlineResponse2002**](InlineResponse2002.md)
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json, application/problem+json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **app_api_data_file_set_metadata**
-> object app_api_data_file_set_metadata(wid, uuid, body=body)
-
-Rewrite file metadata
-
-Change the file metadata entirely. In contrast to the PATCH method to on this endpoint, this method sets the new metadata and discards any previous metadata that was defined before.
-
-### Example
-
-* Bearer Authentication (bearer):
-```python
-from __future__ import print_function
-import time
-import quetzal._auto_client
-from quetzal._auto_client.rest import ApiException
-from pprint import pprint
-configuration = quetzal._auto_client.Configuration()
-# Configure Bearer authorization: bearer
-configuration.access_token = 'YOUR_BEARER_TOKEN'
-
-# create an instance of the API class
-api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
-uuid = 'uuid_example' # str | File identifier
-body = NULL # object |  (optional)
-
-try:
-    # Rewrite file metadata
-    api_response = api_instance.app_api_data_file_set_metadata(wid, uuid, body=body)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_file_set_metadata: %s\n" % e)
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
- **uuid** | [**str**](.md)| File identifier | 
- **body** | **object**|  | [optional] 
-
-### Return type
-
-**object**
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json, application/problem+json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **app_api_data_file_update_metadata**
-> object app_api_data_file_update_metadata(wid, uuid, body=body)
-
-Modify file metadata
-
-Change the file metadata by updating it. Updating metadata changes key/value pairs, adding a new key/value pair if does not exist and changing the value if the key already exists. However, it cannot delete a key/value that already exists. To delete metadata, refer to the PUT method on this endpoint.
-
-### Example
-
-* Bearer Authentication (bearer):
-```python
-from __future__ import print_function
-import time
-import quetzal._auto_client
-from quetzal._auto_client.rest import ApiException
-from pprint import pprint
-configuration = quetzal._auto_client.Configuration()
-# Configure Bearer authorization: bearer
-configuration.access_token = 'YOUR_BEARER_TOKEN'
-
-# create an instance of the API class
-api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
-uuid = 'uuid_example' # str | File identifier
-body = NULL # object |  (optional)
-
-try:
-    # Modify file metadata
-    api_response = api_instance.app_api_data_file_update_metadata(wid, uuid, body=body)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_file_update_metadata: %s\n" % e)
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
- **uuid** | [**str**](.md)| File identifier | 
- **body** | **object**|  | [optional] 
-
-### Return type
-
-**object**
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json, application/problem+json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **app_api_data_query_create**
-> InlineResponseDefault app_api_data_query_create(wid, metadata_query_type1)
-
-Prepare a query for a workspace
-
-Description
-
-### Example
-
-* Bearer Authentication (bearer):
-```python
-from __future__ import print_function
-import time
-import quetzal._auto_client
-from quetzal._auto_client.rest import ApiException
-from pprint import pprint
-configuration = quetzal._auto_client.Configuration()
-# Configure Bearer authorization: bearer
-configuration.access_token = 'YOUR_BEARER_TOKEN'
-
-# create an instance of the API class
-api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
-metadata_query_type1 = quetzal._auto_client.MetadataQueryType1() # MetadataQueryType1 | 
-
-try:
-    # Prepare a query for a workspace
-    api_response = api_instance.app_api_data_query_create(wid, metadata_query_type1)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_query_create: %s\n" % e)
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
- **metadata_query_type1** | [**MetadataQueryType1**](MetadataQueryType1.md)|  | 
-
-### Return type
-
-[**InlineResponseDefault**](InlineResponseDefault.md)
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: application/json, application/problem+json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **app_api_data_query_details**
-> MetadataQueryType app_api_data_query_details(wid, qid, page=page, per_page=per_page)
-
-Get details on query
-
-Description.
-
-### Example
-
-* Bearer Authentication (bearer):
-```python
-from __future__ import print_function
-import time
-import quetzal._auto_client
-from quetzal._auto_client.rest import ApiException
-from pprint import pprint
-configuration = quetzal._auto_client.Configuration()
-# Configure Bearer authorization: bearer
-configuration.access_token = 'YOUR_BEARER_TOKEN'
-
-# create an instance of the API class
-api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
-qid = 56 # int | Query identifier
-page = 1 # int | The page of a collection to return. (optional) (default to 1)
-per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
-
-try:
-    # Get details on query
-    api_response = api_instance.app_api_data_query_details(wid, qid, page=page, per_page=per_page)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_query_details: %s\n" % e)
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
- **qid** | **int**| Query identifier | 
- **page** | **int**| The page of a collection to return. | [optional] [default to 1]
- **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
-
-### Return type
-
-[**MetadataQueryType**](MetadataQueryType.md)
-
-### Authorization
-
-[bearer](../README.md#bearer)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json, application/problem+json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **app_api_data_query_fetch**
-> InlineResponse2003 app_api_data_query_fetch(wid, page=page, per_page=per_page)
-
-List all queries of a workspace
-
-List all the queries that are associated with a workspace.
-
-### Example
-
-* Bearer Authentication (bearer):
-```python
-from __future__ import print_function
-import time
-import quetzal._auto_client
-from quetzal._auto_client.rest import ApiException
-from pprint import pprint
-configuration = quetzal._auto_client.Configuration()
-# Configure Bearer authorization: bearer
-configuration.access_token = 'YOUR_BEARER_TOKEN'
-
-# create an instance of the API class
-api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
-page = 1 # int | The page of a collection to return. (optional) (default to 1)
-per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
-
-try:
-    # List all queries of a workspace
-    api_response = api_instance.app_api_data_query_fetch(wid, page=page, per_page=per_page)
-    pprint(api_response)
-except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_query_fetch: %s\n" % e)
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
- **page** | **int**| The page of a collection to return. | [optional] [default to 1]
- **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
 
 ### Return type
 
@@ -522,16 +70,16 @@ Name | Type | Description  | Notes
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json, application/problem+json
+ - **Accept**: application/json, application/octet-stream, application/problem+json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **app_api_data_workspace_commit**
-> WorkspaceDetailsType app_api_data_workspace_commit(wid)
+# **workspace_commit**
+> InlineResponse2001Results workspace_commit(wid)
 
-Commit a workspace
+Commit workspace.
 
-Requests a workspace commit. That is, all metadata added or modified in this workspace will be committed to the global workspace, becoming available to all users. Metadata versions will be incremented.
+Requests a workspace commit. That is, all metadata added or modified in this workspace will be moved to the global, public workspace, becoming available to all users. Metadata versions will be incremented.
 
 ### Example
 
@@ -551,11 +99,11 @@ api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(confi
 wid = 56 # int | Workspace identifier
 
 try:
-    # Commit a workspace
-    api_response = api_instance.app_api_data_workspace_commit(wid)
+    # Commit workspace.
+    api_response = api_instance.workspace_commit(wid)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_workspace_commit: %s\n" % e)
+    print("Exception when calling DataApi->workspace_commit: %s\n" % e)
 ```
 
 ### Parameters
@@ -566,7 +114,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**WorkspaceDetailsType**](WorkspaceDetailsType.md)
+[**InlineResponse2001Results**](InlineResponse2001Results.md)
 
 ### Authorization
 
@@ -579,10 +127,12 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **app_api_data_workspace_create**
-> WorkspaceDetailsType app_api_data_workspace_create(workspace_details_type1)
+# **workspace_create**
+> InlineResponse2001Results workspace_create(inline_object)
 
-Create a new workspace
+Create workspace.
+
+Create a workspace, which initializes the basic resources and information associated with it, and then schedules some background tasks to initialize Cloud resources.
 
 ### Example
 
@@ -599,25 +149,25 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
-workspace_details_type1 = quetzal._auto_client.WorkspaceDetailsType1() # WorkspaceDetailsType1 | 
+inline_object = quetzal._auto_client.InlineObject() # InlineObject | 
 
 try:
-    # Create a new workspace
-    api_response = api_instance.app_api_data_workspace_create(workspace_details_type1)
+    # Create workspace.
+    api_response = api_instance.workspace_create(inline_object)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_workspace_create: %s\n" % e)
+    print("Exception when calling DataApi->workspace_create: %s\n" % e)
 ```
 
 ### Parameters
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **workspace_details_type1** | [**WorkspaceDetailsType1**](WorkspaceDetailsType1.md)|  | 
+ **inline_object** | [**InlineObject**](InlineObject.md)|  | 
 
 ### Return type
 
-[**WorkspaceDetailsType**](WorkspaceDetailsType.md)
+[**InlineResponse2001Results**](InlineResponse2001Results.md)
 
 ### Authorization
 
@@ -630,12 +180,12 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **app_api_data_workspace_delete**
-> app_api_data_workspace_delete(wid)
+# **workspace_delete**
+> workspace_delete(wid)
 
-Request deletion of a workspace
+Delete workspace.
 
-Marks a workspace for deletion. Workspaces cannot be immediately deleted, due to complex resource management. The status of the workspace can be requested on this same path, using a GET instead of a DELETE.
+Marks a workspace for deletion. Workspaces cannot be immediately deleted, due to complex resource management. Moreover, workspaces are not completely deleted in order to keep a history of workspaces and possibly to add some resurrect functionality. Instead, all of their resources are freed and its status is marked as DELETED.  The current status of the workspace can be requested on this same path, using a GET instead of a DELETE.
 
 ### Example
 
@@ -655,10 +205,10 @@ api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(confi
 wid = 56 # int | Workspace identifier
 
 try:
-    # Request deletion of a workspace
-    api_instance.app_api_data_workspace_delete(wid)
+    # Delete workspace.
+    api_instance.workspace_delete(wid)
 except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_workspace_delete: %s\n" % e)
+    print("Exception when calling DataApi->workspace_delete: %s\n" % e)
 ```
 
 ### Parameters
@@ -682,12 +232,12 @@ void (empty response body)
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **app_api_data_workspace_details**
-> WorkspaceDetailsType app_api_data_workspace_details(wid)
+# **workspace_details**
+> InlineResponse2001Results workspace_details(wid)
 
-Workspace details
+Workspace details.
 
-Fetchs all details of a workspace
+Obtain all information of a workspace.
 
 ### Example
 
@@ -707,11 +257,11 @@ api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(confi
 wid = 56 # int | Workspace identifier
 
 try:
-    # Workspace details
-    api_response = api_instance.app_api_data_workspace_details(wid)
+    # Workspace details.
+    api_response = api_instance.workspace_details(wid)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_workspace_details: %s\n" % e)
+    print("Exception when calling DataApi->workspace_details: %s\n" % e)
 ```
 
 ### Parameters
@@ -722,7 +272,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**WorkspaceDetailsType**](WorkspaceDetailsType.md)
+[**InlineResponse2001Results**](InlineResponse2001Results.md)
 
 ### Authorization
 
@@ -735,10 +285,12 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **app_api_data_workspace_fetch**
-> InlineResponse2001 app_api_data_workspace_fetch(page=page, per_page=per_page, name=name, owner=owner, deleted=deleted)
+# **workspace_fetch**
+> InlineResponse2001 workspace_fetch(page=page, per_page=per_page, name=name, owner=owner, deleted=deleted)
 
-Get all workspaces
+List workspaces.
+
+List workspace details. Optionally, filter workspaces according to their name, owner or whether they have been deleted.
 
 ### Example
 
@@ -762,11 +314,11 @@ owner = 'owner_example' # str | Filter workspaces by owner (optional)
 deleted = True # bool | Include deleted workspaces (optional)
 
 try:
-    # Get all workspaces
-    api_response = api_instance.app_api_data_workspace_fetch(page=page, per_page=per_page, name=name, owner=owner, deleted=deleted)
+    # List workspaces.
+    api_response = api_instance.workspace_fetch(page=page, per_page=per_page, name=name, owner=owner, deleted=deleted)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_workspace_fetch: %s\n" % e)
+    print("Exception when calling DataApi->workspace_fetch: %s\n" % e)
 ```
 
 ### Parameters
@@ -794,10 +346,466 @@ Name | Type | Description  | Notes
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **app_api_data_workspace_scan**
-> WorkspaceDetailsType app_api_data_workspace_scan(wid)
+# **workspace_file_create**
+> InlineResponse2002Results workspace_file_create(wid, file_content=file_content)
 
-Update workspace views
+Upload file.
+
+Upload a new file to a workspace by sending its contents. The file will not have any additional metadata associated to it.
+
+### Example
+
+* Bearer Authentication (bearer):
+```python
+from __future__ import print_function
+import time
+import quetzal._auto_client
+from quetzal._auto_client.rest import ApiException
+from pprint import pprint
+configuration = quetzal._auto_client.Configuration()
+# Configure Bearer authorization: bearer
+configuration.access_token = 'YOUR_BEARER_TOKEN'
+
+# create an instance of the API class
+api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
+wid = 56 # int | Workspace identifier
+file_content = '/path/to/file' # file |  (optional)
+
+try:
+    # Upload file.
+    api_response = api_instance.workspace_file_create(wid, file_content=file_content)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DataApi->workspace_file_create: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **wid** | **int**| Workspace identifier | 
+ **file_content** | **file**|  | [optional] 
+
+### Return type
+
+[**InlineResponse2002Results**](InlineResponse2002Results.md)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **workspace_file_details**
+> InlineResponse2003 workspace_file_details(wid, uuid)
+
+Fetch file.
+
+Serves the file contents or its metadata, according to the accepted content response header. When the metadata is requested, this returns the updated version with the modifications that may have been introduced in this workspace.
+
+### Example
+
+* Bearer Authentication (bearer):
+```python
+from __future__ import print_function
+import time
+import quetzal._auto_client
+from quetzal._auto_client.rest import ApiException
+from pprint import pprint
+configuration = quetzal._auto_client.Configuration()
+# Configure Bearer authorization: bearer
+configuration.access_token = 'YOUR_BEARER_TOKEN'
+
+# create an instance of the API class
+api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
+wid = 56 # int | Workspace identifier
+uuid = 'uuid_example' # str | File identifier
+
+try:
+    # Fetch file.
+    api_response = api_instance.workspace_file_details(wid, uuid)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DataApi->workspace_file_details: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **wid** | **int**| Workspace identifier | 
+ **uuid** | [**str**](.md)| File identifier | 
+
+### Return type
+
+[**InlineResponse2003**](InlineResponse2003.md)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json, application/octet-stream, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **workspace_file_fetch**
+> InlineResponse2002 workspace_file_fetch(wid, page=page, per_page=per_page)
+
+List files.
+
+Fetchs all the files that have been added in this workspace. Files whose metadata has been modified in this workspace will also be included.
+
+### Example
+
+* Bearer Authentication (bearer):
+```python
+from __future__ import print_function
+import time
+import quetzal._auto_client
+from quetzal._auto_client.rest import ApiException
+from pprint import pprint
+configuration = quetzal._auto_client.Configuration()
+# Configure Bearer authorization: bearer
+configuration.access_token = 'YOUR_BEARER_TOKEN'
+
+# create an instance of the API class
+api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
+wid = 56 # int | Workspace identifier
+page = 1 # int | The page of a collection to return. (optional) (default to 1)
+per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
+
+try:
+    # List files.
+    api_response = api_instance.workspace_file_fetch(wid, page=page, per_page=per_page)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DataApi->workspace_file_fetch: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **wid** | **int**| Workspace identifier | 
+ **page** | **int**| The page of a collection to return. | [optional] [default to 1]
+ **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
+
+### Return type
+
+[**InlineResponse2002**](InlineResponse2002.md)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **workspace_file_set_metadata**
+> InlineResponse2003 workspace_file_set_metadata(wid, uuid, inline_object2=inline_object2)
+
+Rewrite metadata.
+
+Change the file metadata entirely. In contrast to the PATCH method to on this endpoint, this method sets the new metadata and discards any previous metadata that was defined before.
+
+### Example
+
+* Bearer Authentication (bearer):
+```python
+from __future__ import print_function
+import time
+import quetzal._auto_client
+from quetzal._auto_client.rest import ApiException
+from pprint import pprint
+configuration = quetzal._auto_client.Configuration()
+# Configure Bearer authorization: bearer
+configuration.access_token = 'YOUR_BEARER_TOKEN'
+
+# create an instance of the API class
+api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
+wid = 56 # int | Workspace identifier
+uuid = 'uuid_example' # str | File identifier
+inline_object2 = quetzal._auto_client.InlineObject2() # InlineObject2 |  (optional)
+
+try:
+    # Rewrite metadata.
+    api_response = api_instance.workspace_file_set_metadata(wid, uuid, inline_object2=inline_object2)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DataApi->workspace_file_set_metadata: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **wid** | **int**| Workspace identifier | 
+ **uuid** | [**str**](.md)| File identifier | 
+ **inline_object2** | [**InlineObject2**](InlineObject2.md)|  | [optional] 
+
+### Return type
+
+[**InlineResponse2003**](InlineResponse2003.md)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **workspace_file_update_metadata**
+> InlineResponse2003 workspace_file_update_metadata(wid, uuid, inline_object3=inline_object3)
+
+Modify metadata.
+
+Change the file metadata by updating it. Updating metadata changes key/value pairs, adding a new key/value pair if does not exist and changing the value if the key already exists. However, it cannot delete a key/value that already exists. To delete metadata, refer to the PUT method on this endpoint.
+
+### Example
+
+* Bearer Authentication (bearer):
+```python
+from __future__ import print_function
+import time
+import quetzal._auto_client
+from quetzal._auto_client.rest import ApiException
+from pprint import pprint
+configuration = quetzal._auto_client.Configuration()
+# Configure Bearer authorization: bearer
+configuration.access_token = 'YOUR_BEARER_TOKEN'
+
+# create an instance of the API class
+api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
+wid = 56 # int | Workspace identifier
+uuid = 'uuid_example' # str | File identifier
+inline_object3 = quetzal._auto_client.InlineObject3() # InlineObject3 |  (optional)
+
+try:
+    # Modify metadata.
+    api_response = api_instance.workspace_file_update_metadata(wid, uuid, inline_object3=inline_object3)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DataApi->workspace_file_update_metadata: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **wid** | **int**| Workspace identifier | 
+ **uuid** | [**str**](.md)| File identifier | 
+ **inline_object3** | [**InlineObject3**](InlineObject3.md)|  | [optional] 
+
+### Return type
+
+[**InlineResponse2003**](InlineResponse2003.md)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **workspace_query_create**
+> InlineResponse201 workspace_query_create(wid, inline_object4, page=page, per_page=per_page)
+
+Prepare a query.
+
+Queries in Quetzal are saved as a resource associated to a workspace. This endpoint creates one and responds with a _see other_ status referencing the query details endpoint.  Since the query details contains the query results as a paginated list, this endpoint also accepts the normal pagination parameters.
+
+### Example
+
+* Bearer Authentication (bearer):
+```python
+from __future__ import print_function
+import time
+import quetzal._auto_client
+from quetzal._auto_client.rest import ApiException
+from pprint import pprint
+configuration = quetzal._auto_client.Configuration()
+# Configure Bearer authorization: bearer
+configuration.access_token = 'YOUR_BEARER_TOKEN'
+
+# create an instance of the API class
+api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
+wid = 56 # int | Workspace identifier
+inline_object4 = quetzal._auto_client.InlineObject4() # InlineObject4 | 
+page = 1 # int | The page of a collection to return. (optional) (default to 1)
+per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
+
+try:
+    # Prepare a query.
+    api_response = api_instance.workspace_query_create(wid, inline_object4, page=page, per_page=per_page)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DataApi->workspace_query_create: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **wid** | **int**| Workspace identifier | 
+ **inline_object4** | [**InlineObject4**](InlineObject4.md)|  | 
+ **page** | **int**| The page of a collection to return. | [optional] [default to 1]
+ **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
+
+### Return type
+
+[**InlineResponse201**](InlineResponse201.md)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **workspace_query_details**
+> InlineResponse201 workspace_query_details(wid, qid, page=page, per_page=per_page)
+
+Query details.
+
+The details of a query, which contains the query itself and a paginated list of its results.
+
+### Example
+
+* Bearer Authentication (bearer):
+```python
+from __future__ import print_function
+import time
+import quetzal._auto_client
+from quetzal._auto_client.rest import ApiException
+from pprint import pprint
+configuration = quetzal._auto_client.Configuration()
+# Configure Bearer authorization: bearer
+configuration.access_token = 'YOUR_BEARER_TOKEN'
+
+# create an instance of the API class
+api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
+wid = 56 # int | Workspace identifier
+qid = 56 # int | Query identifier
+page = 1 # int | The page of a collection to return. (optional) (default to 1)
+per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
+
+try:
+    # Query details.
+    api_response = api_instance.workspace_query_details(wid, qid, page=page, per_page=per_page)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DataApi->workspace_query_details: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **wid** | **int**| Workspace identifier | 
+ **qid** | **int**| Query identifier | 
+ **page** | **int**| The page of a collection to return. | [optional] [default to 1]
+ **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
+
+### Return type
+
+[**InlineResponse201**](InlineResponse201.md)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **workspace_query_fetch**
+> InlineResponse2004 workspace_query_fetch(wid, page=page, per_page=per_page)
+
+List queries.
+
+List all the queries that are associated with a workspace. Note that each query listed here is shown _without_ its results, for brevity.
+
+### Example
+
+* Bearer Authentication (bearer):
+```python
+from __future__ import print_function
+import time
+import quetzal._auto_client
+from quetzal._auto_client.rest import ApiException
+from pprint import pprint
+configuration = quetzal._auto_client.Configuration()
+# Configure Bearer authorization: bearer
+configuration.access_token = 'YOUR_BEARER_TOKEN'
+
+# create an instance of the API class
+api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
+wid = 56 # int | Workspace identifier
+page = 1 # int | The page of a collection to return. (optional) (default to 1)
+per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
+
+try:
+    # List queries.
+    api_response = api_instance.workspace_query_fetch(wid, page=page, per_page=per_page)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DataApi->workspace_query_fetch: %s\n" % e)
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **wid** | **int**| Workspace identifier | 
+ **page** | **int**| The page of a collection to return. | [optional] [default to 1]
+ **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
+
+### Return type
+
+[**InlineResponse2004**](InlineResponse2004.md)
+
+### Authorization
+
+[bearer](../README.md#bearer)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json, application/problem+json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **workspace_scan**
+> InlineResponse2001Results workspace_scan(wid)
+
+Update views.
 
 Requests the update of the views of a workspace. All the internal databases used for the query operation will be updated to contain the latest modifications of the metadata.
 
@@ -819,11 +827,11 @@ api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(confi
 wid = 56 # int | Workspace identifier
 
 try:
-    # Update workspace views
-    api_response = api_instance.app_api_data_workspace_scan(wid)
+    # Update views.
+    api_response = api_instance.workspace_scan(wid)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling DataApi->app_api_data_workspace_scan: %s\n" % e)
+    print("Exception when calling DataApi->workspace_scan: %s\n" % e)
 ```
 
 ### Parameters
@@ -834,7 +842,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**WorkspaceDetailsType**](WorkspaceDetailsType.md)
+[**InlineResponse2001Results**](InlineResponse2001Results.md)
 
 ### Authorization
 
