@@ -3,7 +3,7 @@
 """
     Quetzalcoatl API
 
-    Quetzal (short for Quetzalcoatl): an API to manage data files and their associated metadata.  # General documentation  ...  ## Concepts  * File * Metadata   Versioning too * Families * Workspace   Description, workspace states, data_url, etc. * Workspace views * Queries  # Errors  Quetzal uses standard HTTP error codes to indicate success or failure of its operations. The body of the response follows [RFC-7807](https://tools.ietf.org/html/rfc7807) to provide details on an error. For example:  ``` {   \"type\": \"https://quetz.al/problems/some-name\",   \"title\": \"Bad request.\",   \"status\": 400,   \"detail\": \"Incorrect foo due to missing bar.\",   \"instance\": \"/some_path/some_id\" } ```  # Versioning  API version | Changes ------------|--------- 0.1.0       | [API changes](https://quetz.al/docs/changelog#v0-1-0)   # noqa: E501
+    Quetzal (short for Quetzalcoatl): an API to manage data files and their associated metadata.  # Overview  ...  ## Concepts  * File * Metadata   Versioning too * Families * Workspace   Description, workspace states, data_url, etc. * Workspace views * Queries  # Authentication  Authentication details  # Errors  Quetzal uses standard HTTP error codes to indicate success or failure of its operations. The body of the response follows [RFC-7807](https://tools.ietf.org/html/rfc7807) to provide details on an error. For example:  ``` {   \"type\": \"https://quetz.al/problems/some-name\",   \"title\": \"Bad request.\",   \"status\": 400,   \"detail\": \"Incorrect foo due to missing bar.\",   \"instance\": \"/some_path/some_id\" } ```  # Versioning  API version | Changes ------------|--------- 0.1.0       | [API changes](https://quetz.al/docs/changelog#v0-1-0)  # API reference   # noqa: E501
 
     OpenAPI spec version: 0.1.0
     Contact: support@quetz.al
@@ -43,7 +43,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :return: InlineResponse2001Results
                  If the method is called asynchronously,
                  returns the request thread.
@@ -65,7 +65,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :return: InlineResponse2001Results
                  If the method is called asynchronously,
                  returns the request thread.
@@ -139,7 +139,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :return: InlineResponse2001Results
                  If the method is called asynchronously,
                  returns the request thread.
@@ -161,7 +161,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :return: InlineResponse2001Results
                  If the method is called asynchronously,
                  returns the request thread.
@@ -349,7 +349,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param file file_content:
         :return: InlineResponse2002Results
                  If the method is called asynchronously,
@@ -372,7 +372,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param file file_content:
         :return: InlineResponse2002Results
                  If the method is called asynchronously,
@@ -453,7 +453,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param str uuid: File identifier (required)
         :return: InlineResponse2003
                  If the method is called asynchronously,
@@ -476,7 +476,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param str uuid: File identifier (required)
         :return: InlineResponse2003
                  If the method is called asynchronously,
@@ -550,16 +550,17 @@ class WorkspaceApi(object):
     def workspace_file_fetch(self, wid, **kwargs):  # noqa: E501
         """List files.  # noqa: E501
 
-        Fetchs all the files that have been added in this workspace. Files whose metadata has been modified in this workspace will also be included.  # noqa: E501
+        Fetches all the files that have been added in this workspace. Files whose metadata has been modified in this workspace will also be included.  The file details included in the response only show their base metadata.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.workspace_file_fetch(wid, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
+        :param str filters: Filters on the workspace files, separated by commas. These filters are applied only the base metadata family. This can be used to get a file by name, path, size or checksum.
         :return: InlineResponse2002
                  If the method is called asynchronously,
                  returns the request thread.
@@ -574,16 +575,17 @@ class WorkspaceApi(object):
     def workspace_file_fetch_with_http_info(self, wid, **kwargs):  # noqa: E501
         """List files.  # noqa: E501
 
-        Fetchs all the files that have been added in this workspace. Files whose metadata has been modified in this workspace will also be included.  # noqa: E501
+        Fetches all the files that have been added in this workspace. Files whose metadata has been modified in this workspace will also be included.  The file details included in the response only show their base metadata.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
         >>> thread = api.workspace_file_fetch_with_http_info(wid, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
+        :param str filters: Filters on the workspace files, separated by commas. These filters are applied only the base metadata family. This can be used to get a file by name, path, size or checksum.
         :return: InlineResponse2002
                  If the method is called asynchronously,
                  returns the request thread.
@@ -591,7 +593,7 @@ class WorkspaceApi(object):
 
         local_var_params = locals()
 
-        all_params = ['wid', 'page', 'per_page']  # noqa: E501
+        all_params = ['wid', 'page', 'per_page', 'filters']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -627,6 +629,8 @@ class WorkspaceApi(object):
             query_params.append(('page', local_var_params['page']))  # noqa: E501
         if 'per_page' in local_var_params:
             query_params.append(('per_page', local_var_params['per_page']))  # noqa: E501
+        if 'filters' in local_var_params:
+            query_params.append(('filters', local_var_params['filters']))  # noqa: E501
 
         header_params = {}
 
@@ -667,7 +671,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param str uuid: File identifier (required)
         :param InlineObject2 inline_object2:
         :return: InlineResponse2003
@@ -691,7 +695,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param str uuid: File identifier (required)
         :param InlineObject2 inline_object2:
         :return: InlineResponse2003
@@ -779,7 +783,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param str uuid: File identifier (required)
         :param InlineObject3 inline_object3:
         :return: InlineResponse2003
@@ -803,7 +807,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param str uuid: File identifier (required)
         :param InlineObject3 inline_object3:
         :return: InlineResponse2003
@@ -891,7 +895,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param InlineObject4 inline_object4: (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
@@ -916,7 +920,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param InlineObject4 inline_object4: (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
@@ -1013,7 +1017,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param int qid: Query identifier (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
@@ -1038,7 +1042,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param int qid: Query identifier (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
@@ -1131,7 +1135,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
         :return: InlineResponse2004
@@ -1155,7 +1159,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
         :return: InlineResponse2004
@@ -1241,7 +1245,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :return: InlineResponse2001Results
                  If the method is called asynchronously,
                  returns the request thread.
@@ -1263,7 +1267,7 @@ class WorkspaceApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :param int wid: Workspace identifier (required)
+        :param int wid: Workspace identifier. (required)
         :return: InlineResponse2001Results
                  If the method is called asynchronously,
                  returns the request thread.

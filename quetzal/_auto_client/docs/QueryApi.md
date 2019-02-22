@@ -31,7 +31,7 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.QueryApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
+wid = 56 # int | Workspace identifier.
 inline_object4 = quetzal._auto_client.InlineObject4() # InlineObject4 | 
 page = 1 # int | The page of a collection to return. (optional) (default to 1)
 per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
@@ -48,7 +48,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
+ **wid** | **int**| Workspace identifier. | 
  **inline_object4** | [**InlineObject4**](InlineObject4.md)|  | 
  **page** | **int**| The page of a collection to return. | [optional] [default to 1]
  **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
@@ -90,7 +90,7 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.QueryApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
+wid = 56 # int | Workspace identifier.
 qid = 56 # int | Query identifier
 page = 1 # int | The page of a collection to return. (optional) (default to 1)
 per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
@@ -107,7 +107,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
+ **wid** | **int**| Workspace identifier. | 
  **qid** | **int**| Query identifier | 
  **page** | **int**| The page of a collection to return. | [optional] [default to 1]
  **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
@@ -149,7 +149,7 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.QueryApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
+wid = 56 # int | Workspace identifier.
 page = 1 # int | The page of a collection to return. (optional) (default to 1)
 per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
 
@@ -165,7 +165,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
+ **wid** | **int**| Workspace identifier. | 
  **page** | **int**| The page of a collection to return. | [optional] [default to 1]
  **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
 

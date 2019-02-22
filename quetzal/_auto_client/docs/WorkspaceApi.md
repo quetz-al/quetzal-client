@@ -40,7 +40,7 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.WorkspaceApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
+wid = 56 # int | Workspace identifier.
 
 try:
     # Commit workspace.
@@ -54,7 +54,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
+ **wid** | **int**| Workspace identifier. | 
 
 ### Return type
 
@@ -93,7 +93,7 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.WorkspaceApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
+wid = 56 # int | Workspace identifier.
 
 try:
     # Workspace details.
@@ -107,7 +107,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
+ **wid** | **int**| Workspace identifier. | 
 
 ### Return type
 
@@ -207,7 +207,7 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.WorkspaceApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
+wid = 56 # int | Workspace identifier.
 file_content = '/path/to/file' # file |  (optional)
 
 try:
@@ -222,7 +222,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
+ **wid** | **int**| Workspace identifier. | 
  **file_content** | **file**|  | [optional] 
 
 ### Return type
@@ -262,7 +262,7 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.WorkspaceApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
+wid = 56 # int | Workspace identifier.
 uuid = 'uuid_example' # str | File identifier
 
 try:
@@ -277,7 +277,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
+ **wid** | **int**| Workspace identifier. | 
  **uuid** | [**str**](.md)| File identifier | 
 
 ### Return type
@@ -296,11 +296,11 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_file_fetch**
-> InlineResponse2002 workspace_file_fetch(wid, page=page, per_page=per_page)
+> InlineResponse2002 workspace_file_fetch(wid, page=page, per_page=per_page, filters=filters)
 
 List files.
 
-Fetchs all the files that have been added in this workspace. Files whose metadata has been modified in this workspace will also be included.
+Fetches all the files that have been added in this workspace. Files whose metadata has been modified in this workspace will also be included.  The file details included in the response only show their base metadata.
 
 ### Example
 
@@ -317,13 +317,14 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.WorkspaceApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
+wid = 56 # int | Workspace identifier.
 page = 1 # int | The page of a collection to return. (optional) (default to 1)
 per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
+filters = filename=foo.png,path=images,size=12314 # str | Filters on the workspace files, separated by commas. These filters are applied only the base metadata family. This can be used to get a file by name, path, size or checksum. (optional)
 
 try:
     # List files.
-    api_response = api_instance.workspace_file_fetch(wid, page=page, per_page=per_page)
+    api_response = api_instance.workspace_file_fetch(wid, page=page, per_page=per_page, filters=filters)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling WorkspaceApi->workspace_file_fetch: %s\n" % e)
@@ -333,9 +334,10 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
+ **wid** | **int**| Workspace identifier. | 
  **page** | **int**| The page of a collection to return. | [optional] [default to 1]
  **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
+ **filters** | **str**| Filters on the workspace files, separated by commas. These filters are applied only the base metadata family. This can be used to get a file by name, path, size or checksum. | [optional] 
 
 ### Return type
 
@@ -374,7 +376,7 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.WorkspaceApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
+wid = 56 # int | Workspace identifier.
 uuid = 'uuid_example' # str | File identifier
 inline_object2 = quetzal._auto_client.InlineObject2() # InlineObject2 |  (optional)
 
@@ -390,7 +392,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
+ **wid** | **int**| Workspace identifier. | 
  **uuid** | [**str**](.md)| File identifier | 
  **inline_object2** | [**InlineObject2**](InlineObject2.md)|  | [optional] 
 
@@ -431,7 +433,7 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.WorkspaceApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
+wid = 56 # int | Workspace identifier.
 uuid = 'uuid_example' # str | File identifier
 inline_object3 = quetzal._auto_client.InlineObject3() # InlineObject3 |  (optional)
 
@@ -447,7 +449,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
+ **wid** | **int**| Workspace identifier. | 
  **uuid** | [**str**](.md)| File identifier | 
  **inline_object3** | [**InlineObject3**](InlineObject3.md)|  | [optional] 
 
@@ -488,7 +490,7 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.WorkspaceApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
+wid = 56 # int | Workspace identifier.
 inline_object4 = quetzal._auto_client.InlineObject4() # InlineObject4 | 
 page = 1 # int | The page of a collection to return. (optional) (default to 1)
 per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
@@ -505,7 +507,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
+ **wid** | **int**| Workspace identifier. | 
  **inline_object4** | [**InlineObject4**](InlineObject4.md)|  | 
  **page** | **int**| The page of a collection to return. | [optional] [default to 1]
  **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
@@ -547,7 +549,7 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.WorkspaceApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
+wid = 56 # int | Workspace identifier.
 qid = 56 # int | Query identifier
 page = 1 # int | The page of a collection to return. (optional) (default to 1)
 per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
@@ -564,7 +566,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
+ **wid** | **int**| Workspace identifier. | 
  **qid** | **int**| Query identifier | 
  **page** | **int**| The page of a collection to return. | [optional] [default to 1]
  **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
@@ -606,7 +608,7 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.WorkspaceApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
+wid = 56 # int | Workspace identifier.
 page = 1 # int | The page of a collection to return. (optional) (default to 1)
 per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
 
@@ -622,7 +624,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
+ **wid** | **int**| Workspace identifier. | 
  **page** | **int**| The page of a collection to return. | [optional] [default to 1]
  **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
 
@@ -663,7 +665,7 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.WorkspaceApi(quetzal._auto_client.ApiClient(configuration))
-wid = 56 # int | Workspace identifier
+wid = 56 # int | Workspace identifier.
 
 try:
     # Update views.
@@ -677,7 +679,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **wid** | **int**| Workspace identifier | 
+ **wid** | **int**| Workspace identifier. | 
 
 ### Return type
 
