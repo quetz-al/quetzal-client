@@ -15,7 +15,7 @@
 
 from __future__ import absolute_import
 
-__version__ = "0.0.0"
+# __version__ = "0.0.0"  # Commented by generate.sh
 
 # import apis into sdk package
 from quetzal._auto_client.api.authentication_api import AuthenticationApi
@@ -54,3 +54,8 @@ from quetzal._auto_client.models.query import Query
 from quetzal._auto_client.models.query_no_results import QueryNoResults
 from quetzal._auto_client.models.token import Token
 from quetzal._auto_client.models.workspace import Workspace
+
+# Added by generate.sh:
+# Add a complete reference to the generator version:
+# a git commit or Docker image ID used to generate this code with openapi-generator-cli
+__openapi_generator_cli_version__ = "git-f3d47bbbec"

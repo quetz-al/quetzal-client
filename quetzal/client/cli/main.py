@@ -14,13 +14,6 @@ from quetzal.client.cli.workspace import workspace_group
 logger = logging.getLogger(__name__)
 
 
-def print_version(ctx, param, value):
-    if not value or ctx.resilient_parsing:
-        return
-    click.echo('Quetzal client version x.y.z')
-    ctx.exit()
-
-
 def url_option(f):
 
     def callback(ctx, param, value):
@@ -121,8 +114,12 @@ def verbose_option(f):
 
 def global_options(f):
     import quetzal.client
-    # Note that options need to be chained in reversed order
-    f = click.version_option(version=quetzal.client.__version__)(f)
+    version_str = f'{quetzal.client.__version__} '\
+        f'(generator version: {quetzal.client.__openapi_generator_cli_version__})'
+
+    # Note that options need to be chained in the reversed order
+    # (with respect to how parameters are captured on the command functions)
+    f = click.version_option(version=version_str)(f)
     f = help_options(f)
     f = verbose_option(f)
     f = token_option(f)

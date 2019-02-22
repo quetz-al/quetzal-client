@@ -81,7 +81,14 @@ ${GENERATE_CMD} \
 # rm -r quetzal._auto_client_README.md
 
 echo "Saving reference..."
-cat > quetzal/_auto_client/_ref.py <<EOF
-# Git commit or Docker image ID used to generate this code with openapi-generator-cli
+sed -i '' \
+    -e "s/__version__[[:space:]]*=[[:space:]]*\(.*\)/\# __version__ = \1  \# Commented by generate.sh/g" \
+    quetzal/_auto_client/__init__.py
+
+cat >> quetzal/_auto_client/__init__.py <<EOF
+
+# Added by generate.sh:
+# Add a complete reference to the generator version:
+# a git commit or Docker image ID used to generate this code with openapi-generator-cli
 __openapi_generator_cli_version__ = "${REFERENCE}"
 EOF
