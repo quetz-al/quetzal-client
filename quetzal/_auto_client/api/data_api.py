@@ -44,7 +44,7 @@ class DataApi(object):
 
         :param async_req bool
         :param str uuid: File identifier (required)
-        :return: InlineResponse2003
+        :return: MetadataByFamily
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -66,7 +66,7 @@ class DataApi(object):
 
         :param async_req bool
         :param str uuid: File identifier (required)
-        :return: InlineResponse2003
+        :return: MetadataByFamily
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -121,7 +121,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse2003',  # noqa: E501
+            response_type='MetadataByFamily',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -142,7 +142,7 @@ class DataApi(object):
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
         :param str filters: Filters on the workspace files, separated by commas. These filters are applied only the base metadata family. This can be used to get a file by name, path, size or checksum.
-        :return: InlineResponse2002
+        :return: PaginatedFiles
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -166,7 +166,7 @@ class DataApi(object):
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
         :param str filters: Filters on the workspace files, separated by commas. These filters are applied only the base metadata family. This can be used to get a file by name, path, size or checksum.
-        :return: InlineResponse2002
+        :return: PaginatedFiles
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -227,7 +227,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse2002',  # noqa: E501
+            response_type='PaginatedFiles',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -246,7 +246,7 @@ class DataApi(object):
 
         :param async_req bool
         :param int wid: Workspace identifier. (required)
-        :return: InlineResponse2001Results
+        :return: Workspace
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -268,7 +268,7 @@ class DataApi(object):
 
         :param async_req bool
         :param int wid: Workspace identifier. (required)
-        :return: InlineResponse2001Results
+        :return: Workspace
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -323,7 +323,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse2001Results',  # noqa: E501
+            response_type='Workspace',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -331,47 +331,47 @@ class DataApi(object):
             _request_timeout=local_var_params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def workspace_create(self, inline_object, **kwargs):  # noqa: E501
+    def workspace_create(self, workspace, **kwargs):  # noqa: E501
         """Create workspace.  # noqa: E501
 
         Create a workspace, which initializes the basic resources and information associated with it, and then schedules some background tasks to initialize Cloud resources.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.workspace_create(inline_object, async_req=True)
+        >>> thread = api.workspace_create(workspace, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
-        :param InlineObject inline_object: (required)
-        :return: InlineResponse2001Results
+        :param Workspace workspace: (required)
+        :return: Workspace
                  If the method is called asynchronously,
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.workspace_create_with_http_info(inline_object, **kwargs)  # noqa: E501
+            return self.workspace_create_with_http_info(workspace, **kwargs)  # noqa: E501
         else:
-            (data) = self.workspace_create_with_http_info(inline_object, **kwargs)  # noqa: E501
+            (data) = self.workspace_create_with_http_info(workspace, **kwargs)  # noqa: E501
             return data
 
-    def workspace_create_with_http_info(self, inline_object, **kwargs):  # noqa: E501
+    def workspace_create_with_http_info(self, workspace, **kwargs):  # noqa: E501
         """Create workspace.  # noqa: E501
 
         Create a workspace, which initializes the basic resources and information associated with it, and then schedules some background tasks to initialize Cloud resources.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.workspace_create_with_http_info(inline_object, async_req=True)
+        >>> thread = api.workspace_create_with_http_info(workspace, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
-        :param InlineObject inline_object: (required)
-        :return: InlineResponse2001Results
+        :param Workspace workspace: (required)
+        :return: Workspace
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
         local_var_params = locals()
 
-        all_params = ['inline_object']  # noqa: E501
+        all_params = ['workspace']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -385,10 +385,10 @@ class DataApi(object):
                 )
             local_var_params[key] = val
         del local_var_params['kwargs']
-        # verify the required parameter 'inline_object' is set
-        if ('inline_object' not in local_var_params or
-                local_var_params['inline_object'] is None):
-            raise ValueError("Missing the required parameter `inline_object` when calling `workspace_create`")  # noqa: E501
+        # verify the required parameter 'workspace' is set
+        if ('workspace' not in local_var_params or
+                local_var_params['workspace'] is None):
+            raise ValueError("Missing the required parameter `workspace` when calling `workspace_create`")  # noqa: E501
 
         collection_formats = {}
 
@@ -402,8 +402,8 @@ class DataApi(object):
         local_var_files = {}
 
         body_params = None
-        if 'inline_object' in local_var_params:
-            body_params = local_var_params['inline_object']
+        if 'workspace' in local_var_params:
+            body_params = local_var_params['workspace']
         # HTTP header `Accept`
         header_params['Accept'] = self.api_client.select_header_accept(
             ['application/json', 'application/problem+json'])  # noqa: E501
@@ -423,7 +423,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse2001Results',  # noqa: E501
+            response_type='Workspace',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -538,7 +538,7 @@ class DataApi(object):
 
         :param async_req bool
         :param int wid: Workspace identifier. (required)
-        :return: InlineResponse2001Results
+        :return: Workspace
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -560,7 +560,7 @@ class DataApi(object):
 
         :param async_req bool
         :param int wid: Workspace identifier. (required)
-        :return: InlineResponse2001Results
+        :return: Workspace
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -615,7 +615,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse2001Results',  # noqa: E501
+            response_type='Workspace',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -638,7 +638,7 @@ class DataApi(object):
         :param str name: Filter workspaces by name
         :param str owner: Filter workspaces by owner
         :param bool deleted: Include deleted workspaces
-        :return: InlineResponse2001
+        :return: PaginatedWorkspaces
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -664,7 +664,7 @@ class DataApi(object):
         :param str name: Filter workspaces by name
         :param str owner: Filter workspaces by owner
         :param bool deleted: Include deleted workspaces
-        :return: InlineResponse2001
+        :return: PaginatedWorkspaces
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -729,7 +729,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse2001',  # noqa: E501
+            response_type='PaginatedWorkspaces',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -748,8 +748,8 @@ class DataApi(object):
 
         :param async_req bool
         :param int wid: Workspace identifier. (required)
-        :param file file_content:
-        :return: InlineResponse2002Results
+        :param file content: File contents in binary.
+        :return: BaseMetadata
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -771,15 +771,15 @@ class DataApi(object):
 
         :param async_req bool
         :param int wid: Workspace identifier. (required)
-        :param file file_content:
-        :return: InlineResponse2002Results
+        :param file content: File contents in binary.
+        :return: BaseMetadata
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
         local_var_params = locals()
 
-        all_params = ['wid', 'file_content']  # noqa: E501
+        all_params = ['wid', 'content']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -810,8 +810,8 @@ class DataApi(object):
 
         form_params = []
         local_var_files = {}
-        if 'file_content' in local_var_params:
-            local_var_files['file_content'] = local_var_params['file_content']  # noqa: E501
+        if 'content' in local_var_params:
+            local_var_files['content'] = local_var_params['content']  # noqa: E501
 
         body_params = None
         # HTTP header `Accept`
@@ -833,7 +833,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse2002Results',  # noqa: E501
+            response_type='BaseMetadata',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -853,7 +853,7 @@ class DataApi(object):
         :param async_req bool
         :param int wid: Workspace identifier. (required)
         :param str uuid: File identifier (required)
-        :return: InlineResponse2003
+        :return: MetadataByFamily
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -876,7 +876,7 @@ class DataApi(object):
         :param async_req bool
         :param int wid: Workspace identifier. (required)
         :param str uuid: File identifier (required)
-        :return: InlineResponse2003
+        :return: MetadataByFamily
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -937,7 +937,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse2003',  # noqa: E501
+            response_type='MetadataByFamily',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -959,7 +959,7 @@ class DataApi(object):
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
         :param str filters: Filters on the workspace files, separated by commas. These filters are applied only the base metadata family. This can be used to get a file by name, path, size or checksum.
-        :return: InlineResponse2002
+        :return: PaginatedFiles
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -984,7 +984,7 @@ class DataApi(object):
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
         :param str filters: Filters on the workspace files, separated by commas. These filters are applied only the base metadata family. This can be used to get a file by name, path, size or checksum.
-        :return: InlineResponse2002
+        :return: PaginatedFiles
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -1051,7 +1051,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse2002',  # noqa: E501
+            response_type='PaginatedFiles',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -1071,8 +1071,8 @@ class DataApi(object):
         :param async_req bool
         :param int wid: Workspace identifier. (required)
         :param str uuid: File identifier (required)
-        :param InlineObject2 inline_object2:
-        :return: InlineResponse2003
+        :param MetadataByFamily metadata_by_family:
+        :return: MetadataByFamily
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -1095,15 +1095,15 @@ class DataApi(object):
         :param async_req bool
         :param int wid: Workspace identifier. (required)
         :param str uuid: File identifier (required)
-        :param InlineObject2 inline_object2:
-        :return: InlineResponse2003
+        :param MetadataByFamily metadata_by_family:
+        :return: MetadataByFamily
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
         local_var_params = locals()
 
-        all_params = ['wid', 'uuid', 'inline_object2']  # noqa: E501
+        all_params = ['wid', 'uuid', 'metadata_by_family']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -1142,8 +1142,8 @@ class DataApi(object):
         local_var_files = {}
 
         body_params = None
-        if 'inline_object2' in local_var_params:
-            body_params = local_var_params['inline_object2']
+        if 'metadata_by_family' in local_var_params:
+            body_params = local_var_params['metadata_by_family']
         # HTTP header `Accept`
         header_params['Accept'] = self.api_client.select_header_accept(
             ['application/json', 'application/problem+json'])  # noqa: E501
@@ -1163,7 +1163,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse2003',  # noqa: E501
+            response_type='MetadataByFamily',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -1183,8 +1183,8 @@ class DataApi(object):
         :param async_req bool
         :param int wid: Workspace identifier. (required)
         :param str uuid: File identifier (required)
-        :param InlineObject3 inline_object3:
-        :return: InlineResponse2003
+        :param MetadataByFamily metadata_by_family:
+        :return: MetadataByFamily
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -1207,15 +1207,15 @@ class DataApi(object):
         :param async_req bool
         :param int wid: Workspace identifier. (required)
         :param str uuid: File identifier (required)
-        :param InlineObject3 inline_object3:
-        :return: InlineResponse2003
+        :param MetadataByFamily metadata_by_family:
+        :return: MetadataByFamily
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
         local_var_params = locals()
 
-        all_params = ['wid', 'uuid', 'inline_object3']  # noqa: E501
+        all_params = ['wid', 'uuid', 'metadata_by_family']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -1254,8 +1254,8 @@ class DataApi(object):
         local_var_files = {}
 
         body_params = None
-        if 'inline_object3' in local_var_params:
-            body_params = local_var_params['inline_object3']
+        if 'metadata_by_family' in local_var_params:
+            body_params = local_var_params['metadata_by_family']
         # HTTP header `Accept`
         header_params['Accept'] = self.api_client.select_header_accept(
             ['application/json', 'application/problem+json'])  # noqa: E501
@@ -1275,7 +1275,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse2003',  # noqa: E501
+            response_type='MetadataByFamily',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -1283,53 +1283,53 @@ class DataApi(object):
             _request_timeout=local_var_params.get('_request_timeout'),
             collection_formats=collection_formats)
 
-    def workspace_query_create(self, wid, inline_object4, **kwargs):  # noqa: E501
+    def workspace_query_create(self, wid, query, **kwargs):  # noqa: E501
         """Prepare a query.  # noqa: E501
 
         Queries in Quetzal are saved as a resource associated to a workspace. This endpoint creates one and responds with a _see other_ status referencing the query details endpoint.  Since the query details contains the query results as a paginated list, this endpoint also accepts the normal pagination parameters.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.workspace_query_create(wid, inline_object4, async_req=True)
+        >>> thread = api.workspace_query_create(wid, query, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
         :param int wid: Workspace identifier. (required)
-        :param InlineObject4 inline_object4: (required)
+        :param Query query: (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
-        :return: InlineResponse201
+        :return: Query
                  If the method is called asynchronously,
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.workspace_query_create_with_http_info(wid, inline_object4, **kwargs)  # noqa: E501
+            return self.workspace_query_create_with_http_info(wid, query, **kwargs)  # noqa: E501
         else:
-            (data) = self.workspace_query_create_with_http_info(wid, inline_object4, **kwargs)  # noqa: E501
+            (data) = self.workspace_query_create_with_http_info(wid, query, **kwargs)  # noqa: E501
             return data
 
-    def workspace_query_create_with_http_info(self, wid, inline_object4, **kwargs):  # noqa: E501
+    def workspace_query_create_with_http_info(self, wid, query, **kwargs):  # noqa: E501
         """Prepare a query.  # noqa: E501
 
         Queries in Quetzal are saved as a resource associated to a workspace. This endpoint creates one and responds with a _see other_ status referencing the query details endpoint.  Since the query details contains the query results as a paginated list, this endpoint also accepts the normal pagination parameters.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.workspace_query_create_with_http_info(wid, inline_object4, async_req=True)
+        >>> thread = api.workspace_query_create_with_http_info(wid, query, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
         :param int wid: Workspace identifier. (required)
-        :param InlineObject4 inline_object4: (required)
+        :param Query query: (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
-        :return: InlineResponse201
+        :return: Query
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
         local_var_params = locals()
 
-        all_params = ['wid', 'inline_object4', 'page', 'per_page']  # noqa: E501
+        all_params = ['wid', 'query', 'page', 'per_page']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -1347,10 +1347,10 @@ class DataApi(object):
         if ('wid' not in local_var_params or
                 local_var_params['wid'] is None):
             raise ValueError("Missing the required parameter `wid` when calling `workspace_query_create`")  # noqa: E501
-        # verify the required parameter 'inline_object4' is set
-        if ('inline_object4' not in local_var_params or
-                local_var_params['inline_object4'] is None):
-            raise ValueError("Missing the required parameter `inline_object4` when calling `workspace_query_create`")  # noqa: E501
+        # verify the required parameter 'query' is set
+        if ('query' not in local_var_params or
+                local_var_params['query'] is None):
+            raise ValueError("Missing the required parameter `query` when calling `workspace_query_create`")  # noqa: E501
 
         if 'page' in local_var_params and local_var_params['page'] < 1:  # noqa: E501
             raise ValueError("Invalid value for parameter `page` when calling `workspace_query_create`, must be a value greater than or equal to `1`")  # noqa: E501
@@ -1376,8 +1376,8 @@ class DataApi(object):
         local_var_files = {}
 
         body_params = None
-        if 'inline_object4' in local_var_params:
-            body_params = local_var_params['inline_object4']
+        if 'query' in local_var_params:
+            body_params = local_var_params['query']
         # HTTP header `Accept`
         header_params['Accept'] = self.api_client.select_header_accept(
             ['application/json', 'application/problem+json'])  # noqa: E501
@@ -1397,7 +1397,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse201',  # noqa: E501
+            response_type='Query',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -1419,7 +1419,7 @@ class DataApi(object):
         :param int qid: Query identifier (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
-        :return: InlineResponse201
+        :return: Query
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -1444,7 +1444,7 @@ class DataApi(object):
         :param int qid: Query identifier (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
-        :return: InlineResponse201
+        :return: Query
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -1515,7 +1515,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse201',  # noqa: E501
+            response_type='Query',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -1536,7 +1536,7 @@ class DataApi(object):
         :param int wid: Workspace identifier. (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
-        :return: InlineResponse2004
+        :return: PaginatedQueries
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -1560,7 +1560,7 @@ class DataApi(object):
         :param int wid: Workspace identifier. (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
-        :return: InlineResponse2004
+        :return: PaginatedQueries
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -1625,7 +1625,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse2004',  # noqa: E501
+            response_type='PaginatedQueries',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -1644,7 +1644,7 @@ class DataApi(object):
 
         :param async_req bool
         :param int wid: Workspace identifier. (required)
-        :return: InlineResponse2001Results
+        :return: Workspace
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -1666,7 +1666,7 @@ class DataApi(object):
 
         :param async_req bool
         :param int wid: Workspace identifier. (required)
-        :return: InlineResponse2001Results
+        :return: Workspace
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -1721,7 +1721,7 @@ class DataApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse2001Results',  # noqa: E501
+            response_type='Workspace',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501

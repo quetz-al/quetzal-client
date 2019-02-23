@@ -35,7 +35,7 @@ class PaginatedQueries(object):
         'page': 'int',
         'pages': 'int',
         'total': 'int',
-        'results': 'list[InlineResponse2004Results]'
+        'results': 'list[QueryNoResults]'
     }
 
     attribute_map = {
@@ -140,7 +140,7 @@ class PaginatedQueries(object):
 
 
         :return: The results of this PaginatedQueries.  # noqa: E501
-        :rtype: list[InlineResponse2004Results]
+        :rtype: list[QueryNoResults]
         """
         return self._results
 
@@ -150,7 +150,7 @@ class PaginatedQueries(object):
 
 
         :param results: The results of this PaginatedQueries.  # noqa: E501
-        :type: list[InlineResponse2004Results]
+        :type: list[QueryNoResults]
         """
         if results is None:
             raise ValueError("Invalid value for `results`, must not be `None`")  # noqa: E501

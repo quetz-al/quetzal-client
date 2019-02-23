@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 
 # **workspace_query_create**
-> InlineResponse201 workspace_query_create(wid, inline_object4, page=page, per_page=per_page)
+> Query workspace_query_create(wid, query, page=page, per_page=per_page)
 
 Prepare a query.
 
@@ -32,13 +32,13 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 # create an instance of the API class
 api_instance = quetzal._auto_client.QueryApi(quetzal._auto_client.ApiClient(configuration))
 wid = 56 # int | Workspace identifier.
-inline_object4 = quetzal._auto_client.InlineObject4() # InlineObject4 | 
+query = quetzal._auto_client.Query() # Query | 
 page = 1 # int | The page of a collection to return. (optional) (default to 1)
 per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
 
 try:
     # Prepare a query.
-    api_response = api_instance.workspace_query_create(wid, inline_object4, page=page, per_page=per_page)
+    api_response = api_instance.workspace_query_create(wid, query, page=page, per_page=per_page)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling QueryApi->workspace_query_create: %s\n" % e)
@@ -49,13 +49,13 @@ except ApiException as e:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **wid** | **int**| Workspace identifier. | 
- **inline_object4** | [**InlineObject4**](InlineObject4.md)|  | 
+ **query** | [**Query**](Query.md)|  | 
  **page** | **int**| The page of a collection to return. | [optional] [default to 1]
  **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
 
 ### Return type
 
-[**InlineResponse201**](InlineResponse201.md)
+[**Query**](Query.md)
 
 ### Authorization
 
@@ -69,7 +69,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_query_details**
-> InlineResponse201 workspace_query_details(wid, qid, page=page, per_page=per_page)
+> Query workspace_query_details(wid, qid, page=page, per_page=per_page)
 
 Query details.
 
@@ -114,7 +114,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse201**](InlineResponse201.md)
+[**Query**](Query.md)
 
 ### Authorization
 
@@ -128,7 +128,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_query_fetch**
-> InlineResponse2004 workspace_query_fetch(wid, page=page, per_page=per_page)
+> PaginatedQueries workspace_query_fetch(wid, page=page, per_page=per_page)
 
 List queries.
 
@@ -171,7 +171,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2004**](InlineResponse2004.md)
+[**PaginatedQueries**](PaginatedQueries.md)
 
 ### Authorization
 

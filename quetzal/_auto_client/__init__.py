@@ -30,21 +30,7 @@ from quetzal._auto_client.configuration import Configuration
 # import models into sdk package
 from quetzal._auto_client.models.base_metadata import BaseMetadata
 from quetzal._auto_client.models.error import Error
-from quetzal._auto_client.models.inline_object import InlineObject
-from quetzal._auto_client.models.inline_object1 import InlineObject1
-from quetzal._auto_client.models.inline_object2 import InlineObject2
-from quetzal._auto_client.models.inline_object3 import InlineObject3
-from quetzal._auto_client.models.inline_object4 import InlineObject4
-from quetzal._auto_client.models.inline_response200 import InlineResponse200
-from quetzal._auto_client.models.inline_response2001 import InlineResponse2001
-from quetzal._auto_client.models.inline_response2001_results import InlineResponse2001Results
-from quetzal._auto_client.models.inline_response2002 import InlineResponse2002
-from quetzal._auto_client.models.inline_response2002_results import InlineResponse2002Results
-from quetzal._auto_client.models.inline_response2003 import InlineResponse2003
-from quetzal._auto_client.models.inline_response2004 import InlineResponse2004
-from quetzal._auto_client.models.inline_response2004_results import InlineResponse2004Results
-from quetzal._auto_client.models.inline_response201 import InlineResponse201
-from quetzal._auto_client.models.inline_response_default import InlineResponseDefault
+from quetzal._auto_client.models.file_contents import FileContents
 from quetzal._auto_client.models.metadata_by_family import MetadataByFamily
 from quetzal._auto_client.models.paginated_files import PaginatedFiles
 from quetzal._auto_client.models.paginated_queries import PaginatedQueries

@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 
 # **public_file_details**
-> InlineResponse2003 public_file_details(uuid)
+> MetadataByFamily public_file_details(uuid)
 
 Fetch public file.
 
@@ -50,7 +50,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2003**](InlineResponse2003.md)
+[**MetadataByFamily**](MetadataByFamily.md)
 
 ### Authorization
 
@@ -64,7 +64,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **public_file_fetch**
-> InlineResponse2002 public_file_fetch(page=page, per_page=per_page, filters=filters)
+> PaginatedFiles public_file_fetch(page=page, per_page=per_page, filters=filters)
 
 List public files.
 
@@ -107,7 +107,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2002**](InlineResponse2002.md)
+[**PaginatedFiles**](PaginatedFiles.md)
 
 ### Authorization
 
@@ -121,7 +121,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_create**
-> InlineResponse2001Results workspace_create(inline_object)
+> Workspace workspace_create(workspace)
 
 Create workspace.
 
@@ -142,11 +142,11 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.PublicApi(quetzal._auto_client.ApiClient(configuration))
-inline_object = quetzal._auto_client.InlineObject() # InlineObject | 
+workspace = quetzal._auto_client.Workspace() # Workspace | 
 
 try:
     # Create workspace.
-    api_response = api_instance.workspace_create(inline_object)
+    api_response = api_instance.workspace_create(workspace)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling PublicApi->workspace_create: %s\n" % e)
@@ -156,11 +156,11 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **inline_object** | [**InlineObject**](InlineObject.md)|  | 
+ **workspace** | [**Workspace**](Workspace.md)|  | 
 
 ### Return type
 
-[**InlineResponse2001Results**](InlineResponse2001Results.md)
+[**Workspace**](Workspace.md)
 
 ### Authorization
 
@@ -174,7 +174,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_fetch**
-> InlineResponse2001 workspace_fetch(page=page, per_page=per_page, name=name, owner=owner, deleted=deleted)
+> PaginatedWorkspaces workspace_fetch(page=page, per_page=per_page, name=name, owner=owner, deleted=deleted)
 
 List workspaces.
 
@@ -221,7 +221,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2001**](InlineResponse2001.md)
+[**PaginatedWorkspaces**](PaginatedWorkspaces.md)
 
 ### Authorization
 

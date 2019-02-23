@@ -35,7 +35,7 @@ class PaginatedFiles(object):
         'page': 'int',
         'pages': 'int',
         'total': 'int',
-        'results': 'list[InlineResponse2002Results]'
+        'results': 'list[BaseMetadata]'
     }
 
     attribute_map = {
@@ -140,7 +140,7 @@ class PaginatedFiles(object):
 
 
         :return: The results of this PaginatedFiles.  # noqa: E501
-        :rtype: list[InlineResponse2002Results]
+        :rtype: list[BaseMetadata]
         """
         return self._results
 
@@ -150,7 +150,7 @@ class PaginatedFiles(object):
 
 
         :param results: The results of this PaginatedFiles.  # noqa: E501
-        :type: list[InlineResponse2002Results]
+        :type: list[BaseMetadata]
         """
         if results is None:
             raise ValueError("Invalid value for `results`, must not be `None`")  # noqa: E501

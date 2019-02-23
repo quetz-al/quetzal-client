@@ -33,53 +33,53 @@ class QueryApi(object):
             api_client = ApiClient()
         self.api_client = api_client
 
-    def workspace_query_create(self, wid, inline_object4, **kwargs):  # noqa: E501
+    def workspace_query_create(self, wid, query, **kwargs):  # noqa: E501
         """Prepare a query.  # noqa: E501
 
         Queries in Quetzal are saved as a resource associated to a workspace. This endpoint creates one and responds with a _see other_ status referencing the query details endpoint.  Since the query details contains the query results as a paginated list, this endpoint also accepts the normal pagination parameters.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.workspace_query_create(wid, inline_object4, async_req=True)
+        >>> thread = api.workspace_query_create(wid, query, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
         :param int wid: Workspace identifier. (required)
-        :param InlineObject4 inline_object4: (required)
+        :param Query query: (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
-        :return: InlineResponse201
+        :return: Query
                  If the method is called asynchronously,
                  returns the request thread.
         """
         kwargs['_return_http_data_only'] = True
         if kwargs.get('async_req'):
-            return self.workspace_query_create_with_http_info(wid, inline_object4, **kwargs)  # noqa: E501
+            return self.workspace_query_create_with_http_info(wid, query, **kwargs)  # noqa: E501
         else:
-            (data) = self.workspace_query_create_with_http_info(wid, inline_object4, **kwargs)  # noqa: E501
+            (data) = self.workspace_query_create_with_http_info(wid, query, **kwargs)  # noqa: E501
             return data
 
-    def workspace_query_create_with_http_info(self, wid, inline_object4, **kwargs):  # noqa: E501
+    def workspace_query_create_with_http_info(self, wid, query, **kwargs):  # noqa: E501
         """Prepare a query.  # noqa: E501
 
         Queries in Quetzal are saved as a resource associated to a workspace. This endpoint creates one and responds with a _see other_ status referencing the query details endpoint.  Since the query details contains the query results as a paginated list, this endpoint also accepts the normal pagination parameters.  # noqa: E501
         This method makes a synchronous HTTP request by default. To make an
         asynchronous HTTP request, please pass async_req=True
-        >>> thread = api.workspace_query_create_with_http_info(wid, inline_object4, async_req=True)
+        >>> thread = api.workspace_query_create_with_http_info(wid, query, async_req=True)
         >>> result = thread.get()
 
         :param async_req bool
         :param int wid: Workspace identifier. (required)
-        :param InlineObject4 inline_object4: (required)
+        :param Query query: (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
-        :return: InlineResponse201
+        :return: Query
                  If the method is called asynchronously,
                  returns the request thread.
         """
 
         local_var_params = locals()
 
-        all_params = ['wid', 'inline_object4', 'page', 'per_page']  # noqa: E501
+        all_params = ['wid', 'query', 'page', 'per_page']  # noqa: E501
         all_params.append('async_req')
         all_params.append('_return_http_data_only')
         all_params.append('_preload_content')
@@ -97,10 +97,10 @@ class QueryApi(object):
         if ('wid' not in local_var_params or
                 local_var_params['wid'] is None):
             raise ValueError("Missing the required parameter `wid` when calling `workspace_query_create`")  # noqa: E501
-        # verify the required parameter 'inline_object4' is set
-        if ('inline_object4' not in local_var_params or
-                local_var_params['inline_object4'] is None):
-            raise ValueError("Missing the required parameter `inline_object4` when calling `workspace_query_create`")  # noqa: E501
+        # verify the required parameter 'query' is set
+        if ('query' not in local_var_params or
+                local_var_params['query'] is None):
+            raise ValueError("Missing the required parameter `query` when calling `workspace_query_create`")  # noqa: E501
 
         if 'page' in local_var_params and local_var_params['page'] < 1:  # noqa: E501
             raise ValueError("Invalid value for parameter `page` when calling `workspace_query_create`, must be a value greater than or equal to `1`")  # noqa: E501
@@ -126,8 +126,8 @@ class QueryApi(object):
         local_var_files = {}
 
         body_params = None
-        if 'inline_object4' in local_var_params:
-            body_params = local_var_params['inline_object4']
+        if 'query' in local_var_params:
+            body_params = local_var_params['query']
         # HTTP header `Accept`
         header_params['Accept'] = self.api_client.select_header_accept(
             ['application/json', 'application/problem+json'])  # noqa: E501
@@ -147,7 +147,7 @@ class QueryApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse201',  # noqa: E501
+            response_type='Query',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -169,7 +169,7 @@ class QueryApi(object):
         :param int qid: Query identifier (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
-        :return: InlineResponse201
+        :return: Query
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -194,7 +194,7 @@ class QueryApi(object):
         :param int qid: Query identifier (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
-        :return: InlineResponse201
+        :return: Query
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -265,7 +265,7 @@ class QueryApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse201',  # noqa: E501
+            response_type='Query',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
@@ -286,7 +286,7 @@ class QueryApi(object):
         :param int wid: Workspace identifier. (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
-        :return: InlineResponse2004
+        :return: PaginatedQueries
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -310,7 +310,7 @@ class QueryApi(object):
         :param int wid: Workspace identifier. (required)
         :param int page: The page of a collection to return.
         :param int per_page: Number of items to return per page.
-        :return: InlineResponse2004
+        :return: PaginatedQueries
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -375,7 +375,7 @@ class QueryApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse2004',  # noqa: E501
+            response_type='PaginatedQueries',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501

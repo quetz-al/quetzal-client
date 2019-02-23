@@ -43,7 +43,7 @@ class AuthenticationApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :return: InlineResponse200
+        :return: Token
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -64,7 +64,7 @@ class AuthenticationApi(object):
         >>> result = thread.get()
 
         :param async_req bool
-        :return: InlineResponse200
+        :return: Token
                  If the method is called asynchronously,
                  returns the request thread.
         """
@@ -113,7 +113,7 @@ class AuthenticationApi(object):
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='InlineResponse200',  # noqa: E501
+            response_type='Token',  # noqa: E501
             auth_settings=auth_settings,
             async_req=local_var_params.get('async_req'),
             _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501

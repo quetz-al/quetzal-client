@@ -16,12 +16,12 @@ from __future__ import absolute_import
 import unittest
 
 import quetzal._auto_client
-from quetzal._auto_client.models.inline_object2 import InlineObject2  # noqa: E501
+from quetzal._auto_client.models.file_contents import FileContents  # noqa: E501
 from quetzal._auto_client.rest import ApiException
 
 
-class TestInlineObject2(unittest.TestCase):
-    """InlineObject2 unit test stubs"""
+class TestFileContents(unittest.TestCase):
+    """FileContents unit test stubs"""
 
     def setUp(self):
         pass
@@ -29,10 +29,10 @@ class TestInlineObject2(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testInlineObject2(self):
-        """Test InlineObject2"""
+    def testFileContents(self):
+        """Test FileContents"""
         # FIXME: construct object with mandatory attributes with example values
-        # model = quetzal._auto_client.models.inline_object2.InlineObject2()  # noqa: E501
+        # model = quetzal._auto_client.models.file_contents.FileContents()  # noqa: E501
         pass
 
 

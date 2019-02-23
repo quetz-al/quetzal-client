@@ -35,7 +35,7 @@ class PaginatedWorkspaces(object):
         'page': 'int',
         'pages': 'int',
         'total': 'int',
-        'results': 'list[InlineResponse2001Results]'
+        'results': 'list[Workspace]'
     }
 
     attribute_map = {
@@ -140,7 +140,7 @@ class PaginatedWorkspaces(object):
 
 
         :return: The results of this PaginatedWorkspaces.  # noqa: E501
-        :rtype: list[InlineResponse2001Results]
+        :rtype: list[Workspace]
         """
         return self._results
 
@@ -150,7 +150,7 @@ class PaginatedWorkspaces(object):
 
 
         :param results: The results of this PaginatedWorkspaces.  # noqa: E501
-        :type: list[InlineResponse2001Results]
+        :type: list[Workspace]
         """
         if results is None:
             raise ValueError("Invalid value for `results`, must not be `None`")  # noqa: E501

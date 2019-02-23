@@ -23,7 +23,7 @@ Method | HTTP request | Description
 
 
 # **public_file_details**
-> InlineResponse2003 public_file_details(uuid)
+> MetadataByFamily public_file_details(uuid)
 
 Fetch public file.
 
@@ -62,7 +62,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2003**](InlineResponse2003.md)
+[**MetadataByFamily**](MetadataByFamily.md)
 
 ### Authorization
 
@@ -76,7 +76,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **public_file_fetch**
-> InlineResponse2002 public_file_fetch(page=page, per_page=per_page, filters=filters)
+> PaginatedFiles public_file_fetch(page=page, per_page=per_page, filters=filters)
 
 List public files.
 
@@ -119,7 +119,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2002**](InlineResponse2002.md)
+[**PaginatedFiles**](PaginatedFiles.md)
 
 ### Authorization
 
@@ -133,7 +133,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_commit**
-> InlineResponse2001Results workspace_commit(wid)
+> Workspace workspace_commit(wid)
 
 Commit workspace.
 
@@ -172,7 +172,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2001Results**](InlineResponse2001Results.md)
+[**Workspace**](Workspace.md)
 
 ### Authorization
 
@@ -186,7 +186,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_create**
-> InlineResponse2001Results workspace_create(inline_object)
+> Workspace workspace_create(workspace)
 
 Create workspace.
 
@@ -207,11 +207,11 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 
 # create an instance of the API class
 api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
-inline_object = quetzal._auto_client.InlineObject() # InlineObject | 
+workspace = quetzal._auto_client.Workspace() # Workspace | 
 
 try:
     # Create workspace.
-    api_response = api_instance.workspace_create(inline_object)
+    api_response = api_instance.workspace_create(workspace)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling DataApi->workspace_create: %s\n" % e)
@@ -221,11 +221,11 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **inline_object** | [**InlineObject**](InlineObject.md)|  | 
+ **workspace** | [**Workspace**](Workspace.md)|  | 
 
 ### Return type
 
-[**InlineResponse2001Results**](InlineResponse2001Results.md)
+[**Workspace**](Workspace.md)
 
 ### Authorization
 
@@ -291,7 +291,7 @@ void (empty response body)
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_details**
-> InlineResponse2001Results workspace_details(wid)
+> Workspace workspace_details(wid)
 
 Workspace details.
 
@@ -330,7 +330,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2001Results**](InlineResponse2001Results.md)
+[**Workspace**](Workspace.md)
 
 ### Authorization
 
@@ -344,7 +344,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_fetch**
-> InlineResponse2001 workspace_fetch(page=page, per_page=per_page, name=name, owner=owner, deleted=deleted)
+> PaginatedWorkspaces workspace_fetch(page=page, per_page=per_page, name=name, owner=owner, deleted=deleted)
 
 List workspaces.
 
@@ -391,7 +391,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2001**](InlineResponse2001.md)
+[**PaginatedWorkspaces**](PaginatedWorkspaces.md)
 
 ### Authorization
 
@@ -405,7 +405,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_file_create**
-> InlineResponse2002Results workspace_file_create(wid, file_content=file_content)
+> BaseMetadata workspace_file_create(wid, content=content)
 
 Upload file.
 
@@ -427,11 +427,11 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 # create an instance of the API class
 api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
 wid = 56 # int | Workspace identifier.
-file_content = '/path/to/file' # file |  (optional)
+content = '/path/to/file' # file | File contents in binary. (optional)
 
 try:
     # Upload file.
-    api_response = api_instance.workspace_file_create(wid, file_content=file_content)
+    api_response = api_instance.workspace_file_create(wid, content=content)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling DataApi->workspace_file_create: %s\n" % e)
@@ -442,11 +442,11 @@ except ApiException as e:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **wid** | **int**| Workspace identifier. | 
- **file_content** | **file**|  | [optional] 
+ **content** | **file**| File contents in binary. | [optional] 
 
 ### Return type
 
-[**InlineResponse2002Results**](InlineResponse2002Results.md)
+[**BaseMetadata**](BaseMetadata.md)
 
 ### Authorization
 
@@ -460,7 +460,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_file_details**
-> InlineResponse2003 workspace_file_details(wid, uuid)
+> MetadataByFamily workspace_file_details(wid, uuid)
 
 Fetch file.
 
@@ -501,7 +501,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2003**](InlineResponse2003.md)
+[**MetadataByFamily**](MetadataByFamily.md)
 
 ### Authorization
 
@@ -515,7 +515,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_file_fetch**
-> InlineResponse2002 workspace_file_fetch(wid, page=page, per_page=per_page, filters=filters)
+> PaginatedFiles workspace_file_fetch(wid, page=page, per_page=per_page, filters=filters)
 
 List files.
 
@@ -560,7 +560,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2002**](InlineResponse2002.md)
+[**PaginatedFiles**](PaginatedFiles.md)
 
 ### Authorization
 
@@ -574,7 +574,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_file_set_metadata**
-> InlineResponse2003 workspace_file_set_metadata(wid, uuid, inline_object2=inline_object2)
+> MetadataByFamily workspace_file_set_metadata(wid, uuid, metadata_by_family=metadata_by_family)
 
 Rewrite metadata.
 
@@ -597,11 +597,11 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
 wid = 56 # int | Workspace identifier.
 uuid = 'uuid_example' # str | File identifier
-inline_object2 = quetzal._auto_client.InlineObject2() # InlineObject2 |  (optional)
+metadata_by_family = quetzal._auto_client.MetadataByFamily() # MetadataByFamily |  (optional)
 
 try:
     # Rewrite metadata.
-    api_response = api_instance.workspace_file_set_metadata(wid, uuid, inline_object2=inline_object2)
+    api_response = api_instance.workspace_file_set_metadata(wid, uuid, metadata_by_family=metadata_by_family)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling DataApi->workspace_file_set_metadata: %s\n" % e)
@@ -613,11 +613,11 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **wid** | **int**| Workspace identifier. | 
  **uuid** | [**str**](.md)| File identifier | 
- **inline_object2** | [**InlineObject2**](InlineObject2.md)|  | [optional] 
+ **metadata_by_family** | [**MetadataByFamily**](MetadataByFamily.md)|  | [optional] 
 
 ### Return type
 
-[**InlineResponse2003**](InlineResponse2003.md)
+[**MetadataByFamily**](MetadataByFamily.md)
 
 ### Authorization
 
@@ -631,7 +631,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_file_update_metadata**
-> InlineResponse2003 workspace_file_update_metadata(wid, uuid, inline_object3=inline_object3)
+> MetadataByFamily workspace_file_update_metadata(wid, uuid, metadata_by_family=metadata_by_family)
 
 Modify metadata.
 
@@ -654,11 +654,11 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
 wid = 56 # int | Workspace identifier.
 uuid = 'uuid_example' # str | File identifier
-inline_object3 = quetzal._auto_client.InlineObject3() # InlineObject3 |  (optional)
+metadata_by_family = quetzal._auto_client.MetadataByFamily() # MetadataByFamily |  (optional)
 
 try:
     # Modify metadata.
-    api_response = api_instance.workspace_file_update_metadata(wid, uuid, inline_object3=inline_object3)
+    api_response = api_instance.workspace_file_update_metadata(wid, uuid, metadata_by_family=metadata_by_family)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling DataApi->workspace_file_update_metadata: %s\n" % e)
@@ -670,11 +670,11 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **wid** | **int**| Workspace identifier. | 
  **uuid** | [**str**](.md)| File identifier | 
- **inline_object3** | [**InlineObject3**](InlineObject3.md)|  | [optional] 
+ **metadata_by_family** | [**MetadataByFamily**](MetadataByFamily.md)|  | [optional] 
 
 ### Return type
 
-[**InlineResponse2003**](InlineResponse2003.md)
+[**MetadataByFamily**](MetadataByFamily.md)
 
 ### Authorization
 
@@ -688,7 +688,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_query_create**
-> InlineResponse201 workspace_query_create(wid, inline_object4, page=page, per_page=per_page)
+> Query workspace_query_create(wid, query, page=page, per_page=per_page)
 
 Prepare a query.
 
@@ -710,13 +710,13 @@ configuration.access_token = 'YOUR_BEARER_TOKEN'
 # create an instance of the API class
 api_instance = quetzal._auto_client.DataApi(quetzal._auto_client.ApiClient(configuration))
 wid = 56 # int | Workspace identifier.
-inline_object4 = quetzal._auto_client.InlineObject4() # InlineObject4 | 
+query = quetzal._auto_client.Query() # Query | 
 page = 1 # int | The page of a collection to return. (optional) (default to 1)
 per_page = 100 # int | Number of items to return per page. (optional) (default to 100)
 
 try:
     # Prepare a query.
-    api_response = api_instance.workspace_query_create(wid, inline_object4, page=page, per_page=per_page)
+    api_response = api_instance.workspace_query_create(wid, query, page=page, per_page=per_page)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling DataApi->workspace_query_create: %s\n" % e)
@@ -727,13 +727,13 @@ except ApiException as e:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **wid** | **int**| Workspace identifier. | 
- **inline_object4** | [**InlineObject4**](InlineObject4.md)|  | 
+ **query** | [**Query**](Query.md)|  | 
  **page** | **int**| The page of a collection to return. | [optional] [default to 1]
  **per_page** | **int**| Number of items to return per page. | [optional] [default to 100]
 
 ### Return type
 
-[**InlineResponse201**](InlineResponse201.md)
+[**Query**](Query.md)
 
 ### Authorization
 
@@ -747,7 +747,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_query_details**
-> InlineResponse201 workspace_query_details(wid, qid, page=page, per_page=per_page)
+> Query workspace_query_details(wid, qid, page=page, per_page=per_page)
 
 Query details.
 
@@ -792,7 +792,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse201**](InlineResponse201.md)
+[**Query**](Query.md)
 
 ### Authorization
 
@@ -806,7 +806,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_query_fetch**
-> InlineResponse2004 workspace_query_fetch(wid, page=page, per_page=per_page)
+> PaginatedQueries workspace_query_fetch(wid, page=page, per_page=per_page)
 
 List queries.
 
@@ -849,7 +849,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2004**](InlineResponse2004.md)
+[**PaginatedQueries**](PaginatedQueries.md)
 
 ### Authorization
 
@@ -863,7 +863,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **workspace_scan**
-> InlineResponse2001Results workspace_scan(wid)
+> Workspace workspace_scan(wid)
 
 Update views.
 
@@ -902,7 +902,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**InlineResponse2001Results**](InlineResponse2001Results.md)
+[**Workspace**](Workspace.md)
 
 ### Authorization
 

@@ -9,7 +9,7 @@ Method | HTTP request | Description
 
 
 # **auth_get_token**
-> InlineResponse200 auth_get_token()
+> Token auth_get_token()
 
 Login.
 
@@ -45,7 +45,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**InlineResponse200**](InlineResponse200.md)
+[**Token**](Token.md)
 
 ### Authorization
 
