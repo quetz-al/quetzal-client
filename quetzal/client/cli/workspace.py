@@ -250,10 +250,15 @@ def files(state, name, wid, limit):
 def upload(state, name, wid, file):
     """Upload a file to a workspace."""
     client = state.api_client
-    # Get the workspace details
-    w_details = _get_details(state, name, wid)
 
-    file_details = client.workspace_file_create(w_details.id, file_content=file.name)
+    # Get the workspace details
+    w_details = api.workspace.details(client, wid, name)
+    if w_details is None:
+        # Can only happen when the name is used and there are no results. Not
+        # with the wid option because it would raise a 404 QuetzalAPIException
+        raise click.ClickException(f'Workspace named "{name}" does not exist.')
+
+    file_details = api.workspace.upload(client, w_details.id, file)
     click.secho(f'File {file.name} uploaded successfully. Its id is {file_details.id}.',
                 fg='green')
 
@@ -269,22 +274,19 @@ def delete(state, name, wid, wait):
     """Delete a workspace."""
 
     client = state.api_client
+
     # Get the workspace details
-    w_details = _get_details(state, name, wid)
+    w_details = api.workspace.details(client, wid, name)
+    if w_details is None:
+        # Can only happen when the name is used and there are no results. Not
+        # with the wid option because it would raise a 404 QuetzalAPIException
+        raise click.ClickException(f'Workspace named "{name}" does not exist.')
 
     # Delete it
-    client.workspace_delete(w_details.id)
+    progress = _progress.generic_progress('Workspace deleted.')
+    api.workspace.delete(w_details.id, wait=wait, progress=progress)
 
-    if wait:
-        w_details = _wait_for_workspace(w_details, client,
-                                        lambda w: w.status == 'DELETING')
-        click.secho(f'\nWorkspace [{w_details.name}] deleted successfully!', fg='green')
-        _print_details(w_details)
-
-    else:
-        click.secho(f'\nWorkspace [{w_details.name}] was marked for deletion.', fg='green')
-
-    return w_details
+    _print_details(w_details)
 
 
 @workspace_group.command()
@@ -300,8 +302,13 @@ def update_metadata(state, name, wid, file_id, metadata_file):
     """Update the metadata of a file in a workspace."""
 
     client = state.api_client
+
     # Get the workspace details
-    w_details = _get_details(state, name, wid)
+    w_details = api.workspace.details(client, wid, name)
+    if w_details is None:
+        # Can only happen when the name is used and there are no results. Not
+        # with the wid option because it would raise a 404 QuetzalAPIException
+        raise click.ClickException(f'Workspace named "{name}" does not exist.')
 
     metadata_contents = json.load(metadata_file)
     response = client.workspace_file_update_metadata(wid=w_details.id, uuid=file_id,
@@ -354,7 +361,6 @@ def _print_table(results, schema, total):
                 str_k = ', '.join(f'{k}:{v}' for k, v in row[k].items())
             else:
                 str_k = str(row[k])
-            #str_k = str_k or 'empty'
             max_k = schema.get(k, {}).get('width', 100)
             row[k] = _trim_string(str_k, max_k)
 

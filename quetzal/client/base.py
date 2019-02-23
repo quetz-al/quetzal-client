@@ -224,10 +224,8 @@ class MetaClient(type):
                     return f(instance, *args, **kwargs)
                 return shortcut
 
-            original_doc = (
-                getattr(api_obj, attr).__doc__
-                .replace('\n        ', '\n')
-            )
+            original_doc = '\n'.join(line.strip()
+                                     for line in getattr(api_obj, attr).__doc__.split('\n'))
             short_func = wrapper(getattr(api_obj, attr))
             short_func.__doc__ = textwrap.dedent(
                 f'Shortcut method for {api_obj.__module__}.{api_obj.__name__}.{attr}\n\n'

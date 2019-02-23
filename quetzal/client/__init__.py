@@ -13,5 +13,4 @@ __all__ = (
     '__openapi_generator_cli_version__',
     'Client',
     'Configuration',
-    'api',
 )
