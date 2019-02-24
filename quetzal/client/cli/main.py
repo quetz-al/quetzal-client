@@ -114,8 +114,10 @@ def verbose_option(f):
 
 def global_options(f):
     import quetzal.client
+    import quetzal.openapi_client
     version_str = f'{quetzal.client.__version__} '\
-        f'(generator version: {quetzal.client.__openapi_generator_cli_version__})'
+        f'(openapi_client version: {quetzal.openapi_client.__version__}) ' \
+        f'(generator version: {quetzal.openapi_client.__openapi_generator_cli_version__})'
 
     # Note that options need to be chained in the reversed order
     # (with respect to how parameters are captured on the command functions)

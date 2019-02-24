@@ -1,4 +1,3 @@
-import sys
 from setuptools import setup, find_packages
 
 import versioneer
@@ -6,19 +5,14 @@ import versioneer
 
 long_description = '...'
 dependencies = [
-    'urllib3>=1.15',
-    'six>=1.10',
-    'certifi',
-    'python-dateutil',
+    'quetzal-openapi-client',
     'click',
     'backoff',
     'requests',
     'appdirs',
     'PyYAML',
+    'pyreadline;platform_system=="Windows"',
 ]
-
-if sys.platform == 'win32':
-    dependencies.append('pyreadline')
 
 setup_requires = dependencies[:]
 # extra_dependencies = []

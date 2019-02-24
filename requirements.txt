@@ -1,11 +1,7 @@
-urllib3>=1.15
-six>=1.10
-certifi
-python-dateutil
 click
-jsonref
 backoff
 requests
 appdirs
 PyYAML
 pyreadline>=2.1; sys_platform=='win32'
+git+ssh://git@github.com/dojeda/quetzal-openapi-client.git#egg=quetzal-openapi-client

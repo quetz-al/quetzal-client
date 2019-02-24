@@ -29,7 +29,7 @@ def create(client, name, description, families, wait=False, progress=None):
 
     Returns
     -------
-    w_details: quetzal._auto_client.models.Workspace
+    w_details: quetzal.openapi_client.models.Workspace
         Details on the created workspace.
 
     Raises
@@ -136,7 +136,7 @@ def details(client, wid=None, name=None, owner=None):
 
     Returns
     -------
-    w_details: quetzal._auto_client.models.Workspace
+    w_details: quetzal.openapi_client.models.Workspace
         Details on the workspace, or ``None`` when it was not found.
 
     Raises
@@ -186,7 +186,7 @@ def commit(client, wid, wait=False, progress=None):
 
     Returns
     -------
-    w_details: quetzal._auto_client.models.Workspace
+    w_details: quetzal.openapi_client.models.Workspace
         Details on the workspace after committing.
 
     Raises
@@ -231,7 +231,7 @@ def scan(client, wid, wait=False, progress=None):
 
     Returns
     -------
-    w_details: quetzal._auto_client.models.Workspace
+    w_details: quetzal.openapi_client.models.Workspace
         Details on the workspace after scanning.
 
     Raises
@@ -316,7 +316,7 @@ def upload(client, wid, file):
 
     Returns
     -------
-    file_details: quetzal._auto_client.models.BaseMetadata
+    file_details: quetzal.openapi_client.models.BaseMetadata
         Uploaded file details.
 
     Raises
@@ -379,7 +379,7 @@ def wait_for_workspace(client, wid, retry_predicate, progress=None):
 
     Returns
     -------
-    w_details: quetzal._auto_client.models.Workspace
+    w_details: quetzal.openapi_client.models.Workspace
         Details on the workspace; the result of the latest workspace detail
         call.
 

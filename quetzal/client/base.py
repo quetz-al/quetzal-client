@@ -10,10 +10,10 @@ import six
 import urllib3
 from requests import codes
 
-from quetzal._auto_client.api_client import ApiClient
-from quetzal._auto_client.rest import RESTClientObject
-from quetzal._auto_client.api import AuthenticationApi, DataApi
-from quetzal._auto_client.rest import ApiException
+from quetzal.openapi_client.api_client import ApiClient
+from quetzal.openapi_client.rest import RESTClientObject
+from quetzal.openapi_client.api import AuthenticationApi, DataApi
+from quetzal.openapi_client.rest import ApiException
 from quetzal.client.exceptions import QuetzalAPIException, RetryableException
 
 logger = logging.getLogger(__name__)
