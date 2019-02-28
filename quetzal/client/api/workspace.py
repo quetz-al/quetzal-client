@@ -1,7 +1,7 @@
 import backoff
 
 
-def create(client, name, description, families, wait=False, progress=None):
+def create(client, name, description, families, temporary=False, wait=False, progress=None):
     """ Create a workspace.
 
     This function calls the Quetzal API endpoint to create a workspace.
@@ -20,6 +20,9 @@ def create(client, name, description, families, wait=False, progress=None):
     families: dict
         Family and versions for the new workspace. In this dictionary, keys
         are interpreted as family names, values as versions.
+    temporary: bool, optional
+        Temporary boolean flag set when creating the workspace. By default,
+        ``False``.
     wait: bool, optional
         When ``False``, this function returns after the POST request. When
         ``True``, it will request the details of the workspace until it has
@@ -45,6 +48,7 @@ def create(client, name, description, families, wait=False, progress=None):
         "name": name,
         "description": description,
         "families": families,
+        'temporary': temporary,
     }
     w_details = client.workspace_create(workspace_create_object)
 
