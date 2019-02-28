@@ -1,4 +1,5 @@
 import datetime
+import csv
 import itertools
 import json
 
@@ -391,9 +392,18 @@ def _save_results(table, file, fmt):
     elif fmt == 'yaml':
         yaml.safe_dump(table, file, default_flow_style=False)
     elif fmt == 'csv':
-        raise NotImplementedError
+        _csv_dump(table, file)
     else:
         raise ValueError('Invalid output format')
+
+
+def _csv_dump(table, filename):
+    with open(filename.name, 'w') as f:
+        if not table:
+            return
+        writer = csv.DictWriter(f, table[0].keys())
+        writer.writeheader()
+        writer.writerows(table)
 
 
 def _get_details(state, name, wid):
