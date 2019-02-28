@@ -253,7 +253,7 @@ def scan(client, wid, wait=False, progress=None):
     return w_details
 
 
-def files(client, wid, per_page=100, limit=1000):
+def files(client, wid, per_page=100, limit=1000, **filters):
     """ List files uploaded or whose metadata has changed on a workspace.
 
     This function calls the Quetzal API endpoint to list workspace files and
@@ -270,6 +270,9 @@ def files(client, wid, per_page=100, limit=1000):
         Number of items to request per page.
     limit: int, optional
         Limit the number of workspaces to fetch.
+    **filters
+        Filters on the base metadata of the file. For example,
+        `filename='foo.bin', size=1024`
 
     Returns
     -------
@@ -288,6 +291,11 @@ def files(client, wid, per_page=100, limit=1000):
 
     """
     kwargs = dict(per_page=min(per_page, limit), page=1)
+    filter_strings = []
+    for k, v in filters.items():
+        filter_strings.append(f'{k}={v}')
+    if filter_strings:
+        kwargs['filters'] = ','.join(filter_strings)
     page = client.workspace_file_fetch(wid, **kwargs)
     file_list = [r.to_dict() for r in page.results]
     while len(file_list) < limit and len(file_list) < page.total:
@@ -329,13 +337,19 @@ def upload(client, wid, file):
     """
     if not hasattr(file, 'read') or not hasattr(file, 'name'):
         raise ValueError('file must have a read method and name attribute.')
-    file_details = client.workspace_file_create(wid, file_content=file.name)
+    file_details = client.workspace_file_create(wid, content=file.name)
     return file_details
 
 
 def update_metadata(client, wid, file_id, metadata):
+    # from quetzal.openapi_client.models.metadata_by_family import MetadataByFamily
+    # obj = MetadataByFamily(id=file_id, metadata=metadata)
+    obj = {
+        'metadata': metadata
+    }
     response = client.workspace_file_update_metadata(wid=wid, uuid=file_id,
-                                                     body=metadata)
+                                                     metadata_by_family=obj)
+    return response
 
 
 
@@ -419,11 +433,11 @@ def wait_for_workspace(client, wid, retry_predicate, progress=None):
 
 def delete(client, wid, wait=False, progress=None):
 
-    w_details = client.workspace_delete(wid)
+    client.workspace_delete(wid)
 
     if wait:
         w_details = wait_for_workspace(client,
-                                       w_details.id,
+                                       wid,
                                        lambda w: w.status == 'DELETING',
                                        progress)
     return w_details

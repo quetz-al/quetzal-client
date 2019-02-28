@@ -63,7 +63,7 @@ def query_command(state, name, wid, query_file, dialect, limit, retrieve_all, ou
     else:
         query_contents = query_file.read()
 
-    limit = sys.maxsize if retrieve_all else min(limit, 100)
+    limit = 100_000 if retrieve_all else min(limit, 100)
     kwargs = dict(per_page=limit)
 
     query_obj = {
@@ -99,5 +99,5 @@ def query_command(state, name, wid, query_file, dialect, limit, retrieve_all, ou
         _print_table(results, columns, query_details.total)
     else:
         _save_results(results, output, output_format)
-        click.secho(f'Saved {len(results)} out of {query_details.results.total} results '
+        click.secho(f'Saved {len(results)} out of {query_details.total} results '
                     f'in {output.name}.')
