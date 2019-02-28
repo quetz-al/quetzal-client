@@ -1,4 +1,5 @@
 import functools
+import io
 import logging
 import re
 import textwrap
@@ -17,6 +18,9 @@ from quetzal.openapi_client.rest import ApiException
 from quetzal.client.exceptions import QuetzalAPIException, RetryableException
 
 logger = logging.getLogger(__name__)
+
+# Size of chunk for uploading data as chunked multi-part
+CHUNK_SIZE = (32 << 20)  # 32 Mb
 
 
 def _log_auth_backoff(details):
@@ -336,4 +340,22 @@ def _patch_urlopen_keywords(method, url, redirect, kw):
             retries = urllib3.util.retry.Retry.from_int(retries, redirect=redirect)
         retries.remove_headers_on_redirect = ()
         kw['retries'] = retries
+    elif method == 'POST' and re.match('^/api/v1/data/workspaces/[0-9]*/files/$', path):
+        kw['chunked'] = True
+        kw['body'] = _chunked_body_generator(kw.pop('body'))
     return kw
+
+
+def _chunked_body_generator(data):
+    foo = io.BytesIO(data)
+    chunk = foo.read(CHUNK_SIZE)
+    n = len(data)
+    # import tqdm
+    # progress = tqdm.tqdm('Uploading file', total=n, unit='bytes')
+    while chunk:
+        # progress.update(len(chunk))
+        yield chunk
+        chunk = foo.read(CHUNK_SIZE)
+    # progress.clear()
+    # print('Finished uploading?')
+
