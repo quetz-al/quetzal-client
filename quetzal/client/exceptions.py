@@ -55,15 +55,17 @@ class QuetzalAPIException(Exception):
             return QuetzalAPIException(api_exception.status,
                                        api_exception.reason,
                                        'No details available')
+
+        status = api_exception.status
         try:
             body = json.loads(api_exception.body)
-            status = body.get('status', api_exception.status)
+            status = body.get('status', status)
             title = body.get('title', 'unknown')
             detail = body.get('detail', 'A problem occured, but the API did not '
                                         'generate a standard error response.')
 
         except (json.JSONDecodeError, TypeError):
-            return QuetzalAPIException(-1, 'unknown', '')
+            return QuetzalAPIException(status, 'unknown', '')
 
         if status == codes.unauthorized:
             if authorize_ok:

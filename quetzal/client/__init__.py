@@ -11,4 +11,5 @@ __all__ = (
     '__version__',
     'Client',
     'Configuration',
+    'QuetzalAPIException',
 )
