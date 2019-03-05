@@ -14,7 +14,7 @@ dependencies = [
     'pyreadline;platform_system=="Windows"',
 ]
 dependency_links = [
-    'https://github.com/quetz-al/quetzal-openapi-client/archive/master.zip#egg=quetzal-openapi-client'
+    'https://github.com/quetz-al/quetzal-openapi-client/archive/v0.1.0.zip#egg=quetzal-openapi-client'
 ]
 
 setup_requires = dependencies[:]
