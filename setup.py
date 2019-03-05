@@ -5,7 +5,7 @@ import versioneer
 
 long_description = '...'
 dependencies = [
-    'quetzal-openapi-client @ https://github.com/quetz-al/quetzal-client/tarball/master#egg=quetzal-openapi-client',
+    'quetzal-openapi-client @ https://github.com/quetz-al/quetzal-openapi-client/archive/master.zip#egg=quetzal-openapi-client',
     'click',
     'backoff',
     'requests',
