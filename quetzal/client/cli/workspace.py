@@ -285,9 +285,7 @@ def delete(state, name, wid, wait):
 
     # Delete it
     progress = _progress.generic_progress('Workspace deleted.')
-    api.workspace.delete(w_details.id, wait=wait, progress=progress)
-
-    _print_details(w_details)
+    api.workspace.delete(client, w_details.id, wait=wait, progress=progress)
 
 
 @workspace_group.command()

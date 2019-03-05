@@ -440,11 +440,10 @@ def delete(client, wid, wait=False, progress=None):
     client.workspace_delete(wid)
 
     if wait:
-        w_details = wait_for_workspace(client,
-                                       wid,
-                                       lambda w: w.status == 'DELETING',
-                                       progress)
-    return w_details
+        wait_for_workspace(client,
+                           wid,
+                           lambda w: w.status == 'DELETING',
+                           progress)
 
 
 def _noop(*args, **kwargs):
