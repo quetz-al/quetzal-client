@@ -13,6 +13,9 @@ dependencies = [
     'PyYAML',
     'pyreadline;platform_system=="Windows"',
 ]
+dependency_links = [
+    'https://github.com/quetz-al/quetzal-openapi-client/archive/master.zip#egg=quetzal-openapi-client'
+]
 
 setup_requires = dependencies[:]
 # extra_dependencies = []
@@ -42,7 +45,7 @@ setup_args = dict(
             'quetzal-client = quetzal.client.cli.main:cli',
         ],
     },
-    # dependency_links=dependency_links,
+    dependency_links=dependency_links,
 )
 
 setup(**setup_args)
