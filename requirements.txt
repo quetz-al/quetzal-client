@@ -4,4 +4,4 @@ requests
 appdirs
 PyYAML
 pyreadline>=2.1; sys_platform=='win32'
-git+ssh://git@github.com/quetz-al/quetzal-openapi-client.git#egg=quetzal-openapi-client
+git+https://github.com/quetz-al/quetzal-openapi-client.git#egg=quetzal-openapi-client
