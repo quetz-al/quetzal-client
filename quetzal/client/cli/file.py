@@ -5,6 +5,7 @@ import click
 import json
 import yaml
 
+from quetzal.client import api
 from quetzal.client.cli import BaseGroup, help_options, pass_state, error_wrapper, MutexOption
 from quetzal.client.cli.workspace import workspace_identifier_options, _get_details
 
@@ -33,29 +34,16 @@ def download(state, file_id, output, output_dir, name, wid):
     """Download a file in a workspace"""
     client = state.api_client
 
-    # Get the workspace details
     if name is not None or wid is not None:
-        w_details = _get_details(state, name, wid)
-        func = client.workspace_file_details
-        func_kws = dict(wid=w_details.id, uuid=file_id)
-    else:
-        func = client.public_file_details
-        func_kws = dict(uuid=file_id)
+        w_details = api.workspace.details(client, wid, name)
+        if w_details is None:
+            # Can only happen when the name is used and there are no results. Not
+            # with the wid option because it would raise a 404 QuetzalAPIException
+            raise click.ClickException(f'Workspace named "{name}" does not exist.')
+        wid = w_details.id
 
-    if output is None:
-        metadata_response = func(**func_kws, _accept='application/json')
-        base = metadata_response['metadata']['base']
-        output = pathlib.Path(output_dir or '.') / base['path'] / base['filename']
-    else:
-        output = pathlib.Path(output)
-
-    contents = func(**func_kws, _accept='application/octet-stream', _preload_content=False)
-
-    output.parent.mkdir(parents=True, exist_ok=True)
-    with open(output, 'wb') as f:
-        f.write(contents.data)
-
-    click.secho(f'File {output} downloaded!', fg='green')
+    saved_file = api.file.download(client, file_id, wid=wid, output=output, output_dir=output_dir)
+    click.secho(f'Downloaded file: {saved_file}', fg='green')
 
 
 @file_group.command()
@@ -64,7 +52,7 @@ def download(state, file_id, output, output_dir, name, wid):
 @click.option('--output', help='Output file.',
               type=click.File('w'), default=sys.stdout)
 @click.option('--format', 'output_format', help='Output file format.',
-              type=click.Choice(['json', 'yaml']), default='json')
+              type=click.Choice(['json', 'yaml']))
 @workspace_identifier_options(required=False)
 @help_options
 @pass_state
@@ -74,27 +62,26 @@ def metadata(state, file_id, output, output_format, name, wid):
         if hasattr(output, 'name'):
             output_filename = pathlib.Path(output.name)
             ext = output_filename.suffix[1:]
-            if ext not in ('json', 'yaml'):
+            if ext not in ('json', 'yaml', 'yml'):
                 raise click.BadParameter(f'No format provided: "{ext}" is not supported. '
                                          f'Set the format with --format')
             output_format = ext
 
     client = state.api_client
-    # Get the workspace details
-    if name is not None or wid is not None:
-        w_details = _get_details(state, name, wid)
-        func = client.workspace_file_details
-        func_kws = dict(wid=w_details.id, uuid=file_id)
-    else:
-        func = client.public_file_details
-        func_kws = dict(uuid=file_id)
 
-    response = func(**func_kws, _accept='application/json')
-    meta = response['metadata']
+    if name is not None or wid is not None:
+        w_details = api.workspace.details(client, wid, name)
+        if w_details is None:
+            # Can only happen when the name is used and there are no results. Not
+            # with the wid option because it would raise a 404 QuetzalAPIException
+            raise click.ClickException(f'Workspace named "{name}" does not exist.')
+        wid = w_details.id
+
+    meta = api.file.metadata(client, file_id, wid=wid)
 
     if output_format == 'json':
         json.dump(meta, output, indent=2)
-    elif output_format == 'yaml':
+    elif output_format in ('yaml', 'yml'):
         yaml.safe_dump(meta, output, default_flow_style=False)
     else:
         raise ValueError('Invalid output format')
