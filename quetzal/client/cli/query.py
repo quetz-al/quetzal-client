@@ -3,6 +3,7 @@ import sys
 
 import click
 
+from quetzal.client import api
 from quetzal.client.cli import error_wrapper, MutexOption, rename_kwargs, \
     help_options, pass_state
 from quetzal.client.cli.workspace import workspace_identifier_options, \
@@ -63,30 +64,12 @@ def query_command(state, name, wid, query_file, dialect, limit, retrieve_all, ou
     else:
         query_contents = query_file.read()
 
-    limit = 100_000 if retrieve_all else min(limit, 100)
-    kwargs = dict(per_page=limit)
-
-    query_obj = {
-        'dialect': dialect,
-        'query': query_contents,
-    }
-
-    query_details = client.workspace_query_create(w_details.id, query_obj, **kwargs)
-    results = query_details.results
+    limit = None if retrieve_all else limit
+    results, total = api.query.query(client, w_details.id, query_contents, dialect=dialect, limit=limit)
     if not results:
         _save_results([], output, output_format)
         click.secho('No results.', fg='green')
         return
-
-    # The query POST action redirects to the GET details but does not have
-    # a per_page, so we might get more that we needed
-    if len(results) > limit:
-        results = results[:limit]
-
-    while len(results) < limit and len(results) < query_details.total:
-        kwargs['page'] = kwargs.get('page', 1) + 1
-        query_details = client.workspace_query_details(w_details.id, query_details.id, **kwargs)
-        results.extend(query_details.results)
 
     total_width, _ = click.get_terminal_size()
     num_cols = len(results[0])
@@ -96,8 +79,8 @@ def query_command(state, name, wid, query_file, dialect, limit, retrieve_all, ou
     }
 
     if output is None:
-        _print_table(results, columns, query_details.total)
+        _print_table(results, columns, total)
     else:
         _save_results(results, output, output_format)
-        click.secho(f'Saved {len(results)} out of {query_details.total} results '
+        click.secho(f'Saved {len(results)} out of {total} results '
                     f'in {output.name}.')
