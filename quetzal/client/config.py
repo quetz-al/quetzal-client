@@ -1,5 +1,3 @@
-import appdirs
-
 import quetzal.openapi_client.configuration
 
 
@@ -9,11 +7,3 @@ class Configuration(quetzal.openapi_client.configuration.Configuration):
     pass
 
 
-def get_config_dir():
-    from quetzal.client import __version__
-    return appdirs.user_config_dir(
-        appname='quetzal_client',
-        appauthor='quetzal',
-        version=__version__,
-        roaming=False,
-    )
