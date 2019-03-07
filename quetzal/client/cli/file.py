@@ -5,7 +5,7 @@ import click
 import json
 import yaml
 
-from quetzal.client import api
+from quetzal.client import helpers
 from quetzal.client.cli import BaseGroup, help_options, pass_state, error_wrapper, MutexOption
 from quetzal.client.cli.workspace import workspace_identifier_options, _get_details
 
@@ -35,14 +35,14 @@ def download(state, file_id, output, output_dir, name, wid):
     client = state.api_client
 
     if name is not None or wid is not None:
-        w_details = api.workspace.details(client, wid, name)
+        w_details = helpers.workspace.details(client, wid, name)
         if w_details is None:
             # Can only happen when the name is used and there are no results. Not
             # with the wid option because it would raise a 404 QuetzalAPIException
             raise click.ClickException(f'Workspace named "{name}" does not exist.')
         wid = w_details.id
 
-    saved_file = api.file.download(client, file_id, wid=wid, output=output, output_dir=output_dir)
+    saved_file = helpers.file.download(client, file_id, wid=wid, output=output, output_dir=output_dir)
     click.secho(f'Downloaded file: {saved_file}', fg='green')
 
 
@@ -70,14 +70,14 @@ def metadata(state, file_id, output, output_format, name, wid):
     client = state.api_client
 
     if name is not None or wid is not None:
-        w_details = api.workspace.details(client, wid, name)
+        w_details = helpers.workspace.details(client, wid, name)
         if w_details is None:
             # Can only happen when the name is used and there are no results. Not
             # with the wid option because it would raise a 404 QuetzalAPIException
             raise click.ClickException(f'Workspace named "{name}" does not exist.')
         wid = w_details.id
 
-    meta = api.file.metadata(client, file_id, wid=wid)
+    meta = helpers.file.metadata(client, file_id, wid=wid)
 
     if output_format == 'json':
         json.dump(meta, output, indent=2)

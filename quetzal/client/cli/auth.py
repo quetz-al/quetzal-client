@@ -1,6 +1,6 @@
 import click
 
-from quetzal.client import api
+from quetzal.client import helpers
 from quetzal.client.cli import BaseGroup, help_options, pass_state, error_wrapper
 
 
@@ -21,7 +21,7 @@ def login(state):
     if not config.username:
         raise click.ClickException('Cannot login without username credentials')
 
-    api.auth.login(client)
+    helpers.auth.login(client)
 
     if config.username:
         click.secho(f'Logged in with user {config.username} successful!', fg='green')
@@ -40,6 +40,6 @@ def logout(state):
         if not config.username or not config.password:
             raise click.ClickException('Cannot logout without access_token or credentials')
 
-    api.auth.logout(client)
+    helpers.auth.logout(client)
 
     click.secho('Access token revoked: logout successful', fg='green')

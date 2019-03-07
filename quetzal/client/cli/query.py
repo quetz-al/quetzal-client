@@ -3,7 +3,7 @@ import sys
 
 import click
 
-from quetzal.client import api
+from quetzal.client import helpers
 from quetzal.client.cli import error_wrapper, MutexOption, rename_kwargs, \
     help_options, pass_state
 from quetzal.client.cli.workspace import workspace_identifier_options, \
@@ -65,7 +65,7 @@ def query_command(state, name, wid, query_file, dialect, limit, retrieve_all, ou
         query_contents = query_file.read()
 
     limit = None if retrieve_all else limit
-    results, total = api.query.query(client, w_details.id, query_contents, dialect=dialect, limit=limit)
+    results, total = helpers.query(client, w_details.id, query_contents, dialect=dialect, limit=limit)
     if not results:
         _save_results([], output, output_format)
         click.secho('No results.', fg='green')

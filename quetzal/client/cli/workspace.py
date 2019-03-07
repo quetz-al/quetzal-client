@@ -8,7 +8,7 @@ import click
 import yaml
 
 
-from quetzal.client import api
+from quetzal.client import helpers
 from quetzal.client.cli import (
     BaseGroup, error_wrapper, FamilyVersionListType,
     help_options, OneRequiredOption, MutexOption, pass_state,
@@ -98,8 +98,8 @@ def create(state, name, description, families, wait):
     client = state.api_client
     families = {tup[0]: tup[1] for tup in families}
     progress = _progress.generic_progress('Workspace created and initialized.')
-    w_details = api.workspace.create(client, name, description, families, wait,
-                                     progress=progress)
+    w_details = helpers.workspace.create(client, name, description, families, wait,
+                                         progress=progress)
     _print_details(w_details)
 
 
@@ -117,7 +117,7 @@ def list_(state, name, owner, deleted, limit):
     """List workspaces."""
     client = state.api_client
 
-    results, total = api.workspace.list_(client, name, owner, deleted, limit)
+    results, total = helpers.workspace.list_(client, name, owner, deleted, limit)
     if not results:
         click.secho('No workspaces found.', fg='yellow')
         return
@@ -144,7 +144,7 @@ def details(state, name, wid):
     """Show workspace details."""
     # TODO: add username option
     client = state.api_client
-    w_details = api.workspace.details(client, wid, name)
+    w_details = helpers.workspace.details(client, wid, name)
     if w_details is None:
         # Can only happen when the name is used and there are no results. Not
         # with the wid option because it would raise a 404 QuetzalAPIException
@@ -166,7 +166,7 @@ def commit(state, name, wid, wait):
     client = state.api_client
 
     # Get the workspace details
-    w_details = api.workspace.details(client, wid, name)
+    w_details = helpers.workspace.details(client, wid, name)
     if w_details is None:
         # Can only happen when the name is used and there are no results. Not
         # with the wid option because it would raise a 404 QuetzalAPIException
@@ -174,7 +174,7 @@ def commit(state, name, wid, wait):
 
     # Do the commit
     progress = _progress.commit_progress()
-    w_details = api.workspace.commit(client, w_details.id, wait, progress=progress)
+    w_details = helpers.workspace.commit(client, w_details.id, wait, progress=progress)
 
     _print_details(w_details)
 
@@ -192,7 +192,7 @@ def scan(state, name, wid, wait):
     client = state.api_client
 
     # Get the workspace details
-    w_details = api.workspace.details(client, wid, name)
+    w_details = helpers.workspace.details(client, wid, name)
     if w_details is None:
         # Can only happen when the name is used and there are no results. Not
         # with the wid option because it would raise a 404 QuetzalAPIException
@@ -200,7 +200,7 @@ def scan(state, name, wid, wait):
 
     # Do the scan
     progress = _progress.scan_progress()
-    w_details = api.workspace.scan(client, w_details.id, wait, progress=progress)
+    w_details = helpers.workspace.scan(client, w_details.id, wait, progress=progress)
 
     _print_details(w_details)
 
@@ -217,14 +217,14 @@ def files(state, name, wid, limit):
     client = state.api_client
 
     # Get the workspace details
-    w_details = api.workspace.details(client, wid, name)
+    w_details = helpers.workspace.details(client, wid, name)
     if w_details is None:
         # Can only happen when the name is used and there are no results. Not
         # with the wid option because it would raise a 404 QuetzalAPIException
         raise click.ClickException(f'Workspace named "{name}" does not exist.')
 
     limit = min(limit, 1000)
-    file_list, total = api.workspace.files(client, w_details.id, limit=limit)
+    file_list, total = helpers.workspace.files(client, w_details.id, limit=limit)
 
     if not file_list:
         click.secho('No files have been added on this workspace '
@@ -253,13 +253,13 @@ def upload(state, name, wid, file):
     client = state.api_client
 
     # Get the workspace details
-    w_details = api.workspace.details(client, wid, name)
+    w_details = helpers.workspace.details(client, wid, name)
     if w_details is None:
         # Can only happen when the name is used and there are no results. Not
         # with the wid option because it would raise a 404 QuetzalAPIException
         raise click.ClickException(f'Workspace named "{name}" does not exist.')
 
-    file_details = api.workspace.upload(client, w_details.id, file)
+    file_details = helpers.workspace.upload(client, w_details.id, file)
     click.secho(f'File {file.name} uploaded successfully. Its id is {file_details.id}.',
                 fg='green')
 
@@ -277,7 +277,7 @@ def delete(state, name, wid, wait):
     client = state.api_client
 
     # Get the workspace details
-    w_details = api.workspace.details(client, wid, name)
+    w_details = helpers.workspace.details(client, wid, name)
     if w_details is None:
         # Can only happen when the name is used and there are no results. Not
         # with the wid option because it would raise a 404 QuetzalAPIException
@@ -285,7 +285,7 @@ def delete(state, name, wid, wait):
 
     # Delete it
     progress = _progress.generic_progress('Workspace deleted.')
-    api.workspace.delete(client, w_details.id, wait=wait, progress=progress)
+    helpers.workspace.delete(client, w_details.id, wait=wait, progress=progress)
 
 
 @workspace_group.command()
@@ -303,7 +303,7 @@ def update_metadata(state, name, wid, file_id, metadata_file):
     client = state.api_client
 
     # Get the workspace details
-    w_details = api.workspace.details(client, wid, name)
+    w_details = helpers.workspace.details(client, wid, name)
     if w_details is None:
         # Can only happen when the name is used and there are no results. Not
         # with the wid option because it would raise a 404 QuetzalAPIException
