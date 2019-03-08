@@ -44,7 +44,7 @@ class QuetzalAPIException(Exception):
 
         Returns
         -------
-        QuetzalAPIException
+        quetzal.client.QuetzalAPIException
 
         """
         if not hasattr(api_exception, 'body') or not api_exception.body:

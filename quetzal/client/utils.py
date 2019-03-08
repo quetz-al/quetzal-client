@@ -1,10 +1,11 @@
 import atexit
 import code
+import hashlib
 import logging
 import pathlib
-import warnings
 
-from .config import get_config_dir
+
+import appdirs
 
 
 logger = logging.getLogger(__name__)
@@ -55,3 +56,62 @@ class HistoryConsole(code.InteractiveConsole):
             readline.write_history_file(histfile)
         except:
             logger.debug('Could not save console history', exc_info=True)
+
+
+def get_data_dir():
+    from quetzal.client import __version__
+    # Only keep major.minor
+    version = '.'.join(__version__.split('.')[:2])
+    dirname = appdirs.user_data_dir(
+        appname='quetzal-client',
+        appauthor='quetzal',
+        version=version,
+        roaming=False
+    )
+    return dirname
+
+
+def get_config_dir():
+    from quetzal.client import __version__
+    # Only keep major.minor
+    version = '.'.join(__version__.split('.')[:2])
+    return appdirs.user_config_dir(
+        appname='quetzal-client',
+        appauthor='quetzal',
+        version=version,
+        roaming=False,
+    )
+
+
+def get_readable_info(file_obj):
+    """ Extract useful information from reading a file
+
+    This function calculates the md5sum and the file size in bytes from a
+    file-like object. It does both operations at the same time, which means
+    that there is no need to read the object twice.
+
+    After this function reads the file content, it will set the file pointer
+    to its original position through `tell`.
+
+    Parameters
+    ----------
+    file_obj: file-like
+        File object. It needs the `read` and `tell` methods.
+
+    Returns
+    -------
+    md5sum, size: str, int
+        MD5 sum and size of the file object contents
+
+    """
+    size = 0
+    position = file_obj.tell()
+    hashobj = hashlib.new('md5')
+    while True:
+        chunk = file_obj.read(4096)
+        size += len(chunk)
+        if not chunk:
+            break
+        hashobj.update(chunk)
+    file_obj.seek(position)
+    return hashobj.hexdigest(), size

@@ -11,8 +11,8 @@ Subpackages
 
 .. toctree::
 
-    quetzal.client.api
     quetzal.client.cli
+    quetzal.client.helpers
 
 Submodules
 ----------

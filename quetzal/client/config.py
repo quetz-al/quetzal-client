@@ -1,4 +1,4 @@
-import appdirs
+import os
 
 import quetzal.openapi_client.configuration
 
@@ -6,14 +6,11 @@ import quetzal.openapi_client.configuration
 class Configuration(quetzal.openapi_client.configuration.Configuration):
     # Use this later for particular extensions/modifications on the API
     # configuration object
-    pass
 
+    def __init__(self):
+        super().__init__()
+        if 'QUETZAL_URL' in os.environ:
+            self.host = os.getenv('QUETZAL_URL', '')
+        self.username = os.getenv('QUETZAL_USER', '')
+        self.password = os.getenv('QUETZAL_PASSWORD', '')
 
-def get_config_dir():
-    from quetzal.client import __version__
-    return appdirs.user_config_dir(
-        appname='quetzal_client',
-        appauthor='quetzal',
-        version=__version__,
-        roaming=False,
-    )

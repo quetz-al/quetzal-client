@@ -20,11 +20,11 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Quetzal Client'
-copyright = '2019, David Ojeda'
+copyright = '2019, David Ojeda. Logo by Veronica Ojeda Avellaneda'
 author = 'David Ojeda'
 
 # The short X.Y version
-version = ''
+version = '0.1'
 # The full version, including alpha/beta/rc tags
 release = '0.1.0'
 
@@ -86,12 +86,24 @@ html_theme = 'sphinx_rtd_theme'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'logo_only': True,
+    'collapse_navigation': False,
+    'sticky_navigation': False,
+    'display_version': True,
+}
+
+html_context = {
+    'display_github': True,
+    'github_user': 'quetz-al',
+    'github_repo': 'quetzal-client',
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_logo = '_static/logo.png'
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
