@@ -5,8 +5,8 @@
    :caption: Contents
 
    examples
+   changelog
    modules
-
 
 .. Indices and tables
 .. ==================
