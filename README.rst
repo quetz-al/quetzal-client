@@ -1,15 +1,17 @@
+.. Note that this file is included on Sphinx as well.
+
 Quetzal Python client
 =====================
 
 Python client for the Quetzal API.
 
 If you are not familiar with the Quetzal API, read its
-`documentation <https://github.com/quetz-al/quetzal>`_ first. This Python
+`documentation <https://quetzal-api.readthedocs.org>`_ first. This Python
 package provides a command-line and helper functions to interact with the
 Quetzal API.
 
 Note that this package depends on an auto-generated package
-`quetzal.openapi_client <https://github.com/quetz-al/quetal-openapi-client>`_,
+`quetzal.openapi_client <https://github.com/quetz-al/quetzal-openapi-client>`_,
 which is also a client to this API. You can use the latter as a pure Python
 client, but *quetzal.client* provides some helpers and small fixes.
 
