@@ -30,6 +30,7 @@ setup_args = dict(
     platforms=['Linux', 'OSX', 'Windows'],
     # keywords='',
     packages=find_packages(exclude=['docs', 'tests', 'test']),
+    namespace_packages=['quetzal'],
     python_requires='>=3.6',
     install_requires=dependencies,
     tests_require=['pytest', ],
