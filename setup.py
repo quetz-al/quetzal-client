@@ -5,16 +5,13 @@ import versioneer
 
 long_description = '...'
 dependencies = [
-    'quetzal-openapi-client',
     'click',
     'backoff',
     'requests',
     'appdirs',
     'PyYAML',
     'pyreadline;platform_system=="Windows"',
-]
-dependency_links = [
-    'https://github.com/quetz-al/quetzal-openapi-client/archive/v0.1.0.zip#egg=quetzal-openapi-client'
+    'quetzal-openapi-client @ git+https://github.com/quetz-al/quetzal-openapi-client.git@v0.1.0#egg=quetzal-openapi-client',
 ]
 
 setup_requires = dependencies[:]
@@ -33,11 +30,9 @@ setup_args = dict(
     platforms=['Linux', 'OSX', 'Windows'],
     # keywords='',
     packages=find_packages(exclude=['docs', 'tests', 'test']),
+    python_requires='>=3.6',
     install_requires=dependencies,
-    setup_requires=setup_requires,
-    # build_requires=setup_requires,
     tests_require=['pytest', ],
-    # extras_require=extra_dependencies,
     zip_safe=False,
     include_package_data=True,
     entry_points={
@@ -45,7 +40,6 @@ setup_args = dict(
             'quetzal-client = quetzal.client.cli.main:cli',
         ],
     },
-    dependency_links=dependency_links,
 )
 
 setup(**setup_args)
