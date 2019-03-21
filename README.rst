@@ -20,31 +20,28 @@ Installation
 
 *quetzal-client* and its dependency, *quetzal-openapi-client*, are not on
 PyPI yet. In the meantime, in order to install this package, create a virtual
-environment and install the following packages with ``pip``:
+environment and install with ``pip``:
 
 .. code-block:: console
 
-    pip install git+https://github.com/quetz-al/quetzal-openapi-client.git@v0.1.0\#egg=quetzal-openapi-client
-    pip install git+https://github.com/quetz-al/quetzal-client.git@v0.1.0\#egg=quetzal-client
+    pip install git+https://github.com/quetz-al/quetzal-client.git@v0.2.0\#egg=quetzal-client
 
-Alternatively, add these two lines to your ``requirements.txt``:
+Alternatively, add this line to your ``requirements.txt``:
 
-.. code-block:: none
+.. code-block::
 
-    git+https://github.com/quetz-al/quetzal-openapi-client.git@v0.1.0#egg=quetzal-openapi-client
-    git+https://github.com/quetz-al/quetzal-client.git@v0.1.0#egg=quetzal-client
+    git+https://github.com/quetz-al/quetzal-client.git@v0.2.0#egg=quetzal-client
 
 and then do ``pip install -r requirements.txt``.
 
-If you are using conda, add the same two lines to your ``environment.yaml``:
+If you are using conda, add the following structure to your ``environment.yaml``:
 
 .. code-block:: yaml
 
     ...
     dependencies:
       - pip:
-        - git+https://github.com/quetz-al/quetzal-openapi-client.git@v0.1.0#egg=quetzal-openapi-client
-        - git+https://github.com/quetz-al/quetzal-client.git@v0.1.0#egg=quetzal-client
+        - git+https://github.com/quetz-al/quetzal-client.git@v0.2.0#egg=quetzal-client
 
 and create or update your environment with
 ``conda env create -f environment.yaml`` or

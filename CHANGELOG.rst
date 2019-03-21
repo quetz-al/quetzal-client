@@ -6,6 +6,12 @@ This document list all important changes to quetzal-client.
 
 Quetzal-client version numbers follow `semantic versioning <http://semver.org>`_.
 
+0.2.0 (2019-03-21)
+------------------
+
+* Update dependency *quetzal-openapi-client* to match Quetzal API version 0.2.0.
+* Fix ``dependency_links`` to correctly link to *quetzal-openapi-client*.
+
 0.1.1 (2019-03-08)
 ------------------
 

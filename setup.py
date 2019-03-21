@@ -11,7 +11,7 @@ dependencies = [
     'appdirs',
     'PyYAML',
     'pyreadline;platform_system=="Windows"',
-    'quetzal-openapi-client @ git+https://github.com/quetz-al/quetzal-openapi-client.git@v0.1.0#egg=quetzal-openapi-client',
+    'quetzal-openapi-client @ git+https://github.com/quetz-al/quetzal-openapi-client.git@v0.2.0#egg=quetzal-openapi-client',
 ]
 
 setup_requires = dependencies[:]
