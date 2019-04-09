@@ -7,6 +7,7 @@ Quetzal client through the command line.
 """
 from . import auth, file, workspace
 from .query import query
+from .misc import get_client
 
 __all__ = (
     'auth',
