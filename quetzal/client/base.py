@@ -334,13 +334,15 @@ class CustomProxyManager(urllib3.ProxyManager):
 def _patch_urlopen_keywords(method, url, redirect, kw):
     """urlopen patch to follow 303 responses and keep the Authorization header"""
     path = urllib.parse.urlparse(url).path
-    if method == 'POST' and re.match('^/api/v1/data/workspaces/[0-9]*/queries/?$', path):
+    if method == 'POST' and re.match('^/api/v1/data/(?:workspaces/[0-9]*/)?queries/?$', path):
+        # Patch 303 retry strategy for queries, inside or outside a workspace
         retries = kw.get('retries')
         if not isinstance(retries, urllib3.util.retry.Retry):
             retries = urllib3.util.retry.Retry.from_int(retries, redirect=redirect)
         retries.remove_headers_on_redirect = ()
         kw['retries'] = retries
     elif method == 'POST' and re.match('^/api/v1/data/workspaces/[0-9]*/files/$', path):
+        # Patch 303 retry strategy for file upload
         kw['chunked'] = True
         kw['body'] = _chunked_body_generator(kw.pop('body'))
     return kw

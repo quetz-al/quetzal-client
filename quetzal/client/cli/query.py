@@ -35,9 +35,6 @@ from quetzal.client.utils import HistoryConsole
 def query_command(state, name, wid, query_file, dialect, limit, retrieve_all, output, output_format):
     """Query metadata."""
 
-    if name is None and wid is None:
-        raise click.ClickException('Query outside a workspace is not implemented yet.')
-
     if output_format is None:
         if hasattr(output, 'name'):
             output_filename = pathlib.Path(output.name)
@@ -46,10 +43,6 @@ def query_command(state, name, wid, query_file, dialect, limit, retrieve_all, ou
                 raise click.BadParameter(f'No format provided: "{ext}" is not supported. '
                                          f'Set the format with --format')
             output_format = ext
-
-    client = state.api_client
-    # Get the workspace details
-    w_details = _get_details(state, name, wid)
 
     if query_file.isatty():
         console = HistoryConsole()
@@ -64,8 +57,15 @@ def query_command(state, name, wid, query_file, dialect, limit, retrieve_all, ou
     else:
         query_contents = query_file.read()
 
+    client = state.api_client
     limit = None if retrieve_all else limit
-    results, total = helpers.query(client, w_details.id, query_contents, dialect=dialect, limit=limit)
+
+    if name is not None or wid is not None:
+        # Query within a workspace: get the workspace details, in particular its id
+        w_details = _get_details(state, name, wid)
+        wid = w_details.id
+
+    results, total = helpers.query(client, wid, query_contents, dialect=dialect, limit=limit)
     if not results:
         _save_results([], output, output_format)
         click.secho('No results.', fg='green')

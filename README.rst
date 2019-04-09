@@ -28,7 +28,7 @@ environment and install with ``pip``:
 
 Alternatively, add this line to your ``requirements.txt``:
 
-.. code-block::
+.. code-block:: none
 
     git+https://github.com/quetz-al/quetzal-client.git@v0.2.0#egg=quetzal-client
 
