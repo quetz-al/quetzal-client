@@ -3,7 +3,8 @@ import os
 import quetzal.openapi_client.configuration
 
 
-class Configuration(quetzal.openapi_client.configuration.Configuration):
+class Configuration(quetzal.openapi_client.configuration.Configuration,
+                    metaclass=quetzal.openapi_client.configuration.TypeWithDefault):
     # Use this later for particular extensions/modifications on the API
     # configuration object
 
