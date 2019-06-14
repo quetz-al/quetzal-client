@@ -438,12 +438,14 @@ def wait_for_workspace(client, wid, retry_predicate, progress=None):
 def delete(client, wid, wait=False, progress=None):
 
     client.workspace_delete(wid)
-
     if wait:
-        wait_for_workspace(client,
-                           wid,
-                           lambda w: w.status == 'DELETING',
-                           progress)
+        w_details = wait_for_workspace(client,
+                                       wid,
+                                       lambda w: w.status == 'DELETING',
+                                       progress)
+        return w_details
+    else:
+        return None
 
 
 def _noop(*args, **kwargs):
