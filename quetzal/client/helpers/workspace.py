@@ -85,7 +85,7 @@ def list_(client, name=None, owner=None, deleted=False, per_page=100, limit=1000
     Returns
     -------
     results: list
-        A list of workspace details objects.
+        A list of workspace details as dictionaries.
     total: int
         The total number of workspaces that exist. Note that this may be
         higher than the number of objects returned.
@@ -108,7 +108,7 @@ def list_(client, name=None, owner=None, deleted=False, per_page=100, limit=1000
 
     page = client.workspace_fetch(**kwargs)
 
-    results = [w.to_dict() for w in page.results]
+    results = [w.to_dict() for w in page.results]  # TODO: reconsider this to_dict here!
     while len(results) < limit and len(results) < page.total:
         kwargs['page'] = kwargs.get('page', 1) + 1
         page = client.workspace_fetch(**kwargs)
