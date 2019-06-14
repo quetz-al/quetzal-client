@@ -12,6 +12,7 @@ from .misc import get_client
 __all__ = (
     'auth',
     'file',
+    'get_client',
     'query',
     'workspace',
 )
