@@ -57,7 +57,7 @@ def download(client, file_id=None, wid=None, *, output=None, output_dir=None, **
     if output.exists():
         with output.open('rb') as f:
             md5, size = get_readable_info(f)
-        if md5 == base['checksum'] and size == base['size']:
+        if md5 != base['checksum'] or size != base['size']:
             logger.warning('File %s was downloaded in %s but is corrupted', file_id, output)
             raise ValueError('Download resulted in corrupted local file')
 
