@@ -310,7 +310,7 @@ def files(client, wid, per_page=100, limit=1000, **filters):
     return file_list, page.total
 
 
-def upload(client, wid, file):
+def upload(client, wid, file, **kwargs):
     """ Upload a file to a workspace.
 
     This function calls the Quetzal API endpoint to upload a file into a
@@ -341,7 +341,7 @@ def upload(client, wid, file):
     """
     if not hasattr(file, 'read') or not hasattr(file, 'name'):
         raise ValueError('file must have a read method and name attribute.')
-    file_details = client.workspace_file_create(wid, content=file.name)
+    file_details = client.workspace_file_create(wid, content=file.name, **kwargs)
     return file_details
 
 
