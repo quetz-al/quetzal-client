@@ -25,10 +25,13 @@ class QuetzalAPIException(Exception):
     """
 
     def __init__(self, status, title, detail):
-        super().__init__(f'{title} (status={status})')
-        self.status = status
-        self.title = title
-        self.detail = detail
+        self.status = status or 'Unknown status code'
+        self.title = title or 'No title provided'
+        self.detail = detail or 'No details provided'
+        super().__init__(f'{self.title} (status={self.status})')
+
+    def __reduce__(self):  # Needed for pickleable exceptions
+        return type(self), (self.status, self.title, self.detail)
 
     @staticmethod
     def from_api_exception(api_exception, authorize_ok=False):
