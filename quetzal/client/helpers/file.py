@@ -13,15 +13,22 @@ def download(client, file_id=None, wid=None, *, output=None, output_dir=None, **
     if output is None and output_dir is None:
         raise ValueError('Missing output or output_dir keyword argument.')
 
-    if file_id is None:
-        file_details = _find_file(client, wid, **kwargs)
-        if file_details is None:
-            raise ValueError('File not found')
-        file_id = file_details.id
-    elif kwargs:
-        raise ValueError('Use id or kwargs filters, but not both.')
+    if kwargs and file_id is not None:
+        raise ValueError('Use file_id or kwargs filters, but not both.')
 
-    # Default to the user's data directory
+    # Determine file_id from kwargs filters
+    if kwargs:
+        # file_details = _find_file(client, wid, **kwargs)
+        results = find(client, wid, **kwargs)
+        if len(results) == 0:
+            raise ValueError('File not found')
+        elif len(results) > 1:
+            raise ValueError(f'Several files match the provided filters, refusing to download.')
+        file_id = results[0].id
+
+    # Now, fall back to donwloading from a file_id
+
+    # Default output directory to the user's data directory
     output_dir = output_dir or get_data_dir()
     output_dir = pathlib.Path(output_dir)
 
@@ -57,7 +64,7 @@ def download(client, file_id=None, wid=None, *, output=None, output_dir=None, **
     if output.exists():
         with output.open('rb') as f:
             md5, size = get_readable_info(f)
-        if md5 != base['checksum'] or size != base['size']:
+        if (md5, size) != (base['checksum'], base['size']):
             logger.warning('File %s was downloaded in %s but is corrupted', file_id, output)
             raise ValueError('Download resulted in corrupted local file')
 
@@ -75,7 +82,13 @@ def metadata(client, file_id, wid=None):
     return metadata_response['metadata']
 
 
-def _find_file(client, wid=None, **kwargs):
+def find(client, wid=None, **kwargs):
+    """ Fetch a file details object from the list files endpoint
+
+    This function requests the public or workspace file list endpoint depending
+    on the `wid` parameter. It uses the `**kwargs` as filters to find by
+    base metadata entries.
+    """
     filters = ','.join([f'{k}={v}' for k, v in kwargs.items()])
     if wid is None:
         func = functools.partial(client.public_file_fetch)
@@ -83,8 +96,4 @@ def _find_file(client, wid=None, **kwargs):
         func = functools.partial(client.workspace_file_fetch, wid=wid)
 
     fetch_result = func(filters=filters)
-    if fetch_result.total == 0:
-        return None
-    elif fetch_result.total > 1:
-        raise ValueError(f'Several files match filter {filters}.')
-    return fetch_result.results[0]
+    return fetch_result.results
