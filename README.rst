@@ -24,13 +24,13 @@ environment and install with ``pip``:
 
 .. code-block:: console
 
-    pip install git+https://github.com/quetz-al/quetzal-client.git@v0.2.0\#egg=quetzal-client
+    pip install git+https://github.com/quetz-al/quetzal-client.git@v0.3.0\#egg=quetzal-client
 
 Alternatively, add this line to your ``requirements.txt``:
 
 .. code-block:: none
 
-    git+https://github.com/quetz-al/quetzal-client.git@v0.2.0#egg=quetzal-client
+    git+https://github.com/quetz-al/quetzal-client.git@v0.3.0#egg=quetzal-client
 
 and then do ``pip install -r requirements.txt``.
 
@@ -41,7 +41,7 @@ If you are using conda, add the following structure to your ``environment.yaml``
     ...
     dependencies:
       - pip:
-        - git+https://github.com/quetz-al/quetzal-client.git@v0.2.0#egg=quetzal-client
+        - git+https://github.com/quetz-al/quetzal-client.git@v0.3.0#egg=quetzal-client
 
 and create or update your environment with
 ``conda env create -f environment.yaml`` or

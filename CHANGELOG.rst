@@ -6,6 +6,15 @@ This document list all important changes to quetzal-client.
 
 Quetzal-client version numbers follow `semantic versioning <http://semver.org>`_.
 
+0.3.0 (2019-07-02)
+------------------
+
+* Update to API version 0.3.0.
+* Add more helper functions (query and client).
+* Fix incorrect call to derived configuration object.
+* Fix unpickeable exception types.
+* Fix bugs on file download checksum verification and file upload parameters.
+
 0.2.0 (2019-03-21)
 ------------------
 
