@@ -18,19 +18,17 @@ client, but *quetzal.client* provides some helpers and small fixes.
 Installation
 ------------
 
-*quetzal-client* and its dependency, *quetzal-openapi-client*, are not on
-PyPI yet. In the meantime, in order to install this package, create a virtual
-environment and install with ``pip``:
+You can install *quetzal-client*, with ``pip``:
 
 .. code-block:: console
 
-    pip install git+https://github.com/quetz-al/quetzal-client.git@v0.3.0\#egg=quetzal-client
+    pip install quetzal-client
 
 Alternatively, add this line to your ``requirements.txt``:
 
 .. code-block:: none
 
-    git+https://github.com/quetz-al/quetzal-client.git@v0.3.0#egg=quetzal-client
+    quetzal-client
 
 and then do ``pip install -r requirements.txt``.
 
@@ -40,8 +38,9 @@ If you are using conda, add the following structure to your ``environment.yaml``
 
     ...
     dependencies:
+      - pip
       - pip:
-        - git+https://github.com/quetz-al/quetzal-client.git@v0.3.0#egg=quetzal-client
+        - quetzal-client
 
 and create or update your environment with
 ``conda env create -f environment.yaml`` or
