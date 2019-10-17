@@ -25,26 +25,30 @@ CHUNK_SIZE = (32 << 20)  # 32 Mb
 
 def _log_auth_backoff(details):
     args = details['args']
-    print('Calling function {name} ({verb} {path}) failed after {tries} tries, '
-          'waiting {wait:0.1f} seconds before retrying again.'
-          .format(name=details["target"].__name__, verb=args[2],
-                  path=args[1], **details))
+    logger.debug('Calling function {name} ({verb} {path}) failed after {tries} tries, '
+                 'waiting {wait:0.1f} seconds before retrying again.'
+                 .format(name=details["target"].__name__, verb=args[2],
+                         path=args[1], **details))
 
 
 def _retry_login(details):
-    print('Refreshing access token...')
     args = details['args']
     client = args[0]
+    config = client.configuration
+    if not config.username:
+        logger.debug('Will not retry a login, there is no username set')
+        return
     try:
+        logger.debug('Refreshing access token...')
         client.login()
     except:
-        print('Could not login')
+        logger.warning('Could not login')
 
 
 def _should_giveup(e):
     if isinstance(e, RetryableException):
         if e.status == codes.unauthorized:
-            print('Retrying due to unauthorized error')
+            logger.debug('Retrying due to unauthorized error')
         return False
     return True
 
