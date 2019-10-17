@@ -69,6 +69,9 @@ through a configuration object, or using environment variables:
    * - ``QUETZAL_PASSWORD``
      - Quetzal password.
      - ``''``
+   * - ``QUETZAL_API_KEY``
+     - Quetzal API key.
+     - ``''``
 
 
 Basic usage
@@ -95,15 +98,20 @@ each command.
     Options:
       --url TEXT       Quetzal URL. If not set, uses environment variable
                        QUETZAL_URL if this variable is defined.  [default:
-                       https://staging.quetz.al/api/v1]
-      --insecure       Do not verify HTTPS certificates.
+                       https://api.quetz.al/api/v1]
       --username TEXT  Quetzal username. If not set, uses environment variable
-                       QUETZAL_USER. Option is mutually exclusive with token.
+                       QUETZAL_USER. Option is mutually exclusive with token,
+                       api_key.
       --password TEXT  Quetzal password. If not set, uses environment variable
-                       QUETZAL_PASSWORD. Option is mutually exclusive with token.
-      --token TEXT     Quetzal access token. If not set, uses environment variable
+                       QUETZAL_PASSWORD. Option is mutually exclusive with token,
+                       api_key.
+      --token TEXT     Quetzal bearer token. If not set, uses environment variable
                        QUETZAL_TOKEN. Option is mutually exclusive with username,
-                       password.
+                       password, api_key.
+      --api-key TEXT   Quetzal API key. If not set, uses environment variable
+                       QUETZAL_API_KEY Option is mutually exclusive with username,
+                       password, token.
+      --insecure       Do not verify HTTPS certificates.
       -v, --verbose    Verbosity level. Use -v for verbose, -vv for even more
                        verbosity
       --help-all       Show a detailed help message with all options and exit.

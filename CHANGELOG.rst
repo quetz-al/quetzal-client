@@ -6,6 +6,12 @@ This document list all important changes to quetzal-client.
 
 Quetzal-client version numbers follow `semantic versioning <http://semver.org>`_.
 
+0.5.0 (2019-10-17)
+------------------
+
+* Update to API version 0.5.0.
+* Add API key authentication.
+
 0.3.0 (2019-07-02)
 ------------------
 
