@@ -265,10 +265,17 @@ class Client(ApiClient, metaclass=MetaClient):
         if resource_path == '/data/workspaces/{wid}/queries/' and method == 'POST':
             kwargs['response_type'] = 'Query'
 
+        # Authentication patches
+        auth_settings = kwargs.get('auth_settings', None)
+
+        # Patch in to remove bearer authentication when there is a api key
+        if 'bearer' in auth_settings and 'apiKey' in auth_settings and self.configuration.api_key:
+            auth_settings = [a for a in auth_settings if a != 'bearer']
+            kwargs['auth_settings'] = auth_settings
+
         # Patch in to login with basic authentication before trying a
         # bearer-protected endpoint
-        auth_settings = kwargs.get('auth_settings', None)
-        if auth_settings == ['bearer'] and not self.configuration.access_token:
+        if 'bearer' in auth_settings and not self.configuration.access_token and not self.configuration.api_key:
             logger.debug('Trying to access an endpoint with bearer authentication, '
                          'but there is no saved access_token. Logging in...')
             self.login()

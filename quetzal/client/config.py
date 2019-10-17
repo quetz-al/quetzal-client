@@ -14,4 +14,6 @@ class Configuration(quetzal.openapi_client.configuration.Configuration,
             self.host = os.getenv('QUETZAL_URL', '')
         self.username = os.getenv('QUETZAL_USER', '')
         self.password = os.getenv('QUETZAL_PASSWORD', '')
-
+        api_key = os.getenv('QUETZAL_API_KEY', '')
+        if api_key:
+            self.api_key['X-API-KEY'] = api_key
