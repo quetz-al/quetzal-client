@@ -2,7 +2,6 @@ import logging
 
 import click
 
-
 from quetzal.client import Client, Configuration
 from quetzal.client.cli import BaseGroup, help_options, State, MutexOption
 from quetzal.client.cli.auth import auth_group
@@ -44,7 +43,7 @@ def user_option(f):
                         help='Quetzal username. If not set, uses environment '
                              'variable QUETZAL_USER.',
                         cls=MutexOption,
-                        not_required_if=['token'],
+                        not_required_if=['token', 'api_key'],
                         callback=callback)(f)
 
 
@@ -60,7 +59,7 @@ def password_option(f):
                         help='Quetzal password. If not set, uses environment '
                              'variable QUETZAL_PASSWORD.',
                         cls=MutexOption,
-                        not_required_if=['token'],
+                        not_required_if=['token', 'api_key'],
                         callback=callback)(f)
 
 
@@ -73,10 +72,26 @@ def token_option(f):
 
     return click.option('--token',
                         envvar='QUETZAL_TOKEN',
-                        help='Quetzal access token. If not set, uses environment '
+                        help='Quetzal bearer token. If not set, uses environment '
                              'variable QUETZAL_TOKEN.',
                         cls=MutexOption,
-                        not_required_if=['username', 'password'],
+                        not_required_if=['username', 'password', 'api_key'],
+                        callback=callback)(f)
+
+
+def apikey_option(f):
+
+    def callback(ctx, param, value):
+        if value and not ctx.resilient_parsing:
+            state = ctx.ensure_object(State)
+            state.api_config.api_key['X-API-KEY'] = value
+
+    return click.option('--api-key',
+                        envvar='QUETZAL_API_KEY',
+                        help='Quetzal API key. If not set, uses environment '
+                             'variable QUETZAL_API_KEY',
+                        cls=MutexOption,
+                        not_required_if=['username', 'password', 'token'],
                         callback=callback)(f)
 
 
@@ -99,6 +114,7 @@ def insecure_option(f):
 
 
 def verbose_option(f):
+
     def callback(ctx, param, value):
         if value and not ctx.resilient_parsing:
             state = ctx.ensure_object(State)
@@ -124,10 +140,11 @@ def global_options(f):
     f = click.version_option(version=version_str)(f)
     f = help_options(f)
     f = verbose_option(f)
+    f = insecure_option(f)
+    f = apikey_option(f)
     f = token_option(f)
     f = password_option(f)
     f = user_option(f)
-    f = insecure_option(f)
     f = url_option(f)
     return f
 
