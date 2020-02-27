@@ -6,8 +6,8 @@ This document list all important changes to quetzal-client.
 
 Quetzal-client version numbers follow `semantic versioning <http://semver.org>`_.
 
-0.5.1 (2020-02-27)
-------------------
+0.5.1-rc1 (2020-02-27)
+----------------------
 
 * Fix problem with API key authentication when requesting file details.
 * Fix API key management on configuration object.

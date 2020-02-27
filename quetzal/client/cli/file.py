@@ -116,7 +116,7 @@ def delete(state, file_id, name, wid):
     if state in 'READY':
         confirm = click.confirm(f'File {file_id} is not temporary, are you sure you want to delete it?')
         if not confirm:
-            click.echo('User aborted operation', fg='red')
+            click.secho('User aborted operation', fg='red')
             ctx.exit(-1)
             return
 
