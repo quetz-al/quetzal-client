@@ -154,14 +154,30 @@ Documentation
 There are more details on *quetzal.client* on its official documentation at
 `readthedocs <https://quetzal-client.readthedocs.io/en/latest/>`_.
 
-
-
 Contribute
 ----------
 
 - Issue Tracker: https://github.com/quetz-al/quetzal-client/issues
 - Source Code: https://github.com/quetz-al/quetzal-client
 
+Note to package maintainer
+--------------------------
+
+To build and send this package to PyPI:
+
+.. code-block:: console
+
+    # Clean previous builds!
+    rm -rf dist/
+    # Build
+    python setup.py sdist bdist_wheel
+
+    # Install helper module for uploading to PyPI
+    pip install twine
+    # First, send to test PyPI
+    twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+    # If that works ok, then send to PyPI
+    python -m twine upload dist/*
 
 License
 -------
