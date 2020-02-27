@@ -52,7 +52,7 @@ def download(state, file_id, output, output_dir, name, wid):
 @click.option('--output', help='Output file.',
               type=click.File('w'), default=sys.stdout)
 @click.option('--format', 'output_format', help='Output file format.',
-              type=click.Choice(['json', 'yaml']))
+              type=click.Choice(['json', 'yaml']), default='json')
 @workspace_identifier_options(required=False)
 @help_options
 @pass_state

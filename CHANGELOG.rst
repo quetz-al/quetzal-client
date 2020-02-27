@@ -11,6 +11,7 @@ Quetzal-client version numbers follow `semantic versioning <http://semver.org>`_
 
 * Fix problem with API key authentication when requesting file details.
 * Fix API key management on configuration object.
+* Fix lack of default format on CLI for file metadata.
 
 0.5.0 (2019-10-17)
 ------------------

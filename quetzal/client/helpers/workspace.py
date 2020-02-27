@@ -356,7 +356,6 @@ def update_metadata(client, wid, file_id, metadata):
     return response
 
 
-
 def wait_for_workspace(client, wid, retry_predicate, progress=None):
     """ Wait until a workspace satisfies a condition.
 
