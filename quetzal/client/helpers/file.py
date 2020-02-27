@@ -97,3 +97,8 @@ def find(client, wid=None, **kwargs):
 
     fetch_result = func(filters=filters)
     return fetch_result.results
+
+
+def delete(client, file_id, wid):
+    """ Delete a file"""
+    client.workspace_file_delete(wid, file_id)

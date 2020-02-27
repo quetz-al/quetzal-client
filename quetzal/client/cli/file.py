@@ -85,3 +85,40 @@ def metadata(state, file_id, output, output_format, name, wid):
         yaml.safe_dump(meta, output, default_flow_style=False)
     else:
         raise ValueError('Invalid output format')
+
+
+@file_group.command()
+@error_wrapper
+@click.argument('file_id')
+@workspace_identifier_options(required=True)
+@help_options
+@pass_state
+def delete(state, file_id, name, wid):
+    client = state.api_client
+
+    if name is not None or wid is not None:
+        w_details = helpers.workspace.details(client, wid, name)
+        if w_details is None:
+            # Can only happen when the name is used and there are no results. Not
+            # with the wid option because it would raise a 404 QuetzalAPIException
+            raise click.ClickException(f'Workspace named "{name}" does not exist.')
+        wid = w_details.id
+
+    ctx = click.get_current_context()
+
+    meta = helpers.file.metadata(client, file_id, wid=wid)
+    base_meta = meta['base']
+    state = base_meta['state']
+    if state == 'DELETED':
+        click.secho(f'File {file_id} is already a deleted file', fg='red')
+        ctx.exit(-1)
+        return
+    if state in 'READY':
+        confirm = click.confirm(f'File {file_id} is not temporary, are you sure you want to delete it?')
+        if not confirm:
+            click.echo('User aborted operation', fg='red')
+            ctx.exit(-1)
+            return
+
+    click.echo(f'Requesting delete of file {file_id}...')
+    helpers.file.delete(client, file_id, wid=wid)

@@ -35,7 +35,8 @@ def name_option(required=True):
                         param,
                         'Using --name to refer to a workspace requires a '
                         'the --username options to be set because the workspace '
-                        'is uniquely identified by the name and username.',
+                        'is uniquely identified by the name and username. '
+                        'Alternatively, use the --id option to set the workspace.',
                         ctx=ctx)
                 return value
 
