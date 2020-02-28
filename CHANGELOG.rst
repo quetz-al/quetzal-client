@@ -6,6 +6,11 @@ This document list all important changes to quetzal-client.
 
 Quetzal-client version numbers follow `semantic versioning <http://semver.org>`_.
 
+0.5.1-rc2 (2020-02-28)
+----------------------
+
+* Fix incorrect management of output and output_dir in download helper.
+
 0.5.1-rc1 (2020-02-27)
 ----------------------
 

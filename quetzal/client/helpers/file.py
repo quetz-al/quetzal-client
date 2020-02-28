@@ -11,7 +11,9 @@ logger = logging.getLogger(__name__)
 def download(client, file_id=None, wid=None, *, output=None, output_dir=None, **kwargs):
 
     if output is None and output_dir is None:
-        raise ValueError('Missing output or output_dir keyword argument.')
+        # When neither output nor output_file are defined, fall back to a
+        # default output directory pointing to the user's data directory
+        output_dir = get_data_dir()
 
     if kwargs and file_id is not None:
         raise ValueError('Use file_id or kwargs filters, but not both.')
@@ -26,12 +28,7 @@ def download(client, file_id=None, wid=None, *, output=None, output_dir=None, **
             raise ValueError(f'Several files match the provided filters, refusing to download.')
         file_id = results[0].id
 
-    # Now, fall back to donwloading from a file_id
-
-    # Default output directory to the user's data directory
-    output_dir = output_dir or get_data_dir()
-    output_dir = pathlib.Path(output_dir)
-
+    # Now, fall back to downloading from a file_id
     file_metadata = metadata(client, file_id, wid)
     base = file_metadata['base']
     if output_dir is not None:
@@ -47,6 +44,9 @@ def download(client, file_id=None, wid=None, *, output=None, output_dir=None, **
         if md5 == base['checksum'] and size == base['size']:
             logger.debug('File %s already downloaded in %s', file_id, output)
             return str(output.resolve())
+        else:
+            logger.debug('File %s already downloaded in %s, but the size and '
+                         'checksum do not match. Downloading it again', file_id, output)
 
     # The file does not exist locally, let's download it
     # Use the file details in workspace or outside workspace function
