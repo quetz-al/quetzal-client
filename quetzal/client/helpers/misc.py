@@ -32,7 +32,7 @@ def get_client(url=None, username=None, password=None, insecure=False, api_key=N
     config.host = url or config.host
     config.username = username or config.username
     config.password = password or config.password
-    if api_key is not None:
+    if api_key:
         config.api_key['X-API-KEY'] = api_key
     if insecure:
         config.verify_ssl = False
