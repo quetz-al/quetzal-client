@@ -6,6 +6,12 @@ This document list all important changes to quetzal-client.
 
 Quetzal-client version numbers follow `semantic versioning <http://semver.org>`_.
 
+0.5.1-rc3 (2020-03-04)
+----------------------
+
+* Fix incorrect management of auto retry backoff for 503 errors and a recursive
+  auto-login that was also incorrect
+
 0.5.1-rc2 (2020-02-28)
 ----------------------
 
