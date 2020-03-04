@@ -31,6 +31,24 @@ def _log_auth_backoff(details):
                          path=args[1], **details))
 
 
+def _retry_login(details):
+    args = details['args']
+    client = args[0]
+    config = client.configuration
+    tries = details['tries']
+    if not config.username:
+        logger.debug('Will not retry a login, there is no username set')
+        return
+    if tries > 1:
+        logger.debug('Will not retry a login, there was already a previous attempt')
+        return
+    try:
+        logger.debug('Refreshing access token...')
+        client.login()
+    except:
+        logger.warning('Could not login')
+
+
 def _should_giveup(e):
     if isinstance(e, RetryableException):
         if e.status == codes.unauthorized:
@@ -45,7 +63,7 @@ _auth_retry_decorator = backoff.on_exception(
     max_tries=30,
     max_time=10,
     giveup=_should_giveup,
-    on_backoff=[_log_auth_backoff],
+    on_backoff=[_log_auth_backoff, _retry_login],
 )
 
 
