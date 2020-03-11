@@ -6,6 +6,12 @@ This document list all important changes to quetzal-client.
 
 Quetzal-client version numbers follow `semantic versioning <http://semver.org>`_.
 
+Unreleased
+----------
+
+* Add data_url to workspace details on the CLI
+
+
 0.5.1-rc3 (2020-03-04)
 ----------------------
 

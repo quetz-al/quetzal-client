@@ -340,6 +340,8 @@ def _print_details(w):
         click.secho(str(w.to_dict()[field]))
     click.secho('  families:', fg='blue')
     click.secho('\n'.join(f'    {k}: {v}' for k, v in w.families.items()))
+    click.secho(f'  URL: ', fg='blue', nl=False)
+    click.secho(w.data_url)
 
 
 def _trim_string(string, width):
