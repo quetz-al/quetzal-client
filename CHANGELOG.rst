@@ -10,7 +10,7 @@ Unreleased
 ----------
 
 * Add data_url to workspace details on the CLI
-
+* Fix permission error when using query history on the CLI
 
 0.5.1-rc3 (2020-03-04)
 ----------------------

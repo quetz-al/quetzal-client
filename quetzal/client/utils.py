@@ -43,6 +43,8 @@ class HistoryConsole(code.InteractiveConsole):
                 readline.read_history_file(histfile)
             except FileNotFoundError:
                 pass
+            except PermissionError:
+                pass
             atexit.register(self.save_history, histfile)
 
     def save_history(self, histfile):
