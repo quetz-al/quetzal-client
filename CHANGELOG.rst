@@ -6,6 +6,11 @@ This document list all important changes to quetzal-client.
 
 Quetzal-client version numbers follow `semantic versioning <http://semver.org>`_.
 
+0.5.2 (2020-03-13)
+------------------
+
+This is just a re-release of 0.5.1 code due to problem when uploading to PyPI.
+
 0.5.1 (2020-03-13)
 ------------------
 
