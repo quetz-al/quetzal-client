@@ -6,11 +6,12 @@ This document list all important changes to quetzal-client.
 
 Quetzal-client version numbers follow `semantic versioning <http://semver.org>`_.
 
-Unreleased
-----------
+0.5.1 (2020-03-13)
+------------------
 
 * Add data_url to workspace details on the CLI
 * Fix permission error when using query history on the CLI
+* Update backoff requirement to avoid problems when used by dask
 
 0.5.1-rc3 (2020-03-04)
 ----------------------

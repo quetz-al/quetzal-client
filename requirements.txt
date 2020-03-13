@@ -1,5 +1,5 @@
 click
-backoff
+backoff>=1.10.0
 requests
 appdirs
 PyYAML

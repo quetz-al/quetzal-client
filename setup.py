@@ -12,7 +12,7 @@ easier usage of the [Quetzal API](https://quetz.al).
 """
 dependencies = [
     'click',
-    'backoff',
+    'backoff>=1.10.0',
     'requests',
     'appdirs',
     'PyYAML',
