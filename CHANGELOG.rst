@@ -6,6 +6,11 @@ This document list all important changes to quetzal-client.
 
 Quetzal-client version numbers follow `semantic versioning <http://semver.org>`_.
 
+0.5.3 (unreleased)
+------------------
+
+* Fix incorrect pathlib handling on file download.
+
 0.5.2 (2020-03-13)
 ------------------
 

@@ -32,7 +32,7 @@ def download(client, file_id=None, wid=None, *, output=None, output_dir=None, **
     file_metadata = metadata(client, file_id, wid)
     base = file_metadata['base']
     if output_dir is not None:
-        output = output_dir / base['path'] / base['filename']
+        output = pathlib.Path(output_dir) / base['path'] / base['filename']
     else:
         output = pathlib.Path(output)
 
