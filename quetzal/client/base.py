@@ -43,7 +43,6 @@ def _retry_login(details):
         logger.debug('Will not retry a login, there was already a previous attempt')
         return
     try:
-        # breakpoint()
         logger.debug('Refreshing access token...')
         client.login()
     except:
