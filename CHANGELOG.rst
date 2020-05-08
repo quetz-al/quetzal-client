@@ -10,6 +10,7 @@ Quetzal-client version numbers follow `semantic versioning <http://semver.org>`_
 ------------------
 
 * Fix incorrect pathlib handling on file download.
+* Fix incorrect exception handling that impacted retry logic.
 
 0.5.2 (2020-03-13)
 ------------------
