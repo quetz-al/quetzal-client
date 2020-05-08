@@ -43,6 +43,7 @@ def _retry_login(details):
         logger.debug('Will not retry a login, there was already a previous attempt')
         return
     try:
+        # breakpoint()
         logger.debug('Refreshing access token...')
         client.login()
     except:
@@ -60,10 +61,11 @@ def _should_giveup(e):
 _auth_retry_decorator = backoff.on_exception(
     backoff.expo,
     RetryableException,
-    max_tries=30,
-    max_time=10,
+    max_tries=10,
+    max_time=30,
     giveup=_should_giveup,
     on_backoff=[_log_auth_backoff, _retry_login],
+    max_value=5,
 )
 
 
