@@ -50,14 +50,6 @@ class QuetzalAPIException(Exception):
         quetzal.client.QuetzalAPIException
 
         """
-        if not hasattr(api_exception, 'body') or not api_exception.body:
-            if api_exception.status == codes.precondition_failed:
-                warnings.warn('Due to werkzeug issue #1231, we will not receive'
-                              ' the problem details when a code 412 occurs',
-                              RuntimeWarning, stacklevel=2)
-            return QuetzalAPIException(api_exception.status,
-                                       api_exception.reason,
-                                       'No details available')
 
         status = api_exception.status
         title = 'unknown'

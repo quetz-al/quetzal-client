@@ -1,0 +1,7 @@
+  
+-r requirements.txt
+# Test requirements: these are not dependencies (they don't go on the setup.py)
+pytest>=5.1.2,<5.2
+pytest-mock>=1.10.4,<1.11
+coverage>=4.5.3,<4.6
+pytest-cov>=2.7.1,<2.8
